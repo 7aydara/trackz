@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-nunito), ui-rounded, "SF Pro Rounded", system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+
+  /* Couleur d'accent contextuelle : redefinie par chaque module via .theme-* */
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+
+  /* Fond et encres partages par les 5 apps */
+  --color-canvas: #f6f5fb;
+  --color-ink: #1d1b2e;
+  --color-muted: #6b6885;
+  --color-hair: #e8e6f2;
+
+  --radius-card: 1.25rem;
+
+  --animate-pop: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-rise: rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fall: fall 1100ms cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.18) rotate(-6deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fall {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+  70% { box-shadow: 0 0 0 12px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Themes par module — un accent different pour reperer l'app d'un coup */
+/* ------------------------------------------------------------------ */
+:root,
+.theme-tracker {
+  --accent: #7c3aed;
+  --accent-soft: #ede9fe;
+  --accent-ink: #4c1d95;
+}
+
+.theme-cours {
+  --accent: #0ea5e9;
+  --accent-soft: #e0f2fe;
+  --accent-ink: #075985;
+}
+
+.theme-ecoles {
+  --accent: #f59e0b;
+  --accent-soft: #fef3c7;
+  --accent-ink: #92400e;
+}
+
+.theme-business {
+  --accent: #10b981;
+  --accent-soft: #d1fae5;
+  --accent-ink: #065f46;
+}
+
+.theme-sport {
+  --accent: #f43f5e;
+  --accent-soft: #ffe4e6;
+  --accent-ink: #9f1239;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background:
+    radial-gradient(1100px 460px at 12% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent),
+    radial-gradient(900px 420px at 96% 4%, color-mix(in srgb, var(--accent) 9%, transparent), transparent),
+    var(--color-canvas);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  min-height: 100dvh;
+}
+
+/* Confettis legers : pas de dependance, juste des divs animees */
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: var(--animate-fall);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
