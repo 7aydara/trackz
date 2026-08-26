@@ -19,10 +19,12 @@ import type { SchoolDocument, SchoolStatus, SchoolWithDocs } from "@/lib/types";
 /** Une candidature : compte a rebours, statut et checklist de documents. */
 export function SchoolCard({
   userId,
+  today,
   school,
   insight,
 }: {
   userId: string;
+  today: string;
   school: SchoolWithDocs;
   insight: SchoolInsight;
 }) {
@@ -100,7 +102,7 @@ export function SchoolCard({
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
             <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${style.chip}`}>
               {school.deadline
-                ? `${formatShort(school.deadline)} — ${relativeDays(school.deadline)}`
+                ? `${formatShort(school.deadline)} — ${relativeDays(school.deadline, today)}`
                 : "sans deadline"}
             </span>
             <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-muted">

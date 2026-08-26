@@ -1,5 +1,6 @@
-import { addDays, todayISO } from "@/lib/dates";
+import { addDays } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getToday } from "@/lib/today";
 import type { Subject, SubjectLog } from "@/lib/types";
 import { CoursClient } from "./CoursClient";
 
@@ -11,7 +12,7 @@ export default async function CoursPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const today = todayISO();
+  const today = await getToday();
 
   const [subjectsRes, logsRes] = await Promise.all([
     supabase

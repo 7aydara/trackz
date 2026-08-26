@@ -31,6 +31,11 @@ declare
 begin
   execute format('alter table %s enable row level security', t);
 
+  execute format('drop policy if exists "owner_select" on %s', t);
+  execute format('drop policy if exists "owner_insert" on %s', t);
+  execute format('drop policy if exists "owner_update" on %s', t);
+  execute format('drop policy if exists "owner_delete" on %s', t);
+
   execute format(
     'create policy "owner_select" on %s for select to authenticated using (auth.uid() = user_id)', t);
   execute format(
@@ -57,6 +62,10 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
+drop policy if exists "profiles_select_own" on public.profiles;
+drop policy if exists "profiles_insert_own" on public.profiles;
+drop policy if exists "profiles_update_own" on public.profiles;
+
 create policy "profiles_select_own" on public.profiles
   for select to authenticated using (auth.uid() = id);
 create policy "profiles_insert_own" on public.profiles
@@ -64,6 +73,7 @@ create policy "profiles_insert_own" on public.profiles
 create policy "profiles_update_own" on public.profiles
   for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
 
+drop trigger if exists profiles_touch on public.profiles;
 create trigger profiles_touch
   before update on public.profiles
   for each row execute function public.touch_updated_at();

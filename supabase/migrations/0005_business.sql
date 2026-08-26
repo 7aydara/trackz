@@ -16,6 +16,7 @@ create table if not exists public.clients (
 );
 
 create index if not exists clients_user_idx on public.clients (user_id, status, name);
+drop trigger if exists clients_touch on public.clients;
 create trigger clients_touch before update on public.clients
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.clients');
@@ -35,6 +36,7 @@ create table if not exists public.projects (
 );
 
 create index if not exists projects_user_idx on public.projects (user_id, status, deadline);
+drop trigger if exists projects_touch on public.projects;
 create trigger projects_touch before update on public.projects
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.projects');
@@ -58,6 +60,7 @@ create table if not exists public.invoices (
 );
 
 create index if not exists invoices_user_idx on public.invoices (user_id, status, due_on);
+drop trigger if exists invoices_touch on public.invoices;
 create trigger invoices_touch before update on public.invoices
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.invoices');

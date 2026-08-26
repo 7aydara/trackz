@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { Heatmap } from "@/components/ui/Heatmap";
 import { StatTile } from "@/components/ui/StatTile";
-import { addDays, todayISO } from "@/lib/dates";
+import { addDays } from "@/lib/dates";
 import { MILESTONE_BADGES, currentStreak, longestStreak, unlockedMilestones } from "@/lib/streaks";
 import { createClient } from "@/lib/supabase/server";
+import { getToday } from "@/lib/today";
 import type { Subject, SubjectLog } from "@/lib/types";
 import { SubjectHistory } from "./SubjectHistory";
 
@@ -22,7 +23,7 @@ export default async function SubjectPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const today = todayISO();
+  const today = await getToday();
 
   const [subjectRes, logsRes] = await Promise.all([
     supabase.from("subjects").select("*").eq("id", id).maybeSingle(),

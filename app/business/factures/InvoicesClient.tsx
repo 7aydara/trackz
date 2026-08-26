@@ -17,7 +17,7 @@ import {
   isOverdue,
   suggestInvoiceNumber,
 } from "@/lib/business";
-import { addDays, formatShort, startOfMonth, todayISO } from "@/lib/dates";
+import { addDays, formatShort, startOfMonth } from "@/lib/dates";
 import { burstConfetti } from "@/lib/confetti";
 import { createClient } from "@/lib/supabase/client";
 import type { Client, Invoice, InvoiceStatus, Project } from "@/lib/types";
@@ -26,18 +26,19 @@ type Filter = "toutes" | "en_attente" | "en_retard" | "payee";
 
 export function InvoicesClient({
   userId,
+  today,
   invoices,
   clients,
   projects,
 }: {
   userId: string;
+  today: string;
   invoices: Invoice[];
   clients: Pick<Client, "id" | "name">[];
   projects: Pick<Project, "id" | "title" | "client_id" | "amount">[];
 }) {
   const router = useRouter();
   const supabase = createClient();
-  const today = todayISO();
 
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);

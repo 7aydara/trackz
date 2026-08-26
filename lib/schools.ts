@@ -1,4 +1,4 @@
-import { diffInDays, todayISO } from "@/lib/dates";
+import { diffInDays } from "@/lib/dates";
 import type { SchoolStatus, SchoolWithDocs } from "@/lib/types";
 
 export const SCHOOL_STATUS_META: Record<
@@ -36,7 +36,7 @@ export interface SchoolInsight {
  * Croise la deadline et l'avancement de la checklist : c'est ce couple
  * qui declenche l'alerte, pas la date seule.
  */
-export function schoolInsight(school: SchoolWithDocs, today = todayISO()): SchoolInsight {
+export function schoolInsight(school: SchoolWithDocs, today: string): SchoolInsight {
   const docs = school.school_documents ?? [];
   const docsTotal = docs.length;
   const docsDone = docs.filter((d) => d.done).length;

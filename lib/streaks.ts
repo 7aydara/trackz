@@ -1,11 +1,11 @@
-import { addDays, todayISO } from "./dates";
+import { addDays } from "./dates";
 
 /**
  * Streak courante : nombre de jours consecutifs valides en remontant depuis
  * aujourd'hui. Si aujourd'hui n'est pas encore fait, on repart d'hier — la
  * serie n'est donc pas "cassee" tant que la journee n'est pas terminee.
  */
-export function currentStreak(doneDates: Iterable<string>, today = todayISO()): number {
+export function currentStreak(doneDates: Iterable<string>, today: string): number {
   const set = doneDates instanceof Set ? doneDates : new Set(doneDates);
   if (set.size === 0) return 0;
 

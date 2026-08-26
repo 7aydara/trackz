@@ -19,6 +19,7 @@ create table if not exists public.schools (
 );
 
 create index if not exists schools_user_deadline_idx on public.schools (user_id, deadline);
+drop trigger if exists schools_touch on public.schools;
 create trigger schools_touch before update on public.schools
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.schools');

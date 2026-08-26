@@ -1,4 +1,3 @@
-import { todayISO } from "@/lib/dates";
 import type { Invoice, InvoiceStatus, ProjectStatus } from "@/lib/types";
 
 export const PROJECT_STATUS_META: Record<
@@ -28,11 +27,11 @@ export const INVOICE_STATUSES = Object.keys(INVOICE_STATUS_META) as InvoiceStatu
  * "En retard" n'est pas stocke en base : c'est une facture envoyee dont
  * l'echeance est passee. Impossible d'avoir un statut perime.
  */
-export function isOverdue(invoice: Pick<Invoice, "status" | "due_on">, today = todayISO()) {
+export function isOverdue(invoice: Pick<Invoice, "status" | "due_on">, today: string) {
   return invoice.status === "envoyee" && !!invoice.due_on && invoice.due_on < today;
 }
 
-export function daysLate(invoice: Pick<Invoice, "status" | "due_on">, today = todayISO()) {
+export function daysLate(invoice: Pick<Invoice, "status" | "due_on">, today: string) {
   if (!isOverdue(invoice, today) || !invoice.due_on) return 0;
   return Math.round(
     (new Date(today).getTime() - new Date(invoice.due_on).getTime()) / 86_400_000,
@@ -48,7 +47,7 @@ export function formatMoney(amount: number, currency = "EUR") {
 }
 
 /** Numero suggere : FA-2026-007. */
-export function suggestInvoiceNumber(existing: string[], today = todayISO()) {
+export function suggestInvoiceNumber(existing: string[], today: string) {
   const year = today.slice(0, 4);
   const prefix = `FA-${year}-`;
   const max = existing

@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { StatTile } from "@/components/ui/StatTile";
-import { formatShort, todayISO } from "@/lib/dates";
+import { formatShort } from "@/lib/dates";
 import {
   DEFAULT_DOCUMENTS,
   URGENCY_STYLES,
@@ -21,14 +21,15 @@ import { SchoolCard } from "./SchoolCard";
 
 export function EcolesClient({
   userId,
+  today,
   schools,
 }: {
   userId: string;
+  today: string;
   schools: SchoolWithDocs[];
 }) {
   const router = useRouter();
   const supabase = createClient();
-  const today = todayISO();
 
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -152,6 +153,7 @@ export function EcolesClient({
               <SchoolCard
                 key={school.id}
                 userId={userId}
+                today={today}
                 school={school}
                 insight={insights.get(school.id)!}
               />

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 
 type Variant = "primary" | "soft" | "ghost" | "danger";
 
@@ -22,6 +22,8 @@ export function Button({
   children: ReactNode;
   variant?: Variant;
   size?: "sm" | "md" | "lg";
+  // React 19 : `ref` est une prop normale, transmise via le spread.
+  ref?: Ref<HTMLButtonElement>;
 }) {
   const sizes = {
     sm: "px-3 py-1.5 text-sm",

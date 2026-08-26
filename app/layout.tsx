@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
+import { TimezoneSync } from "@/components/TimezoneSync";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -24,7 +25,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={nunito.variable}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <TimezoneSync />
+        {children}
+      </body>
     </html>
   );
 }

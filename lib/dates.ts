@@ -78,7 +78,7 @@ export function formatShort(iso: string): string {
 }
 
 /** "dans 12 jours", "aujourd'hui", "il y a 3 jours". */
-export function relativeDays(iso: string, fromISOStr = todayISO()): string {
+export function relativeDays(iso: string, fromISOStr: string): string {
   const n = diffInDays(fromISOStr, iso);
   if (n === 0) return "aujourd'hui";
   if (n === 1) return "demain";

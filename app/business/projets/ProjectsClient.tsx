@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { PROJECT_STATUSES, PROJECT_STATUS_META, formatMoney } from "@/lib/business";
-import { formatShort, relativeDays, todayISO } from "@/lib/dates";
+import { formatShort, relativeDays } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/client";
 import type { Client, Project, ProjectStatus } from "@/lib/types";
 
@@ -25,16 +25,17 @@ const EMPTY = {
 
 export function ProjectsClient({
   userId,
+  today,
   projects,
   clients,
 }: {
   userId: string;
+  today: string;
   projects: Project[];
   clients: Pick<Client, "id" | "name">[];
 }) {
   const router = useRouter();
   const supabase = createClient();
-  const today = todayISO();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
@@ -169,7 +170,7 @@ export function ProjectsClient({
                         {p.deadline && (
                           <Chip tone={late ? "red" : "neutral"}>
                             {late ? "🚨 " : "📅 "}
-                            {formatShort(p.deadline)} · {relativeDays(p.deadline)}
+                            {formatShort(p.deadline)} · {relativeDays(p.deadline, today)}
                           </Chip>
                         )}
                         {p.amount != null && <Chip tone="green">{formatMoney(Number(p.amount))}</Chip>}

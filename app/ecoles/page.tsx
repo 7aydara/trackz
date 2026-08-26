@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getToday } from "@/lib/today";
 import type { SchoolWithDocs } from "@/lib/types";
 import { EcolesClient } from "./EcolesClient";
 
@@ -6,9 +7,12 @@ export const dynamic = "force-dynamic";
 
 export default async function EcolesPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [
+    {
+      data: { user },
+    },
+    today,
+  ] = await Promise.all([supabase.auth.getUser(), getToday()]);
 
   const { data } = await supabase
     .from("schools")
@@ -22,5 +26,5 @@ export default async function EcolesPage() {
     ),
   })) as SchoolWithDocs[];
 
-  return <EcolesClient userId={user!.id} schools={schools} />;
+  return <EcolesClient userId={user!.id} today={today} schools={schools} />;
 }

@@ -3,7 +3,7 @@ import { Card, CardTitle } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { StatTile } from "@/components/ui/StatTile";
-import { formatShort, relativeDays, startOfMonth, todayISO } from "@/lib/dates";
+import { formatShort, relativeDays, startOfMonth } from "@/lib/dates";
 import {
   PROJECT_STATUS_META,
   daysLate,
@@ -11,13 +11,14 @@ import {
   isOverdue,
 } from "@/lib/business";
 import { createClient } from "@/lib/supabase/server";
+import { getToday } from "@/lib/today";
 import type { Client, Invoice, Project } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function BusinessOverviewPage() {
   const supabase = await createClient();
-  const today = todayISO();
+  const today = await getToday();
   const monthStart = startOfMonth(today);
 
   const [invoicesRes, projectsRes, clientsRes] = await Promise.all([
@@ -126,7 +127,7 @@ export default async function BusinessOverviewPage() {
                     <p className="truncate font-bold">{p.title}</p>
                     <p className="truncate text-[11px] font-semibold text-muted">
                       {p.client_id ? clientName.get(p.client_id) ?? "Client supprime" : "Sans client"}
-                      {p.deadline ? ` · ${formatShort(p.deadline)} (${relativeDays(p.deadline)})` : ""}
+                      {p.deadline ? ` · ${formatShort(p.deadline)} (${relativeDays(p.deadline, today)})` : ""}
                     </p>
                   </div>
                   {p.amount != null && (

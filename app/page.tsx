@@ -2,24 +2,26 @@ import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/Card";
 import { ProgressRing } from "@/components/ui/ProgressRing";
-import { formatLong, relativeDays, todayISO } from "@/lib/dates";
+import { formatLong, relativeDays } from "@/lib/dates";
 import { MODULES } from "@/lib/modules";
 import { getDashboardData } from "@/lib/queries/dashboard";
 import { createClient } from "@/lib/supabase/server";
+import { getToday } from "@/lib/today";
 import type { Invoice, School } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function HubPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const today = todayISO();
+  const [
+    {
+      data: { user },
+    },
+    today,
+  ] = await Promise.all([supabase.auth.getUser(), getToday()]);
 
   const [dash, schoolsRes, invoicesRes, projectsRes] = await Promise.all([
-    getDashboardData(supabase, { days: 40 }),
+    getDashboardData(supabase, { days: 40, date: today }),
     supabase
       .from("schools")
       .select("id, name, deadline, status")
@@ -57,7 +59,7 @@ export default async function HubPage() {
       hint: coursItems.length ? "matieres cochees aujourd'hui" : "ajoute tes matieres",
     },
     ecoles: {
-      value: nextSchool?.deadline ? relativeDays(nextSchool.deadline) : "—",
+      value: nextSchool?.deadline ? relativeDays(nextSchool.deadline, today) : "—",
       hint: nextSchool ? `prochaine : ${nextSchool.name}` : "aucune deadline a venir",
     },
     business: {

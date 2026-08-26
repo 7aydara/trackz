@@ -17,6 +17,7 @@ create table if not exists public.subjects (
 );
 
 create index if not exists subjects_user_idx on public.subjects (user_id, archived, sort_order);
+drop trigger if exists subjects_touch on public.subjects;
 create trigger subjects_touch before update on public.subjects
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.subjects');

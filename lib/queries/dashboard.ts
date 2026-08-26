@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { addDays, todayISO } from "@/lib/dates";
+import { addDays } from "@/lib/dates";
 import type { ModuleKey } from "@/lib/modules";
 import { currentStreak, longestStreak } from "@/lib/streaks";
 import type { CheckinDomain, Habit, Subject } from "@/lib/types";
@@ -50,7 +50,7 @@ const DOMAIN_META: Record<CheckinDomain, { label: string; emoji: string; module:
  */
 export async function getDashboardData(
   supabase: SupabaseClient,
-  { days = 140, date = todayISO() }: { days?: number; date?: string } = {},
+  { days = 140, date }: { days?: number; date: string },
 ): Promise<DashboardData> {
   const from = addDays(date, -(days - 1));
 

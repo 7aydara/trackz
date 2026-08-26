@@ -15,6 +15,7 @@ create table if not exists public.workouts (
 );
 
 create index if not exists workouts_user_date_idx on public.workouts (user_id, session_date desc);
+drop trigger if exists workouts_touch on public.workouts;
 create trigger workouts_touch before update on public.workouts
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.workouts');
@@ -75,6 +76,7 @@ create table if not exists public.taolu_progress (
 
 create index if not exists taolu_progress_user_idx
   on public.taolu_progress (user_id, level, sort_order);
+drop trigger if exists taolu_progress_touch on public.taolu_progress;
 create trigger taolu_progress_touch before update on public.taolu_progress
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.taolu_progress');

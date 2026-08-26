@@ -1,4 +1,4 @@
-import { addDays, dateRange, formatShort, fromISODate, todayISO } from "@/lib/dates";
+import { addDays, dateRange, formatShort, fromISODate } from "@/lib/dates";
 
 /**
  * Calendrier d'intensite facon "contributions GitHub".
@@ -7,11 +7,12 @@ import { addDays, dateRange, formatShort, fromISODate, todayISO } from "@/lib/da
 export function Heatmap({
   values,
   weeks = 20,
-  endDate = todayISO(),
+  endDate,
 }: {
   values: Record<string, number>;
   weeks?: number;
-  endDate?: string;
+  /** Derniere colonne du calendrier : le jour courant de l'utilisateur. */
+  endDate: string;
 }) {
   // On termine sur le dimanche de la semaine courante pour des colonnes pleines.
   const endDow = (fromISODate(endDate).getDay() + 6) % 7;
@@ -22,7 +23,7 @@ export function Heatmap({
   const columns: string[][] = [];
   for (let i = 0; i < days.length; i += 7) columns.push(days.slice(i, i + 7));
 
-  const today = todayISO();
+  const today = endDate;
   const monthLabels = columns.map((col, i) => {
     const month = fromISODate(col[0]).toLocaleDateString("fr-FR", { month: "short" });
     const prev = i > 0 ? fromISODate(columns[i - 1][0]).getMonth() : -1;

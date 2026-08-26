@@ -18,6 +18,7 @@ create table if not exists public.habits (
 );
 
 create index if not exists habits_user_idx on public.habits (user_id, archived, sort_order);
+drop trigger if exists habits_touch on public.habits;
 create trigger habits_touch before update on public.habits
   for each row execute function public.touch_updated_at();
 select public.apply_owner_rls('public.habits');
