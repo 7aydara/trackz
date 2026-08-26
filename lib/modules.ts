@@ -1,3 +1,5 @@
+import type { IconName } from "@/components/Icon";
+
 export type ModuleKey = "tracker" | "cours" | "ecoles" | "business" | "sport";
 
 export interface ModuleDef {
@@ -9,9 +11,8 @@ export interface ModuleDef {
   tagline: string;
   /** Classe de theme appliquee au shell (definit --accent). */
   theme: string;
-  /** Couleur d'accent en dur, pour les degrades et le SVG. */
-  accent: string;
-  accentSoft: string;
+  /** Icone de la navigation basse. */
+  icon: IconName;
 }
 
 export const MODULES: ModuleDef[] = [
@@ -23,8 +24,7 @@ export const MODULES: ModuleDef[] = [
     emoji: "🔥",
     tagline: "Ta journee en un coup d'oeil : streaks, check-ins, heatmap.",
     theme: "theme-tracker",
-    accent: "#7c3aed",
-    accentSoft: "#ede9fe",
+    icon: "flame",
   },
   {
     key: "cours",
@@ -34,8 +34,7 @@ export const MODULES: ModuleDef[] = [
     emoji: "📚",
     tagline: "Une case par matiere, chaque jour. Garde le rythme.",
     theme: "theme-cours",
-    accent: "#0ea5e9",
-    accentSoft: "#e0f2fe",
+    icon: "book",
   },
   {
     key: "ecoles",
@@ -45,8 +44,7 @@ export const MODULES: ModuleDef[] = [
     emoji: "🎓",
     tagline: "Deadlines, checklists de documents, comptes a rebours.",
     theme: "theme-ecoles",
-    accent: "#f59e0b",
-    accentSoft: "#fef3c7",
+    icon: "school",
   },
   {
     key: "business",
@@ -56,8 +54,7 @@ export const MODULES: ModuleDef[] = [
     emoji: "💼",
     tagline: "Clients, projets, factures et revenus du mois.",
     theme: "theme-business",
-    accent: "#10b981",
-    accentSoft: "#d1fae5",
+    icon: "briefcase",
   },
   {
     key: "sport",
@@ -67,8 +64,7 @@ export const MODULES: ModuleDef[] = [
     emoji: "🥋",
     tagline: "Stances, conditionnement, taolu et arbre de progression.",
     theme: "theme-sport",
-    accent: "#f43f5e",
-    accentSoft: "#ffe4e6",
+    icon: "martial",
   },
 ];
 

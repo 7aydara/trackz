@@ -75,7 +75,7 @@ export function ChanClient({
 
   return (
     <div className="space-y-4">
-      <Card className="!bg-white text-center">
+      <Card className="bg-card text-center">
         <p className="text-3xl" aria-hidden>
           ☯️
         </p>
@@ -116,7 +116,7 @@ export function ChanClient({
           {CHAN_QUOTES.map((q) => (
             <li
               key={q.content}
-              className="flex items-start gap-2 rounded-2xl border border-hair bg-white px-3 py-2"
+              className="flex items-start gap-2 rounded-[var(--radius-control)] border border-hair bg-card px-3 py-2"
             >
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold italic">« {q.content} »</p>
@@ -144,8 +144,8 @@ export function ChanClient({
             {notes.map((n) => (
               <li
                 key={n.id}
-                className={`rounded-2xl border px-3 py-2.5 ${
-                  n.pinned ? "border-transparent bg-accent-soft" : "border-hair bg-white"
+                className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
+                  n.pinned ? "border-transparent bg-accent-soft" : "border-hair bg-card"
                 }`}
               >
                 <p className="whitespace-pre-line text-sm font-semibold">{n.content}</p>
@@ -167,7 +167,7 @@ export function ChanClient({
                     type="button"
                     onClick={() => remove(n)}
                     aria-label="Supprimer la note"
-                    className="text-xs font-bold text-muted/60 transition hover:text-rose-600"
+                    className="text-xs font-bold text-muted/60 transition hover:text-danger"
                   >
                     ✕
                   </button>

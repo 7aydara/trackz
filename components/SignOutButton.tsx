@@ -18,9 +18,9 @@ export function SignOutButton() {
         router.replace("/login");
         router.refresh();
       }}
-      className="rounded-full border border-hair bg-white px-3 py-1.5 text-xs font-bold text-muted transition hover:text-ink disabled:opacity-50"
+      className="shrink-0 rounded-full px-3 py-2 text-sm font-bold text-accent-ink transition hover:bg-sunk disabled:opacity-50"
     >
-      Deconnexion
+      Quitter
     </button>
   );
 }

@@ -64,8 +64,8 @@ export function SubjectHistory({
               aria-label={`${subjectName} le ${d}`}
               className={`rounded-xl border-2 px-1 py-2 text-[10px] font-black transition ${
                 done
-                  ? "border-transparent bg-accent text-white"
-                  : "border-dashed border-hair bg-white text-muted hover:border-accent"
+                  ? "border-transparent bg-accent text-on-accent"
+                  : "border-dashed border-hair bg-card text-muted hover:border-accent"
               } ${d === today ? "ring-2 ring-accent ring-offset-1" : ""}`}
             >
               {formatShort(d).replace(".", "")}

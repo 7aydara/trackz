@@ -6,7 +6,7 @@ import type {
 } from "react";
 
 const BASE =
-  "w-full rounded-2xl border border-hair bg-white px-3.5 py-2.5 text-base font-semibold outline-none transition placeholder:font-medium placeholder:text-muted/70 focus:border-accent focus:ring-4 focus:ring-accent-soft";
+  "w-full rounded-[var(--radius-control)] border border-hair bg-card px-3.5 py-2.5 text-base font-semibold text-ink outline-none transition placeholder:font-medium placeholder:text-muted/70 focus:border-accent focus:ring-4 focus:ring-accent-soft";
 
 export function Label({ children }: { children: ReactNode }) {
   return (

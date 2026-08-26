@@ -12,11 +12,42 @@ Cinq apps, un seul compte, une seule base Supabase :
 
 La page `/` est le hub : elle liste les 5 apps avec un resume live de chacune.
 
+## Design
+
+Le systeme visuel vient d'une maquette Google Stitch, adaptee et rendue
+coherente sur les 5 apps. Il tient en trois idees :
+
+**Profondeur tactile.** Pas d'ombres flottantes : les boutons ont une ombre
+pleine de 4px dessous qui se comprime a 2px quand on appuie, comme une
+touche mecanique. Les cartes sont des tuiles a 20px de rayon avec un filet
+de 1px ; tout ce qui est actionnable est a 16px.
+
+**Deux themes, un seul jeu de tokens.** « Trackz » en clair, « Obsidian Zen »
+en sombre, suivant le reglage du systeme. Aucun composant ne contient de
+couleur en dur : tout passe par des variables `--color-*` redefinies dans
+`app/globals.css`.
+
+**Cinq accents tenus.** Chaque module a sa couleur, mais toutes sont
+calibrees dans la meme bande de clarte et de saturation (OKLCH, L 0.52-0.58,
+C 0.11-0.20) : elles se distinguent par la teinte, pas par le volume. Le
+violet reste le plus chromatique parce qu'il porte la marque.
+
+> Piege a connaitre : les classes `.theme-*` redefinissent directement les
+> variables `--color-accent*`. Ne pas reintroduire d'indirection du type
+> `--color-accent: var(--accent)` declaree sur `:root` — une custom property
+> est resolue la ou elle est declaree, les descendants heriteraient de la
+> valeur deja calculee et tous les modules seraient violets.
+
+Les icones d'interface sont des SVG inline (`components/Icon.tsx`) et non une
+police d'icones : une police qui ne charge pas affiche le nom du glyphe en
+toutes lettres. Les emojis, eux, servent a identifier un contenu (une
+matiere, un domaine), jamais un controle.
+
 ## Stack
 
 - **Next.js 15** (App Router, TypeScript) — un dossier par app sous `app/`
 - **Supabase** — auth (email/mot de passe + lien magique), Postgres, RLS
-- **Tailwind CSS v4** — themes d'accent par module via variables CSS
+- **Tailwind CSS v4** — deux themes et cinq accents par variables CSS
 - Zero dependance UI : confettis, heatmap, courbes et anneaux sont faits maison
 
 ## Mise en route

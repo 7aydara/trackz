@@ -83,7 +83,7 @@ export function SportClient({
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 !bg-white">
+      <Card className="flex items-center gap-4 bg-card">
         <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-3xl bg-accent-soft text-4xl">
           🥋
         </span>
@@ -127,9 +127,9 @@ export function SportClient({
         </CardTitle>
         <ul className="space-y-2">
           {SESSION_TEMPLATES.map((t) => (
-            <li key={t.key} className="rounded-2xl border border-hair bg-white p-3">
+            <li key={t.key} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
               <div className="flex items-start gap-3">
-                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent-soft text-xl">
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-xl">
                   {t.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -175,9 +175,9 @@ export function SportClient({
               const ex = exercisesByWorkout.get(w.id) ?? [];
               const st = stancesByWorkout.get(w.id) ?? [];
               return (
-                <li key={w.id} className="rounded-2xl border border-hair bg-white p-3">
+                <li key={w.id} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent-soft text-lg">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-lg">
                       🥋
                     </span>
                     <div className="min-w-0 flex-1">
@@ -213,7 +213,7 @@ export function SportClient({
                       )}
 
                       {w.notes && (
-                        <p className="mt-1.5 whitespace-pre-line rounded-xl bg-canvas px-2.5 py-1.5 text-xs font-semibold text-muted">
+                        <p className="mt-1.5 whitespace-pre-line rounded-xl bg-sunk px-2.5 py-1.5 text-xs font-semibold text-muted">
                           {w.notes}
                         </p>
                       )}
@@ -223,7 +223,7 @@ export function SportClient({
                       type="button"
                       onClick={() => removeWorkout(w)}
                       aria-label="Supprimer la seance"
-                      className="px-1 text-xs font-bold text-muted/60 transition hover:text-rose-600"
+                      className="px-1 text-xs font-bold text-muted/60 transition hover:text-danger"
                     >
                       ✕
                     </button>

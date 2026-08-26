@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
-import { Card } from "@/components/ui/Card";
+import { Icon } from "@/components/Icon";
+import { Card, SectionLabel } from "@/components/ui/Card";
+import { Chip } from "@/components/ui/Chip";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { formatLong, relativeDays } from "@/lib/dates";
 import { MODULES } from "@/lib/modules";
@@ -34,7 +36,10 @@ export default async function HubPage() {
     supabase.from("projects").select("id").eq("status", "en_cours"),
   ]);
 
-  const nextSchool = (schoolsRes.data?.[0] ?? null) as Pick<School, "id" | "name" | "deadline"> | null;
+  const nextSchool = (schoolsRes.data?.[0] ?? null) as Pick<
+    School,
+    "id" | "name" | "deadline"
+  > | null;
   const unpaid = (invoicesRes.data ?? []) as Pick<Invoice, "amount" | "status" | "due_on">[];
   const unpaidTotal = unpaid
     .filter((i) => i.status === "envoyee")
@@ -47,94 +52,114 @@ export default async function HubPage() {
   const coursItems = dash.items.filter((i) => i.module === "cours");
   const coursDone = coursItems.filter((i) => i.done).length;
   const sportDone = dash.items.find((i) => i.kind === "workout")?.done ?? false;
+  const sportStreak = dash.domainStreaks.find((s) => s.module === "sport")?.current ?? 0;
   const ratio = dash.totalToday ? dash.doneToday / dash.totalToday : 0;
 
-  const summaries: Record<string, { value: string; hint: string }> = {
+  /** Une ligne d'etat par module, avec son niveau d'urgence. */
+  const summaries: Record<string, { text: string; tone: "neutral" | "accent" | "danger" }> = {
     tracker: {
-      value: `${dash.doneToday}/${dash.totalToday}`,
-      hint: `🔥 ${dash.globalStreak.current} j de serie`,
+      text: `${dash.doneToday}/${dash.totalToday} coche · serie de ${dash.globalStreak.current} j`,
+      tone: "accent",
     },
     cours: {
-      value: coursItems.length ? `${coursDone}/${coursItems.length}` : "0 matiere",
-      hint: coursItems.length ? "matieres cochees aujourd'hui" : "ajoute tes matieres",
+      text: coursItems.length
+        ? `${coursDone}/${coursItems.length} matieres cochees`
+        : "aucune matiere configuree",
+      tone: coursItems.length && coursDone === coursItems.length ? "accent" : "neutral",
     },
     ecoles: {
-      value: nextSchool?.deadline ? relativeDays(nextSchool.deadline, today) : "—",
-      hint: nextSchool ? `prochaine : ${nextSchool.name}` : "aucune deadline a venir",
+      text: nextSchool?.deadline
+        ? `${relativeDays(nextSchool.deadline, today)} · ${nextSchool.name}`
+        : "aucune deadline a venir",
+      tone: "neutral",
     },
     business: {
-      value: `${Math.round(unpaidTotal)} €`,
-      hint: overdue ? `⚠️ ${overdue} facture(s) en retard` : `${ongoingProjects} projet(s) en cours`,
+      text: overdue
+        ? `${Math.round(unpaidTotal)} € · ${overdue} facture(s) en retard`
+        : `${Math.round(unpaidTotal)} € en attente · ${ongoingProjects} projet(s) en cours`,
+      tone: overdue ? "danger" : "neutral",
     },
     sport: {
-      value: sportDone ? "Seance faite ✅" : "Pas encore",
-      hint: `🔥 ${dash.domainStreaks.find((s) => s.module === "sport")?.current ?? 0} j de serie`,
+      text: sportDone
+        ? `seance faite · serie de ${sportStreak} j`
+        : `pas encore aujourd'hui · serie de ${sportStreak} j`,
+      tone: sportDone ? "accent" : "neutral",
     },
   };
 
-  const firstName = user?.user_metadata?.display_name ?? user?.email?.split("@")[0] ?? "toi";
+  const firstName =
+    user?.user_metadata?.display_name ?? user?.email?.split("@")[0] ?? "toi";
 
   return (
     <AppShell subtitle={formatLong(today)}>
-      <Card className="mb-4 flex items-center gap-4 !bg-white">
-        <ProgressRing value={ratio}>
+      <div className="mb-5 px-1">
+        <h1 className="text-3xl font-black tracking-tight">
+          Salut {firstName} <span aria-hidden>👋</span>
+        </h1>
+        <p className="mt-1 font-semibold text-muted">Voila ou tu en es aujourd'hui.</p>
+      </div>
+
+      <Card className="mb-6 flex flex-col items-center gap-4">
+        <ProgressRing value={ratio} size={168} stroke={16}>
           <div>
-            <div className="text-2xl font-black leading-none tabular-nums">
+            <div className="text-4xl font-black leading-none tabular-nums text-accent-ink">
               {Math.round(ratio * 100)}%
             </div>
-            <div className="text-[10px] font-bold uppercase text-muted">du jour</div>
+            <div className="mt-1 text-xs font-bold text-muted">de ta journee</div>
           </div>
         </ProgressRing>
 
-        <div className="min-w-0">
-          <p className="text-xl font-black tracking-tight">Salut {firstName} 👋</p>
-          <p className="mt-1 text-sm font-semibold text-muted">
-            {dash.doneToday}/{dash.totalToday} coche aujourd'hui — serie de{" "}
-            <span className="font-black text-accent-ink">{dash.globalStreak.current} jours</span> 🔥
-          </p>
-          <Link
-            href="/tracker"
-            className="mt-3 inline-flex rounded-full bg-accent px-4 py-2 text-sm font-bold text-white"
-          >
-            Ouvrir ma journee →
-          </Link>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Chip tone="neutral">
+            {dash.doneToday}/{dash.totalToday} valides
+          </Chip>
+          <Chip tone="warn">{dash.globalStreak.current} jours 🔥</Chip>
         </div>
+
+        <Link
+          href="/tracker"
+          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-5 py-3.5 text-base font-extrabold text-on-accent shadow-[0_4px_0_var(--color-accent-deep)] transition active:translate-y-[2px] active:shadow-[0_2px_0_var(--color-accent-deep)]"
+        >
+          Ouvrir ma journee
+          <Icon name="back" size={20} className="rotate-180" />
+        </Link>
       </Card>
 
-      <h2 className="mb-2 px-1 text-xs font-black uppercase tracking-wider text-muted">
-        Mes 5 apps
-      </h2>
+      <SectionLabel>Mes 5 apps</SectionLabel>
 
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid gap-3">
         {MODULES.map((m, i) => (
           <li key={m.key} className={m.theme}>
             <Link
               href={m.href}
-              className="animate-rise group block h-full rounded-[var(--radius-card)] border border-hair bg-white/90 p-4 transition hover:-translate-y-0.5 hover:shadow-lg"
-              style={{ animationDelay: `${i * 50}ms` }}
+              className="animate-rise block rounded-[var(--radius-card)] border border-hair bg-card p-4 shadow-[0_4px_12px_rgba(29,27,46,0.05)] transition hover:-translate-y-0.5 hover:border-accent/40"
+              style={{ animationDelay: `${i * 45}ms` }}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <span
                   aria-hidden
-                  className="grid size-12 shrink-0 place-items-center rounded-2xl text-2xl transition group-hover:scale-110"
-                  style={{ background: m.accentSoft }}
+                  className="grid size-12 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-2xl"
                 >
                   {m.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-black tracking-tight">{m.label}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-muted">{m.tagline}</p>
+                  <p className="text-lg font-extrabold tracking-tight">{m.label}</p>
+                  <p className="truncate text-sm font-semibold text-muted">{m.tagline}</p>
                 </div>
+                <Icon name="chevron" size={20} className="-rotate-90 shrink-0 text-muted" />
               </div>
 
-              <div className="mt-3 flex items-baseline justify-between gap-2 rounded-2xl bg-accent-soft px-3 py-2">
-                <span className="text-lg font-black tabular-nums text-accent-ink">
-                  {summaries[m.key].value}
-                </span>
-                <span className="truncate text-[11px] font-bold text-accent-ink/70">
-                  {summaries[m.key].hint}
-                </span>
-              </div>
+              <p
+                className={`mt-3 truncate rounded-[var(--radius-control)] px-3 py-2 text-sm font-bold ${
+                  summaries[m.key].tone === "danger"
+                    ? "bg-danger-soft text-danger-ink"
+                    : summaries[m.key].tone === "accent"
+                      ? "bg-accent-soft text-accent-ink"
+                      : "bg-sunk text-muted"
+                }`}
+              >
+                {summaries[m.key].text}
+              </p>
             </Link>
           </li>
         ))}

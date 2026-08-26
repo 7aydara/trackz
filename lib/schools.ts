@@ -3,13 +3,13 @@ import type { SchoolStatus, SchoolWithDocs } from "@/lib/types";
 
 export const SCHOOL_STATUS_META: Record<
   SchoolStatus,
-  { label: string; emoji: string; tone: "neutral" | "blue" | "amber" | "green" | "red" }
+  { label: string; emoji: string; tone: "neutral" | "accent" | "warn" | "good" | "danger" }
 > = {
   a_preparer: { label: "A preparer", emoji: "📝", tone: "neutral" },
-  envoye: { label: "Envoye", emoji: "📤", tone: "blue" },
-  en_attente: { label: "En attente", emoji: "⏳", tone: "amber" },
-  accepte: { label: "Accepte", emoji: "🎉", tone: "green" },
-  refuse: { label: "Refuse", emoji: "💔", tone: "red" },
+  envoye: { label: "Envoye", emoji: "📤", tone: "accent" },
+  en_attente: { label: "En attente", emoji: "⏳", tone: "warn" },
+  accepte: { label: "Accepte", emoji: "🎉", tone: "good" },
+  refuse: { label: "Refuse", emoji: "💔", tone: "danger" },
 };
 
 export const DEFAULT_DOCUMENTS = [
@@ -125,11 +125,11 @@ export function schoolInsight(school: SchoolWithDocs, today: string): SchoolInsi
 }
 
 export const URGENCY_STYLES: Record<Urgency, { ring: string; chip: string; emoji: string }> = {
-  late: { ring: "border-rose-300 bg-rose-50/60", chip: "bg-rose-100 text-rose-700", emoji: "🚨" },
-  urgent: { ring: "border-rose-300 bg-rose-50/60", chip: "bg-rose-100 text-rose-700", emoji: "🔴" },
-  soon: { ring: "border-amber-300 bg-amber-50/60", chip: "bg-amber-100 text-amber-700", emoji: "🟠" },
-  calm: { ring: "border-hair bg-white", chip: "bg-canvas text-muted", emoji: "🟢" },
-  done: { ring: "border-emerald-200 bg-emerald-50/50", chip: "bg-emerald-100 text-emerald-700", emoji: "✅" },
+  late: { ring: "border-danger bg-danger-soft/50", chip: "bg-danger-soft text-danger-ink", emoji: "🚨" },
+  urgent: { ring: "border-danger bg-danger-soft/50", chip: "bg-danger-soft text-danger-ink", emoji: "🔴" },
+  soon: { ring: "border-warn bg-warn-soft/50", chip: "bg-warn-soft text-warn-ink", emoji: "🟠" },
+  calm: { ring: "border-hair bg-card", chip: "bg-sunk text-muted", emoji: "🟢" },
+  done: { ring: "border-good bg-good-soft/40", chip: "bg-good-soft text-good-ink", emoji: "✅" },
 };
 
 /** Deadline la plus proche en premier, dossiers sans date a la fin. */

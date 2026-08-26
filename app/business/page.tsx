@@ -49,15 +49,15 @@ export default async function BusinessOverviewPage() {
   return (
     <div className="space-y-4">
       {overdue.length > 0 && (
-        <div className="animate-rise rounded-[var(--radius-card)] border border-rose-200 bg-rose-50 px-4 py-3">
-          <p className="flex items-center gap-2 font-black text-rose-800">
+        <div className="animate-rise rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-4 py-3">
+          <p className="flex items-center gap-2 font-black text-danger-ink">
             <span aria-hidden className="text-xl">
               💸
             </span>
             {overdue.length} facture{overdue.length > 1 ? "s" : ""} en retard —{" "}
             {formatMoney(overdueTotal)}
           </p>
-          <ul className="mt-1 space-y-0.5 text-sm font-bold text-rose-700">
+          <ul className="mt-1 space-y-0.5 text-sm font-bold text-danger-ink">
             {overdue.map((i) => (
               <li key={i.id}>
                 {i.number} · {formatMoney(Number(i.amount), i.currency)} ·{" "}
@@ -68,7 +68,7 @@ export default async function BusinessOverviewPage() {
           </ul>
           <Link
             href="/business/factures"
-            className="mt-2 inline-flex rounded-full bg-rose-600 px-3 py-1.5 text-xs font-bold text-white"
+            className="mt-2 inline-flex rounded-full bg-danger px-3 py-1.5 text-xs font-bold text-on-danger"
           >
             Relancer →
           </Link>
@@ -116,8 +116,8 @@ export default async function BusinessOverviewPage() {
               return (
                 <li
                   key={p.id}
-                  className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 ${
-                    late ? "border-rose-200 bg-rose-50/60" : "border-hair bg-white"
+                  className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 ${
+                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
                   }`}
                 >
                   <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">
@@ -166,8 +166,8 @@ export default async function BusinessOverviewPage() {
               return (
                 <li
                   key={i.id}
-                  className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 ${
-                    late ? "border-rose-200 bg-rose-50/60" : "border-hair bg-white"
+                  className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 ${
+                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
                   }`}
                 >
                   <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">

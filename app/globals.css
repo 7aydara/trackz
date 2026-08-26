@@ -1,31 +1,263 @@
 @import "tailwindcss";
 
+/* ==================================================================== */
+/* Tokens                                                               */
+/* --------------------------------------------------------------------*/
+/* Deux themes : "Trackz" (clair, tactile) et "Obsidian Zen" (sombre,   */
+/* nocturne). Tout passe par des variables : aucun composant ne connait */
+/* de couleur en dur, sinon le mode sombre ne suivrait pas.             */
+/* ==================================================================== */
+
 @theme {
   --font-sans: var(--font-nunito), ui-rounded, "SF Pro Rounded", system-ui,
     -apple-system, "Segoe UI", sans-serif;
 
-  /* Couleur d'accent contextuelle : redefinie par chaque module via .theme-* */
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-ink: var(--accent-ink);
+  /* Accent contextuel : redefini par chaque module via .theme-* */
 
-  /* Fond et encres partages par les 5 apps */
-  --color-canvas: #f6f5fb;
-  --color-ink: #1d1b2e;
-  --color-muted: #6b6885;
-  --color-hair: #e8e6f2;
+  /* Surfaces et encres */
 
-  --radius-card: 1.25rem;
+  /* Couleurs semantiques, independantes des accents */
+
+  /* Valeurs par defaut : theme clair, accent du tracker. Les classes
+     .theme-* et le bloc sombre ne font que les redefinir. */
+  --color-accent: oklch(0.52 0.2 292);
+  --color-accent-soft: oklch(0.94 0.035 292);
+  --color-accent-ink: oklch(0.42 0.17 292);
+  --color-accent-deep: oklch(0.4 0.17 292);
+  --color-on-accent: #ffffff;
+  --color-on-danger: #ffffff;
+
+  --color-canvas: #faf7fd;
+  --color-card: #ffffff;
+  --color-sunk: #f3eff8;
+  --color-ink: #1d1a24;
+  --color-muted: #605a6d;
+  --color-hair: #e7e1ee;
+
+  --color-danger: oklch(0.55 0.19 22);
+  --color-danger-soft: oklch(0.94 0.035 22);
+  --color-danger-ink: oklch(0.44 0.17 22);
+  --color-warn: oklch(0.66 0.14 62);
+  --color-warn-soft: oklch(0.95 0.045 70);
+  --color-warn-ink: oklch(0.46 0.11 62);
+  --color-good: oklch(0.6 0.12 158);
+  --color-good-soft: oklch(0.94 0.04 158);
+  --color-good-ink: oklch(0.44 0.1 158);
+
+  /* Formes : 20px pour les cartes, 16px pour tout ce qui est actionnable */
+  --radius-card: 20px;
+  --radius-control: 16px;
 
   --animate-pop: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-rise: rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fall: fall 1100ms cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
-  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+}
+
+/* -------------------------------------------------------------------- */
+/* Theme clair — "Trackz"                                                */
+/* -------------------------------------------------------------------- */
+/* Les cinq accents sont volontairement tenus dans la meme bande de      */
+/* clarte (L 0.52-0.58) et de chroma (C 0.11-0.20) : ils se distinguent  */
+/* par la teinte, pas par le volume sonore. Le violet reste le plus      */
+/* chromatique parce qu'il porte la marque.                              */
+:root {
+  color-scheme: light;
+}
+
+:root,
+.theme-tracker {
+  --color-accent: oklch(0.52 0.2 292);
+  --color-accent-soft: oklch(0.94 0.035 292);
+  --color-accent-ink: oklch(0.42 0.17 292);
+  --color-accent-deep: oklch(0.4 0.17 292);
+}
+
+.theme-cours {
+  --color-accent: oklch(0.55 0.13 245);
+  --color-accent-soft: oklch(0.94 0.03 245);
+  --color-accent-ink: oklch(0.43 0.11 245);
+  --color-accent-deep: oklch(0.42 0.11 245);
+}
+
+.theme-ecoles {
+  --color-accent: oklch(0.58 0.12 68);
+  --color-accent-soft: oklch(0.94 0.04 72);
+  --color-accent-ink: oklch(0.44 0.1 68);
+  --color-accent-deep: oklch(0.45 0.1 68);
+}
+
+.theme-business {
+  --color-accent: oklch(0.55 0.11 165);
+  --color-accent-soft: oklch(0.94 0.035 165);
+  --color-accent-ink: oklch(0.42 0.09 165);
+  --color-accent-deep: oklch(0.42 0.09 165);
+}
+
+.theme-sport {
+  --color-accent: oklch(0.53 0.16 12);
+  --color-accent-soft: oklch(0.94 0.035 12);
+  --color-accent-ink: oklch(0.43 0.14 12);
+  --color-accent-deep: oklch(0.41 0.14 12);
+}
+
+/* -------------------------------------------------------------------- */
+/* Theme sombre — "Obsidian Zen"                                         */
+/* -------------------------------------------------------------------- */
+/* Surfaces obsidienne legerement biaisees violet pour rester dans la    */
+/* meme famille que le clair. Les accents remontent en clarte et         */
+/* baissent en chroma : sur fond sombre, une couleur saturee vibre.      */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-canvas: #131217;
+    --color-card: #1c1a21;
+    --color-sunk: #24222b;
+    --color-ink: #e6e3ea;
+    --color-muted: #a09aad;
+    --color-hair: #322f3b;
+    --color-on-accent: #17141d;
+    --color-on-danger: #1d1214;
+
+    --color-danger: oklch(0.7 0.15 22);
+    --color-danger-soft: oklch(0.3 0.07 22);
+    --color-danger-ink: oklch(0.82 0.11 22);
+    --color-warn: oklch(0.79 0.12 72);
+    --color-warn-soft: oklch(0.31 0.06 72);
+    --color-warn-ink: oklch(0.87 0.09 72);
+    --color-good: oklch(0.75 0.11 160);
+    --color-good-soft: oklch(0.29 0.05 160);
+    --color-good-ink: oklch(0.85 0.09 160);
+
+    color-scheme: dark;
+  }
+
+  :root:not([data-theme="light"]),
+  :root:not([data-theme="light"]) .theme-tracker {
+    --color-accent: oklch(0.78 0.12 292);
+    --color-accent-soft: oklch(0.3 0.07 292);
+    --color-accent-ink: oklch(0.86 0.08 292);
+    --color-accent-deep: oklch(0.6 0.13 292);
+  }
+
+  :root:not([data-theme="light"]) .theme-cours {
+    --color-accent: oklch(0.78 0.09 240);
+    --color-accent-soft: oklch(0.29 0.05 240);
+    --color-accent-ink: oklch(0.86 0.07 240);
+    --color-accent-deep: oklch(0.6 0.1 240);
+  }
+
+  :root:not([data-theme="light"]) .theme-ecoles {
+    --color-accent: oklch(0.8 0.1 75);
+    --color-accent-soft: oklch(0.3 0.05 75);
+    --color-accent-ink: oklch(0.88 0.08 75);
+    --color-accent-deep: oklch(0.62 0.11 75);
+  }
+
+  :root:not([data-theme="light"]) .theme-business {
+    --color-accent: oklch(0.78 0.09 165);
+    --color-accent-soft: oklch(0.29 0.05 165);
+    --color-accent-ink: oklch(0.86 0.07 165);
+    --color-accent-deep: oklch(0.6 0.1 165);
+  }
+
+  :root:not([data-theme="light"]) .theme-sport {
+    --color-accent: oklch(0.75 0.11 15);
+    --color-accent-soft: oklch(0.3 0.06 15);
+    --color-accent-ink: oklch(0.85 0.09 15);
+    --color-accent-deep: oklch(0.58 0.13 15);
+  }
+}
+
+/* Choix explicite du sombre : memes valeurs, priorite sur l'OS. */
+:root[data-theme="dark"] {
+  --color-canvas: #131217;
+  --color-card: #1c1a21;
+  --color-sunk: #24222b;
+  --color-ink: #e6e3ea;
+  --color-muted: #a09aad;
+  --color-hair: #322f3b;
+  --color-on-accent: #17141d;
+  --color-on-danger: #1d1214;
+
+  --color-danger: oklch(0.7 0.15 22);
+  --color-danger-soft: oklch(0.3 0.07 22);
+  --color-danger-ink: oklch(0.82 0.11 22);
+  --color-warn: oklch(0.79 0.12 72);
+  --color-warn-soft: oklch(0.31 0.06 72);
+  --color-warn-ink: oklch(0.87 0.09 72);
+  --color-good: oklch(0.75 0.11 160);
+  --color-good-soft: oklch(0.29 0.05 160);
+  --color-good-ink: oklch(0.85 0.09 160);
+
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"],
+:root[data-theme="dark"] .theme-tracker {
+  --color-accent: oklch(0.78 0.12 292);
+  --color-accent-soft: oklch(0.3 0.07 292);
+  --color-accent-ink: oklch(0.86 0.08 292);
+  --color-accent-deep: oklch(0.6 0.13 292);
+}
+
+:root[data-theme="dark"] .theme-cours {
+  --color-accent: oklch(0.78 0.09 240);
+  --color-accent-soft: oklch(0.29 0.05 240);
+  --color-accent-ink: oklch(0.86 0.07 240);
+  --color-accent-deep: oklch(0.6 0.1 240);
+}
+
+:root[data-theme="dark"] .theme-ecoles {
+  --color-accent: oklch(0.8 0.1 75);
+  --color-accent-soft: oklch(0.3 0.05 75);
+  --color-accent-ink: oklch(0.88 0.08 75);
+  --color-accent-deep: oklch(0.62 0.11 75);
+}
+
+:root[data-theme="dark"] .theme-business {
+  --color-accent: oklch(0.78 0.09 165);
+  --color-accent-soft: oklch(0.29 0.05 165);
+  --color-accent-ink: oklch(0.86 0.07 165);
+  --color-accent-deep: oklch(0.6 0.1 165);
+}
+
+:root[data-theme="dark"] .theme-sport {
+  --color-accent: oklch(0.75 0.11 15);
+  --color-accent-soft: oklch(0.3 0.06 15);
+  --color-accent-ink: oklch(0.85 0.09 15);
+  --color-accent-deep: oklch(0.58 0.13 15);
+}
+
+/* ==================================================================== */
+/* Base                                                                  */
+/* ==================================================================== */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  min-height: 100dvh;
+}
+
+/* Halo diffus dans l'accent du module courant, en tete de page. */
+.shell::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 340px;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(760px 300px at 15% -12%, color-mix(in srgb, var(--color-accent) 11%, transparent), transparent),
+    radial-gradient(620px 260px at 92% -6%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent);
 }
 
 @keyframes pop {
   0% { transform: scale(1); }
-  45% { transform: scale(1.18) rotate(-6deg); }
+  45% { transform: scale(1.16) rotate(-5deg); }
   100% { transform: scale(1); }
 }
 
@@ -39,67 +271,18 @@
   100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); }
 }
 
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-  70% { box-shadow: 0 0 0 12px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-
-/* ------------------------------------------------------------------ */
-/* Themes par module — un accent different pour reperer l'app d'un coup */
-/* ------------------------------------------------------------------ */
-:root,
-.theme-tracker {
-  --accent: #7c3aed;
-  --accent-soft: #ede9fe;
-  --accent-ink: #4c1d95;
-}
-
-.theme-cours {
-  --accent: #0ea5e9;
-  --accent-soft: #e0f2fe;
-  --accent-ink: #075985;
-}
-
-.theme-ecoles {
-  --accent: #f59e0b;
-  --accent-soft: #fef3c7;
-  --accent-ink: #92400e;
-}
-
-.theme-business {
-  --accent: #10b981;
-  --accent-soft: #d1fae5;
-  --accent-ink: #065f46;
-}
-
-.theme-sport {
-  --accent: #f43f5e;
-  --accent-soft: #ffe4e6;
-  --accent-ink: #9f1239;
-}
-
-html {
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  background:
-    radial-gradient(1100px 460px at 12% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent),
-    radial-gradient(900px 420px at 96% 4%, color-mix(in srgb, var(--accent) 9%, transparent), transparent),
-    var(--color-canvas);
-  background-attachment: fixed;
-  color: var(--color-ink);
-  min-height: 100dvh;
-}
-
-/* Confettis legers : pas de dependance, juste des divs animees */
 .confetti-piece {
   position: absolute;
   width: 8px;
   height: 8px;
   border-radius: 2px;
   animation: var(--animate-fall);
+}
+
+/* Focus clavier visible partout, sans cercle sur les clics souris. */
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

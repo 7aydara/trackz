@@ -10,7 +10,7 @@ export function EmptyState({
   children?: ReactNode;
 }) {
   return (
-    <div className="rounded-[var(--radius-card)] border-2 border-dashed border-hair bg-white/60 px-4 py-10 text-center">
+    <div className="rounded-[var(--radius-card)] border-2 border-dashed border-hair bg-sunk/50 px-4 py-10 text-center">
       <div className="text-4xl" aria-hidden>
         {emoji}
       </div>

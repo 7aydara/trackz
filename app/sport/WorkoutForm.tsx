@@ -186,10 +186,10 @@ export function WorkoutForm({
                 type="button"
                 onClick={() => setIntensity(n)}
                 aria-label={`Intensite ${n}`}
-                className={`h-11 flex-1 rounded-2xl border-2 text-lg font-black transition ${
+                className={`h-11 flex-1 rounded-[var(--radius-control)] border-2 text-lg font-black transition ${
                   intensity >= n
-                    ? "border-transparent bg-accent text-white"
-                    : "border-hair bg-white text-muted"
+                    ? "border-transparent bg-accent text-on-accent"
+                    : "border-hair bg-card text-muted"
                 }`}
               >
                 {n}
@@ -228,7 +228,7 @@ export function WorkoutForm({
                   type="button"
                   onClick={() => setStances((prev) => prev.filter((_, idx) => idx !== i))}
                   aria-label="Retirer la stance"
-                  className="px-1 text-sm font-bold text-muted transition hover:text-rose-600"
+                  className="px-1 text-sm font-bold text-muted transition hover:text-danger"
                 >
                   ✕
                 </button>
@@ -256,14 +256,14 @@ export function WorkoutForm({
           </p>
           <ul className="space-y-2">
             {exercises.map((ex, i) => (
-              <li key={`${ex.name}-${i}`} className="rounded-2xl border border-hair bg-white p-2">
+              <li key={`${ex.name}-${i}`} className="rounded-[var(--radius-control)] border border-hair bg-card p-2">
                 <div className="flex items-center gap-2">
                   <span className="flex-1 truncate text-sm font-bold">{ex.name}</span>
                   <button
                     type="button"
                     onClick={() => setExercises((prev) => prev.filter((_, idx) => idx !== i))}
                     aria-label="Retirer l'exercice"
-                    className="px-1 text-sm font-bold text-muted transition hover:text-rose-600"
+                    className="px-1 text-sm font-bold text-muted transition hover:text-danger"
                   >
                     ✕
                   </button>

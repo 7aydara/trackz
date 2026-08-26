@@ -15,11 +15,11 @@ import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatTile } from "@/components/ui/StatTile";
 import { addDays, dayLabel } from "@/lib/dates";
 import {
+  MILESTONES,
   MILESTONE_BADGES,
   currentStreak,
   longestStreak,
   nextMilestone,
-  unlockedMilestones,
 } from "@/lib/streaks";
 import { createClient } from "@/lib/supabase/client";
 import type { Subject, SubjectLog } from "@/lib/types";
@@ -104,7 +104,6 @@ export function CoursClient({
   }, [logs, optimistic]);
 
   const globalStreak = currentStreak(allDays, today);
-  const badges = unlockedMilestones(globalStreak);
   const nextBadge = nextMilestone(globalStreak);
 
   async function toggle(subject: Subject, date: string, next: boolean) {
@@ -153,42 +152,62 @@ export function CoursClient({
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 !bg-white">
-        <ProgressRing value={ratio}>
-          <div>
-            <div className="text-2xl font-black leading-none tabular-nums">
+      {/* Deux tuiles de tete : l'avancee du jour, et la serie avec ses badges. */}
+      <div className="grid grid-cols-2 gap-3">
+        <Card tinted className="flex flex-col items-center justify-center gap-2 !p-4">
+          <ProgressRing value={ratio} size={116} stroke={13}>
+            <div className="text-xl font-black tabular-nums text-accent-ink">
               {doneToday}/{subjects.length}
             </div>
-            <div className="text-[10px] font-bold uppercase text-muted">matieres</div>
+          </ProgressRing>
+          <p className="text-center text-xs font-bold text-accent-ink">Matieres revisees</p>
+        </Card>
+
+        <Card className="flex flex-col justify-center gap-3 !p-4">
+          <div>
+            <p className="text-xs font-bold text-muted">Serie globale</p>
+            <p className="mt-1 flex items-baseline gap-1.5">
+              <span aria-hidden className="text-xl">
+                🔥
+              </span>
+              <span className="text-3xl font-black tabular-nums text-accent-ink">
+                {globalStreak}
+              </span>
+              <span className="text-sm font-bold text-muted">
+                jour{globalStreak > 1 ? "s" : ""}
+              </span>
+            </p>
           </div>
-        </ProgressRing>
-        <div className="min-w-0 flex-1">
-          <p className="text-lg font-black tracking-tight">
-            {ratio === 1 && subjects.length > 0
-              ? "Journee complete 🎉"
-              : "Garde le rythme 📚"}
-          </p>
-          <p className="mt-0.5 flex items-center gap-1 text-sm font-bold text-muted">
-            <span className="text-lg">🔥</span> {globalStreak} jour
-            {globalStreak > 1 ? "s" : ""} de serie
-          </p>
+
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wide text-muted">
+              Badges recents
+            </p>
+            <ul className="mt-1.5 flex gap-1.5">
+              {MILESTONES.slice(0, 3).map((m) => {
+                const unlocked = globalStreak >= m;
+                return (
+                  <li
+                    key={m}
+                    title={MILESTONE_BADGES[m].label}
+                    className={`grid size-8 place-items-center rounded-full text-base ${
+                      unlocked ? "bg-accent-soft" : "bg-sunk opacity-40 grayscale"
+                    }`}
+                  >
+                    <span aria-hidden>{unlocked ? MILESTONE_BADGES[m].emoji : "🔒"}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
           {nextBadge && (
-            <p className="mt-1 text-xs font-semibold text-muted">
-              {MILESTONE_BADGES[nextBadge].emoji} palier {MILESTONE_BADGES[nextBadge].label} dans{" "}
-              {nextBadge - globalStreak} j
+            <p className="text-[11px] font-bold text-muted">
+              {MILESTONE_BADGES[nextBadge].label} dans {nextBadge - globalStreak} j
             </p>
           )}
-          {badges.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1 text-lg">
-              {badges.map((b) => (
-                <span key={b} title={MILESTONE_BADGES[b].label}>
-                  {MILESTONE_BADGES[b].emoji}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </Card>
+        </Card>
+      </div>
 
       <Card>
         <CardTitle
@@ -199,7 +218,7 @@ export function CoursClient({
             </Button>
           }
         >
-          Aujourd'hui
+          Checklist du jour
         </CardTitle>
 
         {subjects.length === 0 ? (
@@ -213,13 +232,13 @@ export function CoursClient({
               return (
                 <li
                   key={subject.id}
-                  className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 transition ${
-                    done ? "border-transparent bg-accent-soft" : "border-hair bg-white"
+                  className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 transition ${
+                    done ? "border-transparent bg-accent-soft" : "border-hair bg-card"
                   }`}
                 >
                   <span
                     aria-hidden
-                    className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/70 text-lg"
+                    className="grid size-9 shrink-0 place-items-center rounded-xl bg-card/70 text-lg"
                   >
                     {subject.emoji}
                   </span>
@@ -237,7 +256,7 @@ export function CoursClient({
                     type="button"
                     onClick={() => archive(subject)}
                     aria-label={`Archiver ${subject.name}`}
-                    className="rounded-full px-1.5 py-1 text-xs font-bold text-muted/60 transition hover:text-rose-600"
+                    className="rounded-full px-1.5 py-1 text-xs font-bold text-muted/60 transition hover:text-danger"
                   >
                     ✕
                   </button>
@@ -262,10 +281,10 @@ export function CoursClient({
             </CardTitle>
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[420px] border-separate border-spacing-y-1">
+              <table className="w-full border-separate border-spacing-x-1 border-spacing-y-1">
                 <thead>
                   <tr>
-                    <th className="w-1/3" />
+                    <th className="w-[34%]" />
                     {week.map((d) => (
                       <th
                         key={d}
@@ -281,7 +300,7 @@ export function CoursClient({
                 <tbody>
                   {subjects.map((s) => (
                     <tr key={s.id}>
-                      <td className="truncate pr-2 text-sm font-bold">
+                      <td className="max-w-0 truncate pr-1 text-[13px] font-bold">
                         <span aria-hidden className="mr-1">
                           {s.emoji}
                         </span>
@@ -296,10 +315,10 @@ export function CoursClient({
                               aria-label={`${s.name} le ${d}`}
                               aria-pressed={done}
                               onClick={() => toggle(s, d, !done)}
-                              className={`size-7 rounded-lg border-2 text-xs font-black transition ${
+                              className={`size-7 w-full rounded-[10px] border-2 text-xs font-black transition ${
                                 done
-                                  ? "border-transparent bg-accent text-white"
-                                  : "border-dashed border-hair bg-white text-transparent hover:border-accent"
+                                  ? "border-transparent bg-accent text-on-accent"
+                                  : "border-dashed border-hair bg-card text-transparent hover:border-accent"
                               }`}
                             >
                               ✓

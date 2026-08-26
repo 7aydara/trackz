@@ -58,13 +58,13 @@ export function StanceTimer({
   }
 
   return (
-    <div className="rounded-2xl border-2 border-dashed border-hair bg-white p-3 text-center">
+    <div className="rounded-[var(--radius-control)] border-2 border-dashed border-hair bg-card p-3 text-center">
       <p className="text-xs font-black uppercase tracking-wide text-muted">
         Chrono — {stance?.pinyin ?? stanceKey}
       </p>
       <p className="mt-1 text-4xl font-black tabular-nums">{formatSeconds(seconds)}</p>
 
-      <div className="mx-auto mt-2 h-2 max-w-xs overflow-hidden rounded-full bg-canvas">
+      <div className="mx-auto mt-2 h-2 max-w-xs overflow-hidden rounded-full bg-sunk">
         <div
           className="h-full rounded-full bg-accent transition-[width] duration-500"
           style={{ width: `${Math.round(goalRatio * 100)}%` }}
@@ -94,7 +94,7 @@ export function StanceTimer({
       </div>
 
       {saved && (
-        <p className="mt-2 text-xs font-bold text-emerald-600">Tenue enregistree 🎉</p>
+        <p className="mt-2 text-xs font-bold text-good">Tenue enregistree 🎉</p>
       )}
     </div>
   );

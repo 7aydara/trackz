@@ -21,8 +21,10 @@ export function BusinessNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`shrink-0 rounded-2xl px-3.5 py-2 text-sm font-bold transition ${
-              active ? "bg-accent text-white" : "bg-white text-muted border border-hair"
+            className={`shrink-0 rounded-full px-4 py-2.5 text-sm font-extrabold transition ${
+              active
+                ? "bg-accent text-on-accent shadow-[0_3px_0_var(--color-accent-deep)]"
+                : "border border-hair bg-card text-muted"
             }`}
           >
             <span aria-hidden className="mr-1">

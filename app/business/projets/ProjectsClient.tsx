@@ -116,8 +116,8 @@ export function ProjectsClient({
               onClick={() => setFilter(key)}
               className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
                 filter === key
-                  ? "border-transparent bg-accent text-white"
-                  : "border-hair bg-white text-muted"
+                  ? "border-transparent bg-accent text-on-accent"
+                  : "border-hair bg-card text-muted"
               }`}
             >
               {key === "tous"
@@ -152,12 +152,12 @@ export function ProjectsClient({
               return (
                 <li
                   key={p.id}
-                  className={`rounded-2xl border px-3 py-2.5 ${
-                    late ? "border-rose-200 bg-rose-50/60" : "border-hair bg-white"
+                  className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
+                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent-soft text-lg">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-lg">
                       {meta.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -168,12 +168,12 @@ export function ProjectsClient({
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
                         <Chip tone={meta.tone}>{meta.label}</Chip>
                         {p.deadline && (
-                          <Chip tone={late ? "red" : "neutral"}>
+                          <Chip tone={late ? "danger" : "neutral"}>
                             {late ? "🚨 " : "📅 "}
                             {formatShort(p.deadline)} · {relativeDays(p.deadline, today)}
                           </Chip>
                         )}
-                        {p.amount != null && <Chip tone="green">{formatMoney(Number(p.amount))}</Chip>}
+                        {p.amount != null && <Chip tone="good">{formatMoney(Number(p.amount))}</Chip>}
                       </div>
                       {p.description && (
                         <p className="mt-1.5 whitespace-pre-line text-xs font-semibold text-muted">
@@ -191,8 +191,8 @@ export function ProjectsClient({
                         onClick={() => setStatus(p, s)}
                         className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
                           p.status === s
-                            ? "border-transparent bg-accent text-white"
-                            : "border-hair bg-white text-muted hover:border-accent"
+                            ? "border-transparent bg-accent text-on-accent"
+                            : "border-hair bg-card text-muted hover:border-accent"
                         }`}
                       >
                         {PROJECT_STATUS_META[s].emoji}

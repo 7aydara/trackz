@@ -96,14 +96,14 @@ export function PushSettings({
       <CardTitle
         emoji="🔔"
         action={
-          subscribed ? <Chip tone="green">actif</Chip> : <Chip>inactif</Chip>
+          subscribed ? <Chip tone="good">actif</Chip> : <Chip>inactif</Chip>
         }
       >
         Rappel du soir
       </CardTitle>
 
       {!support.ok && support.reason === "ios-not-installed" && (
-        <div className="rounded-2xl bg-accent-soft px-3 py-2.5 text-sm font-semibold text-accent-ink">
+        <div className="rounded-[var(--radius-control)] bg-accent-soft px-3 py-2.5 text-sm font-semibold text-accent-ink">
           <p className="font-black">Sur iPhone, installe d'abord Trackz 📲</p>
           <p className="mt-1">
             Safari → bouton Partager → <strong>Sur l'ecran d'accueil</strong>. Rouvre Trackz
@@ -114,14 +114,14 @@ export function PushSettings({
       )}
 
       {!support.ok && support.reason === "no-vapid" && (
-        <p className="rounded-2xl bg-amber-50 px-3 py-2.5 text-sm font-bold text-amber-800">
+        <p className="rounded-[var(--radius-control)] bg-warn-soft px-3 py-2.5 text-sm font-bold text-warn-ink">
           Cle publique VAPID absente. Renseigne `NEXT_PUBLIC_VAPID_PUBLIC_KEY` puis relance
           l'app.
         </p>
       )}
 
       {!support.ok && support.reason === "unsupported" && (
-        <p className="rounded-2xl bg-canvas px-3 py-2.5 text-sm font-bold text-muted">
+        <p className="rounded-[var(--radius-control)] bg-sunk px-3 py-2.5 text-sm font-bold text-muted">
           Ce navigateur ne gere pas les notifications push. Essaie Chrome, Firefox ou Safari a
           jour.
         </p>
@@ -173,12 +173,12 @@ export function PushSettings({
       )}
 
       {message && (
-        <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700">
+        <p className="mt-2 rounded-xl bg-good-soft px-3 py-2 text-sm font-bold text-good-ink">
           {message}
         </p>
       )}
       {error && (
-        <p className="mt-2 rounded-xl bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">
+        <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-sm font-bold text-danger-ink">
           {error}
         </p>
       )}

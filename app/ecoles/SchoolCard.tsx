@@ -84,7 +84,7 @@ export function SchoolCard({
         aria-expanded={expanded}
         className="flex w-full items-start gap-3 text-left"
       >
-        <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white text-2xl shadow-sm">
+        <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-control)] bg-card text-2xl shadow-sm">
           {status.emoji}
         </span>
 
@@ -105,12 +105,12 @@ export function SchoolCard({
                 ? `${formatShort(school.deadline)} — ${relativeDays(school.deadline, today)}`
                 : "sans deadline"}
             </span>
-            <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-muted">
+            <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-black text-muted">
               {insight.docsDone}/{insight.docsTotal} docs
             </span>
           </div>
 
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
             <div
               className="h-full rounded-full bg-accent transition-[width] duration-500"
               style={{ width: `${Math.round(ratio * 100)}%` }}
@@ -139,8 +139,8 @@ export function SchoolCard({
                   onClick={() => changeStatus(key)}
                   className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
                     school.status === key
-                      ? "border-transparent bg-accent text-white"
-                      : "border-hair bg-white text-muted hover:border-accent"
+                      ? "border-transparent bg-accent text-on-accent"
+                      : "border-hair bg-card text-muted hover:border-accent"
                   }`}
                 >
                   {meta.emoji} {meta.label}
@@ -157,8 +157,8 @@ export function SchoolCard({
               {docs.map((doc) => (
                 <li
                   key={doc.id}
-                  className={`flex items-center gap-2 rounded-2xl border px-2.5 py-1.5 ${
-                    doc.done ? "border-transparent bg-accent-soft" : "border-hair bg-white"
+                  className={`flex items-center gap-2 rounded-[var(--radius-control)] border px-2.5 py-1.5 ${
+                    doc.done ? "border-transparent bg-accent-soft" : "border-hair bg-card"
                   }`}
                 >
                   <CheckButton
@@ -174,7 +174,7 @@ export function SchoolCard({
                     type="button"
                     onClick={() => removeDoc(doc)}
                     aria-label={`Supprimer ${doc.label}`}
-                    className="px-1 text-xs font-bold text-muted/60 transition hover:text-rose-600"
+                    className="px-1 text-xs font-bold text-muted/60 transition hover:text-danger"
                   >
                     ✕
                   </button>
@@ -196,7 +196,7 @@ export function SchoolCard({
           </div>
 
           {school.notes && (
-            <p className="whitespace-pre-line rounded-2xl bg-white px-3 py-2 text-sm font-semibold text-muted">
+            <p className="whitespace-pre-line rounded-[var(--radius-control)] bg-card px-3 py-2 text-sm font-semibold text-muted">
               {school.notes}
             </p>
           )}

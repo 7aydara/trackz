@@ -2,12 +2,12 @@ import type { Invoice, InvoiceStatus, ProjectStatus } from "@/lib/types";
 
 export const PROJECT_STATUS_META: Record<
   ProjectStatus,
-  { label: string; emoji: string; tone: "neutral" | "blue" | "amber" | "green" }
+  { label: string; emoji: string; tone: "neutral" | "accent" | "warn" | "good" }
 > = {
   en_attente: { label: "En attente", emoji: "⏳", tone: "neutral" },
-  en_cours: { label: "En cours", emoji: "🚧", tone: "blue" },
-  livre: { label: "Livre", emoji: "📦", tone: "amber" },
-  paye: { label: "Paye", emoji: "💰", tone: "green" },
+  en_cours: { label: "En cours", emoji: "🚧", tone: "accent" },
+  livre: { label: "Livre", emoji: "📦", tone: "warn" },
+  paye: { label: "Paye", emoji: "💰", tone: "good" },
 };
 
 export const PROJECT_STATUSES = Object.keys(PROJECT_STATUS_META) as ProjectStatus[];

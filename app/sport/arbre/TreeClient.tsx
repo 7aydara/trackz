@@ -90,7 +90,7 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 !bg-white">
+      <Card className="flex items-center gap-4 bg-card">
         <ProgressRing value={score}>
           <div>
             <div className="text-2xl font-black leading-none tabular-nums">
@@ -139,12 +139,12 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
             <p className="-mt-1 mb-2 text-xs font-semibold text-muted">{meta.hint}</p>
 
             {!unlocked && (
-              <p className="mb-2 rounded-xl bg-canvas px-3 py-2 text-xs font-bold text-muted">
+              <p className="mb-2 rounded-xl bg-sunk px-3 py-2 text-xs font-bold text-muted">
                 🔒 Debloque en maitrisant au moins 3 elements du niveau precedent.
               </p>
             )}
 
-            <div className="mb-3 h-2.5 overflow-hidden rounded-full bg-canvas">
+            <div className="mb-3 h-2.5 overflow-hidden rounded-full bg-sunk">
               <div
                 className="h-full rounded-full bg-accent transition-[width] duration-500"
                 style={{ width: `${Math.round(levelScore * 100)}%` }}
@@ -157,22 +157,22 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
                 return (
                   <li
                     key={item.id}
-                    className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 transition ${
+                    className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 transition ${
                       item.status === "maitrise"
                         ? "border-transparent bg-accent-soft"
-                        : "border-hair bg-white"
+                        : "border-hair bg-card"
                     }`}
                   >
                     <button
                       type="button"
                       onClick={(e) => cycleStatus(item, e)}
                       aria-label={`Changer le statut de ${item.name}`}
-                      className={`grid size-11 shrink-0 place-items-center rounded-2xl border-2 text-xl transition ${
+                      className={`grid size-11 shrink-0 place-items-center rounded-[var(--radius-control)] border-2 text-xl transition ${
                         item.status === "maitrise"
-                          ? "animate-pop border-transparent bg-accent text-white"
+                          ? "animate-pop border-transparent bg-accent text-on-accent"
                           : item.status === "en_cours"
-                            ? "border-accent bg-white"
-                            : "border-dashed border-hair bg-white"
+                            ? "border-accent bg-card"
+                            : "border-dashed border-hair bg-card"
                       }`}
                     >
                       {status.emoji}
@@ -189,7 +189,7 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
                       type="button"
                       onClick={() => remove(item)}
                       aria-label={`Retirer ${item.name}`}
-                      className="px-1 text-xs font-bold text-muted/50 transition hover:text-rose-600"
+                      className="px-1 text-xs font-bold text-muted/50 transition hover:text-danger"
                     >
                       ✕
                     </button>

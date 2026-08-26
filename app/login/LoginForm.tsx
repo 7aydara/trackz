@@ -64,8 +64,8 @@ export function LoginForm({ next }: { next?: string }) {
   }
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-hair bg-white/90 p-5 shadow-xl">
-      <div className="mb-4 grid grid-cols-3 gap-1 rounded-2xl bg-canvas p-1">
+    <div className="rounded-[var(--radius-card)] border border-hair bg-card p-5 shadow-[0_4px_12px_rgba(29,27,46,0.05)]">
+      <div className="mb-5 grid grid-cols-3 gap-1 rounded-full bg-sunk p-1">
         {(Object.keys(COPY) as Mode[]).map((m) => (
           <button
             key={m}
@@ -75,8 +75,8 @@ export function LoginForm({ next }: { next?: string }) {
               setError(null);
               setMessage(null);
             }}
-            className={`rounded-xl px-2 py-2 text-xs font-bold transition ${
-              mode === m ? "bg-white text-accent-ink shadow-sm" : "text-muted"
+            className={`rounded-full px-2 py-2.5 text-xs font-extrabold transition ${
+              mode === m ? "bg-card text-accent-ink shadow-sm" : "text-muted"
             }`}
           >
             {COPY[m].tab}
@@ -111,10 +111,10 @@ export function LoginForm({ next }: { next?: string }) {
         )}
 
         {error && (
-          <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{error}</p>
+          <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm font-bold text-danger-ink">{error}</p>
         )}
         {message && (
-          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700">
+          <p className="rounded-xl bg-good-soft px-3 py-2 text-sm font-bold text-good-ink">
             {message}
           </p>
         )}

@@ -116,14 +116,14 @@ export function ClientsClient({
               return (
                 <li
                   key={c.id}
-                  className={`rounded-2xl border px-3 py-2.5 ${
-                    c.status === "actif" ? "border-hair bg-white" : "border-hair bg-canvas opacity-70"
+                  className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
+                    c.status === "actif" ? "border-hair bg-card" : "border-hair bg-sunk opacity-70"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <span
                       aria-hidden
-                      className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent-soft text-base font-black text-accent-ink"
+                      className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-base font-black text-accent-ink"
                     >
                       {c.name.slice(0, 2).toUpperCase()}
                     </span>
@@ -135,8 +135,8 @@ export function ClientsClient({
                       </p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
                         <Chip>{clientProjects.length} projet(s)</Chip>
-                        {active > 0 && <Chip tone="blue">{active} en cours</Chip>}
-                        {earned > 0 && <Chip tone="green">{formatMoney(earned)} encaisse</Chip>}
+                        {active > 0 && <Chip tone="accent">{active} en cours</Chip>}
+                        {earned > 0 && <Chip tone="good">{formatMoney(earned)} encaisse</Chip>}
                         <Chip tone={c.status === "actif" ? "accent" : "neutral"}>{c.status}</Chip>
                       </div>
                       {c.notes && (

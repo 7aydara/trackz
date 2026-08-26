@@ -100,10 +100,10 @@ export function ProgressClient({
               key={s.key}
               type="button"
               onClick={() => setSelectedStance(s.key)}
-              className={`shrink-0 rounded-2xl border px-3 py-2 text-xs font-bold transition ${
+              className={`shrink-0 rounded-[var(--radius-control)] border px-3 py-2 text-xs font-bold transition ${
                 selectedStance === s.key
-                  ? "border-transparent bg-accent text-white"
-                  : "border-hair bg-white text-muted"
+                  ? "border-transparent bg-accent text-on-accent"
+                  : "border-hair bg-card text-muted"
               }`}
             >
               {s.emoji} {s.pinyin}
@@ -111,7 +111,7 @@ export function ProgressClient({
           ))}
         </div>
 
-        <div className="rounded-2xl bg-accent-soft px-3 py-2.5">
+        <div className="rounded-[var(--radius-control)] bg-accent-soft px-3 py-2.5">
           <p className="font-black text-accent-ink">
             {stance.emoji} {stance.name}
           </p>
@@ -163,7 +163,7 @@ export function ProgressClient({
         ) : (
           <ul className="space-y-4">
             {exerciseGroups.map((g) => (
-              <li key={g.name} className="rounded-2xl border border-hair bg-white p-3">
+              <li key={g.name} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
                 <div className="mb-1 flex items-baseline justify-between gap-2">
                   <p className="font-black">{g.name}</p>
                   <p className="text-xs font-bold text-muted">

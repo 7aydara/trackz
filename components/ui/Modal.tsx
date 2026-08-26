@@ -35,13 +35,13 @@ export function Modal({
         type="button"
         aria-label="Fermer"
         onClick={onClose}
-        className="absolute inset-0 bg-ink/35 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/45 backdrop-blur-[3px]"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="animate-rise relative max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl border border-hair bg-white p-5 shadow-2xl sm:max-w-lg sm:rounded-3xl"
+        className="animate-rise relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[28px] border border-hair bg-card p-5 shadow-2xl sm:max-w-lg sm:rounded-[28px]"
       >
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
@@ -51,7 +51,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="grid size-9 place-items-center rounded-full bg-canvas text-lg font-bold text-muted transition hover:bg-hair"
+            className="grid size-9 place-items-center rounded-full bg-sunk text-lg font-bold text-muted transition hover:bg-hair"
           >
             ✕
           </button>

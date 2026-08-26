@@ -49,11 +49,11 @@ export function LineChart({
         role="img"
         aria-label={`Evolution de ${first.value} a ${last.value} ${unit}`}
       >
-        <polygon points={area} fill="var(--accent)" opacity="0.12" />
+        <polygon points={area} fill="var(--color-accent)" opacity="0.12" />
         <polyline
           points={line}
           fill="none"
-          stroke="var(--accent)"
+          stroke="var(--color-accent)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -64,7 +64,7 @@ export function LineChart({
             cx={x(i)}
             cy={y(p.value)}
             r={i === points.length - 1 ? 5 : 3}
-            fill="var(--accent)"
+            fill="var(--color-accent)"
           >
             <title>{`${p.label} — ${p.value} ${unit}`}</title>
           </circle>
@@ -75,7 +75,7 @@ export function LineChart({
         <span>
           {first.label} · {first.value} {unit}
         </span>
-        <span className={delta >= 0 ? "text-emerald-600" : "text-rose-600"}>
+        <span className={delta >= 0 ? "text-good" : "text-danger"}>
           {delta >= 0 ? "▲" : "▼"} {Math.abs(delta)} {unit}
         </span>
         <span>

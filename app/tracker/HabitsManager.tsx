@@ -73,7 +73,7 @@ export function HabitsManager({ userId, habits }: { userId: string; habits: Habi
           {habits.map((h) => (
             <li
               key={h.id}
-              className="flex items-center gap-3 rounded-2xl border border-hair bg-white px-3 py-2"
+              className="flex items-center gap-3 rounded-[var(--radius-control)] border border-hair bg-card px-3 py-2"
             >
               <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">
                 {h.emoji}
@@ -89,7 +89,7 @@ export function HabitsManager({ userId, habits }: { userId: string; habits: Habi
                 type="button"
                 onClick={() => archive(h)}
                 aria-label={`Archiver ${h.name}`}
-                className="rounded-full px-2 py-1 text-sm font-bold text-muted transition hover:text-rose-600"
+                className="rounded-full px-2 py-1 text-sm font-bold text-muted transition hover:text-danger"
               >
                 ✕
               </button>

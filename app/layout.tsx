@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 import { TimezoneSync } from "@/components/TimezoneSync";
 import "./globals.css";
 
-const nunito = Nunito({
+// Nunito Sans : terminaisons arrondies, et des graisses lourdes (800/900)
+// disponibles pour les titres, qui portent la personnalite de l'interface.
+const nunito = Nunito_Sans({
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800", "900"],
   variable: "--font-nunito",
   display: "swap",
 });
@@ -32,7 +35,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#7c3aed",
+  // La barre du navigateur suit le theme : violet clair d'un cote,
+  // obsidienne de l'autre.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf7fd" },
+    { media: "(prefers-color-scheme: dark)", color: "#131217" },
+  ],
   viewportFit: "cover",
   width: "device-width",
   initialScale: 1,

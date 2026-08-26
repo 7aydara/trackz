@@ -66,8 +66,8 @@ export function Heatmap({
                     style={{
                       background:
                         pct === 0
-                          ? "var(--color-hair)"
-                          : `color-mix(in srgb, var(--accent) ${pct}%, white)`,
+                          ? "var(--color-sunk)"
+                          : `color-mix(in srgb, var(--color-accent) ${pct}%, var(--color-sunk))`,
                     }}
                   />
                 );
@@ -85,8 +85,8 @@ export function Heatmap({
               style={{
                 background:
                   p === 0
-                    ? "var(--color-hair)"
-                    : `color-mix(in srgb, var(--accent) ${p}%, white)`,
+                    ? "var(--color-sunk)"
+                    : `color-mix(in srgb, var(--color-accent) ${p}%, var(--color-sunk))`,
               }}
             />
           ))}

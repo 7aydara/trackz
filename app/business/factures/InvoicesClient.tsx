@@ -169,8 +169,8 @@ export function InvoicesClient({
               onClick={() => setFilter(key)}
               className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
                 filter === key
-                  ? "border-transparent bg-accent text-white"
-                  : "border-hair bg-white text-muted"
+                  ? "border-transparent bg-accent text-on-accent"
+                  : "border-hair bg-card text-muted"
               }`}
             >
               {label}
@@ -190,16 +190,16 @@ export function InvoicesClient({
               return (
                 <li
                   key={i.id}
-                  className={`rounded-2xl border px-3 py-2.5 ${
+                  className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
                     late
-                      ? "border-rose-200 bg-rose-50/60"
+                      ? "border-danger/30 bg-danger-soft"
                       : i.status === "payee"
-                        ? "border-emerald-200 bg-emerald-50/40"
-                        : "border-hair bg-white"
+                        ? "border-good/30 bg-good-soft"
+                        : "border-hair bg-card"
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-2xl bg-white text-lg shadow-sm">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-card text-lg shadow-sm">
                       {late ? "🚨" : meta.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -214,11 +214,11 @@ export function InvoicesClient({
                         {i.project_id ? ` · ${projectTitle.get(i.project_id) ?? "—"}` : ""}
                       </p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
-                        <Chip tone={i.status === "payee" ? "green" : late ? "red" : "neutral"}>
+                        <Chip tone={i.status === "payee" ? "good" : late ? "danger" : "neutral"}>
                           {meta.emoji} {late ? `${daysLate(i, today)} j de retard` : meta.label}
                         </Chip>
                         {i.due_on && <Chip>echeance {formatShort(i.due_on)}</Chip>}
-                        {i.paid_on && <Chip tone="green">payee le {formatShort(i.paid_on)}</Chip>}
+                        {i.paid_on && <Chip tone="good">payee le {formatShort(i.paid_on)}</Chip>}
                       </div>
                       {i.notes && (
                         <p className="mt-1.5 text-xs font-semibold text-muted">{i.notes}</p>

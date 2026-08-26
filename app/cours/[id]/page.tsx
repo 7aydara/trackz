@@ -53,8 +53,8 @@ export default async function SubjectPage({
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 !bg-white">
-        <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-2xl bg-accent-soft text-3xl">
+      <Card className="flex items-center gap-4 bg-card">
+        <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-3xl">
           {subject.emoji}
         </span>
         <div className="min-w-0 flex-1">
@@ -99,7 +99,7 @@ export default async function SubjectPage({
 
       <Link
         href="/cours"
-        className="block rounded-2xl border border-hair bg-white px-4 py-3 text-center text-sm font-bold text-muted transition hover:text-ink"
+        className="block rounded-[var(--radius-control)] border border-hair bg-card px-4 py-3 text-center text-sm font-bold text-muted transition hover:text-ink"
       >
         ← Toutes mes matieres
       </Link>

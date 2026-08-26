@@ -1,26 +1,26 @@
 import type { ReactNode } from "react";
 
+/** Pastille d'etat : toujours pleinement arrondie, 12px/700. */
 export function Chip({
   children,
   tone = "neutral",
   className = "",
 }: {
   children: ReactNode;
-  tone?: "neutral" | "accent" | "green" | "amber" | "red" | "blue";
+  tone?: "neutral" | "accent" | "good" | "warn" | "danger";
   className?: string;
 }) {
   const tones = {
-    neutral: "bg-canvas text-muted border-hair",
-    accent: "bg-accent-soft text-accent-ink border-transparent",
-    green: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    amber: "bg-amber-50 text-amber-700 border-amber-200",
-    red: "bg-rose-50 text-rose-700 border-rose-200",
-    blue: "bg-sky-50 text-sky-700 border-sky-200",
+    neutral: "bg-sunk text-muted",
+    accent: "bg-accent-soft text-accent-ink",
+    good: "bg-good-soft text-good-ink",
+    warn: "bg-warn-soft text-warn-ink",
+    danger: "bg-danger-soft text-danger-ink",
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-bold ${tones[tone]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold leading-none ${tones[tone]} ${className}`}
     >
       {children}
     </span>
