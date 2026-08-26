@@ -144,6 +144,40 @@ Safari → Partager → « Sur l'ecran d'accueil », puis rouvre Trackz depuis
 l'icone avant d'activer le rappel. L'app le dit d'elle-meme si tu es dans ce
 cas.
 
+## L'assistant
+
+Un assistant Claude est branche sur l'app (`/assistant`, bouton flottant sur
+tous les ecrans). Il sert surtout aux ecoles : chercher des formations,
+verifier les deadlines, trier les dossiers, preparer les documents.
+
+**Ce qu'il peut faire** — lire et creer des dossiers d'ecole, cocher ou
+ajouter des documents, deposer un brouillon dans les notes d'un dossier,
+lire les matieres et ce qu'il reste a cocher aujourd'hui. Il a aussi la
+recherche web cote Anthropic, indispensable pour les dates limites.
+
+**Ce qu'il ne peut pas faire** — sortir de tes donnees. L'Edge Function
+`assistant` parle a Supabase avec **ton JWT**, pas avec la cle service
+role : il passe par la meme RLS que l'app. Meme si le modele se trompe
+d'identifiant, il ne peut rien lire ni ecrire chez quelqu'un d'autre.
+
+La conversation est stockee dans `assistant_threads` / `assistant_messages`,
+avec les blocs de contenu bruts : l'assistant se souvient de ce qu'il a
+cherche et modifie, pas seulement de ce qu'il a dit.
+
+**Voix** — dictee et lecture a voix haute via l'API Web Speech du
+navigateur. Aucun service tiers, rien qui sorte de l'appareil pour ca.
+
+### Secret a renseigner
+
+| Ou | Cle | Valeur |
+| --- | --- | --- |
+| Edge Function secrets | `ANTHROPIC_API_KEY` | ta cle [console.anthropic.com](https://console.anthropic.com) |
+
+Le modele est `claude-opus-5` avec la reflexion adaptative et la recherche
+web. Deux reglages a connaitre dans `supabase/functions/assistant/index.ts`
+si les reponses sont trop lentes : `MAX_TOOL_ROUNDS` (8 par defaut) et
+l'ajout eventuel de `output_config: { effort: "medium" }`.
+
 ## Securite des donnees
 
 Chaque table porte un `user_id` et la **Row Level Security** est active dessus :
@@ -191,6 +225,7 @@ supabase/
   migrations/         schema SQL, une migration par app
   functions/
     send-reminders/   Edge Function du rappel quotidien
+    assistant/        Edge Function de l'assistant
 public/
   manifest.webmanifest, sw.js, icons/   la partie PWA
 scripts/

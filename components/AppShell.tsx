@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { AssistantButton } from "@/components/AssistantButton";
 import { BottomNav } from "@/components/BottomNav";
 import { Icon } from "@/components/Icon";
+import { Logo } from "@/components/Logo";
 import { SignOutButton } from "@/components/SignOutButton";
 import { MODULE_BY_KEY, type ModuleKey } from "@/lib/modules";
 
@@ -33,7 +35,7 @@ export function AppShell({
               <Icon name="back" />
             </Link>
           ) : (
-            <span className="size-10 shrink-0" />
+            <Logo size={36} />
           )}
 
           <div className="min-w-0 flex-1 text-center">
@@ -56,6 +58,7 @@ export function AppShell({
 
       <main className="relative z-10 mx-auto max-w-3xl px-4 pb-32 pt-4">{children}</main>
 
+      <AssistantButton />
       <BottomNav />
     </div>
   );

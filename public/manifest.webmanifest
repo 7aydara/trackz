@@ -36,6 +36,17 @@
   ],
   "shortcuts": [
     {
+      "name": "Assistant",
+      "short_name": "Assistant",
+      "url": "/assistant",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
       "name": "Ma journee",
       "short_name": "Journee",
       "url": "/tracker",

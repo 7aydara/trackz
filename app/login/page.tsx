@@ -1,4 +1,4 @@
-import { Icon } from "@/components/Icon";
+import { Logo } from "@/components/Logo";
 import { LoginForm } from "./LoginForm";
 
 export const metadata = { title: "Connexion — Trackz" };
@@ -14,9 +14,7 @@ export default async function LoginPage({
     <div className="theme-tracker grid min-h-dvh place-items-center px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-7 text-center">
-          <div className="mx-auto grid size-20 place-items-center rounded-[26px] bg-accent text-on-accent shadow-[0_5px_0_var(--color-accent-deep)]">
-            <Icon name="check" size={40} strokeWidth={3} />
-          </div>
+          <Logo size={84} className="mx-auto" />
           <h1 className="mt-5 text-4xl font-black tracking-tight text-accent-ink">Trackz</h1>
           <p className="mt-2 font-semibold text-muted">
             Un compte, cinq apps : habitudes, cours, ecoles, business, Kung Fu.
