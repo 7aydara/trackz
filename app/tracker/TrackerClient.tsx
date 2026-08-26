@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { PushSettings } from "@/components/PushSettings";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { CheckButton } from "@/components/ui/CheckButton";
 import { Chip } from "@/components/ui/Chip";
@@ -20,10 +21,14 @@ export function TrackerClient({
   userId,
   data,
   habits,
+  reminderHour,
+  reminderEnabled,
 }: {
   userId: string;
   data: DashboardData;
   habits: Habit[];
+  reminderHour: number;
+  reminderEnabled: boolean;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -280,6 +285,13 @@ export function TrackerClient({
 
       {/* -------------------------------------------------- habitudes custom */}
       <HabitsManager userId={userId} habits={habits} />
+
+      {/* ------------------------------------------------- rappel push */}
+      <PushSettings
+        userId={userId}
+        initialHour={reminderHour}
+        initialEnabled={reminderEnabled}
+      />
     </div>
   );
 }

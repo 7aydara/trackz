@@ -46,7 +46,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### 3. Appliquer le schema
 
 Dans le **SQL Editor** de Supabase, execute les fichiers de
-`supabase/migrations/` **dans l'ordre** (0001 → 0007). Ils sont rejouables :
+`supabase/migrations/` **dans l'ordre** (0001 → 0010). Ils sont rejouables :
 tu peux les relancer sans casser l'existant.
 
 Avec la CLI Supabase :
@@ -68,6 +68,51 @@ Va sur http://localhost:3000, cree ton compte, et c'est parti.
 > Pour le lien magique en production, ajoute `https://ton-domaine/auth/callback`
 > dans **Authentication → URL Configuration → Redirect URLs**.
 
+## Notifications push
+
+Trackz est une **PWA installable** : ajoutee a l'ecran d'accueil, elle peut
+envoyer une notification le soir s'il reste des cases a cocher.
+
+Comment ca marche :
+
+1. `public/manifest.webmanifest` + `public/sw.js` rendent l'app installable
+   et lui permettent de recevoir des messages push.
+2. En activant le rappel dans `/tracker`, le navigateur cree un abonnement
+   Web Push stocke dans `push_subscriptions` (un par appareil, avec son
+   fuseau et son heure de rappel).
+3. Un cron Postgres appelle l'Edge Function `send-reminders` **toutes les
+   heures**. La fonction regarde, pour chaque appareil, s'il est bien
+   l'heure locale choisie, compte ce qui reste a cocher, et n'envoie que
+   s'il reste quelque chose — au maximum une notification par jour.
+
+### Secrets a renseigner
+
+Genere une paire de cles VAPID (`npx web-push generate-vapid-keys`), puis :
+
+| Ou | Cle | Valeur |
+| --- | --- | --- |
+| `.env.local` | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | cle **publique** |
+| Edge Function secrets | `VAPID_PUBLIC_KEY` | la meme cle publique |
+| Edge Function secrets | `VAPID_PRIVATE_KEY` | cle **privee** — jamais dans git |
+| Edge Function secrets | `VAPID_SUBJECT` | `mailto:ton@email.com` |
+| Edge Function secrets | `CRON_SECRET` | secret partage avec le cron |
+| Vault (migration 0009) | `trackz_cron_secret` | la meme valeur que `CRON_SECRET` |
+
+Les secrets d'Edge Function se posent dans **Edge Functions → Secrets** du
+dashboard, ou avec `supabase secrets set CLE=valeur`.
+
+La fonction est deployee avec `verify_jwt: false` parce que le cron n'a pas
+de JWT ; elle fait sa propre authentification : soit l'en-tete
+`x-cron-secret`, soit un JWT utilisateur valide (chemin « notification de
+test »). Aucun chemin n'est ouvert sans l'un des deux.
+
+### Sur iPhone
+
+iOS n'autorise le push **que** pour une app ajoutee a l'ecran d'accueil.
+Safari → Partager → « Sur l'ecran d'accueil », puis rouvre Trackz depuis
+l'icone avant d'activer le rappel. L'app le dit d'elle-meme si tu es dans ce
+cas.
+
 ## Securite des donnees
 
 Chaque table porte un `user_id` et la **Row Level Security** est active dessus :
@@ -76,7 +121,13 @@ lignes. Les policies sont posees par le helper `public.apply_owner_rls()`
 (migration 0001), ce qui garantit les 4 memes regles partout.
 
 Il n'existe aucune route serveur qui contourne la RLS : le front parle
-directement a Supabase avec la session de l'utilisateur.
+directement a Supabase avec la session de l'utilisateur. Seule l'Edge
+Function `send-reminders` utilise la cle service role — elle tourne cote
+serveur, n'est jamais exposee au navigateur, et ne lit que ce qu'il faut
+pour compter les cases restantes.
+
+Les fonctions SQL sont durcies (migration 0010) : `search_path` fige, et les
+fonctions de trigger ne sont pas appelables en RPC.
 
 ## Le jour courant
 
@@ -105,7 +156,14 @@ lib/
   queries/            agregations (dashboard)
   dates.ts streaks.ts modules.ts today.ts
   business.ts schools.ts kungfu.ts   regles metier par domaine
-supabase/migrations/  schema SQL, une migration par app
+supabase/
+  migrations/         schema SQL, une migration par app
+  functions/
+    send-reminders/   Edge Function du rappel quotidien
+public/
+  manifest.webmanifest, sw.js, icons/   la partie PWA
+scripts/
+  generate_icons.py   regenere les icones (aucune dependance)
 ```
 
 Chaque app est autonome : modifier `app/business/` ne touche ni au tracker ni

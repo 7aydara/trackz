@@ -17,5 +17,7 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // Les Edge Functions tournent sous Deno : elles ont leur propre
+  // resolution de modules et sont verifiees par le CLI Supabase.
+  "exclude": ["node_modules", "supabase/functions"]
 }
