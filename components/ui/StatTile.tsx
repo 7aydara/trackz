@@ -1,13 +1,12 @@
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "@/components/Icon";
 
-/** Tuile de chiffre : icone en haut, valeur, libelle. */
+/** Chiffre-cle : la valeur domine, le libelle s'efface. */
 export function StatTile({
   label,
   value,
   hint,
   icon,
-  emoji,
   tone = "plain",
 }: {
   label: string;
@@ -17,28 +16,24 @@ export function StatTile({
   emoji?: string;
   tone?: "plain" | "accent" | "danger";
 }) {
-  const tones = {
-    plain: "bg-card border-hair text-ink",
-    accent: "bg-accent-soft border-transparent text-accent-ink",
-    danger: "bg-danger-soft border-transparent text-danger-ink",
-  };
+  const valueTone = {
+    plain: "text-ink",
+    accent: "text-accent",
+    danger: "text-danger",
+  }[tone];
 
   return (
-    <div
-      className={`flex flex-col items-center gap-1 rounded-[var(--radius-card)] border px-3 py-4 text-center ${tones[tone]}`}
-    >
-      <span className="text-accent">
-        {icon ? (
-          <Icon name={icon} size={20} />
-        ) : (
-          <span aria-hidden className="text-lg leading-none">
-            {emoji ?? "•"}
-          </span>
-        )}
-      </span>
-      <span className="text-2xl font-black leading-none tabular-nums">{value}</span>
-      <span className="text-xs font-bold text-muted">{label}</span>
-      {hint && <span className="text-[11px] font-semibold text-muted/80">{hint}</span>}
+    <div className="rounded-[var(--radius-card)] border border-hairlineline bg-surface px-4 py-3.5">
+      <div className="flex items-center gap-1.5 text-ink-3">
+        {icon && <Icon name={icon} size={15} strokeWidth={2} />}
+        <span className="text-[12px] font-semibold uppercase tracking-[0.06em]">
+          {label}
+        </span>
+      </div>
+      <div className={`mt-2 text-[26px] font-extrabold leading-none tabular-nums tracking-[-0.02em] ${valueTone}`}>
+        {value}
+      </div>
+      {hint && <div className="mt-1.5 text-[12px] font-medium text-ink-3">{hint}</div>}
     </div>
   );
 }

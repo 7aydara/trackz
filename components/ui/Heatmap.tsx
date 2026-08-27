@@ -33,7 +33,7 @@ export function Heatmap({
   return (
     <div className="overflow-x-auto pb-1">
       <div className="inline-block min-w-full">
-        <div className="flex gap-[3px] pl-7 text-[10px] font-bold text-muted">
+        <div className="flex gap-[3px] pl-7 text-[10px] font-bold text-ink-2">
           {monthLabels.map((label, i) => (
             <div key={i} className="w-[13px] shrink-0 overflow-visible whitespace-nowrap">
               {label}
@@ -42,7 +42,7 @@ export function Heatmap({
         </div>
 
         <div className="mt-1 flex gap-[3px]">
-          <div className="flex w-6 shrink-0 flex-col gap-[3px] text-[10px] font-bold text-muted">
+          <div className="flex w-6 shrink-0 flex-col gap-[3px] text-[10px] font-bold text-ink-2">
             {["L", "", "M", "", "V", "", "D"].map((d, i) => (
               <div key={i} className="h-[13px] leading-[13px]">
                 {d}
@@ -62,12 +62,12 @@ export function Heatmap({
                     title={`${formatShort(iso)} — ${Math.round(ratio * 100)}%`}
                     className={`size-[13px] rounded-[3px] ${
                       future ? "opacity-30" : ""
-                    } ${iso === today ? "ring-2 ring-accent ring-offset-1" : ""}`}
+                    } ${iso === today ? "ring-1 ring-ink/60" : ""}`}
                     style={{
                       background:
                         pct === 0
-                          ? "var(--color-sunk)"
-                          : `color-mix(in srgb, var(--color-accent) ${pct}%, var(--color-sunk))`,
+                          ? "var(--color-raised)"
+                          : `color-mix(in srgb, var(--color-module) ${pct}%, var(--color-raised))`,
                     }}
                   />
                 );
@@ -76,7 +76,7 @@ export function Heatmap({
           ))}
         </div>
 
-        <div className="mt-2 flex items-center gap-1.5 pl-7 text-[10px] font-bold text-muted">
+        <div className="mt-2 flex items-center gap-1.5 pl-7 text-[10px] font-bold text-ink-2">
           <span>moins</span>
           {[0, 25, 50, 75, 100].map((p) => (
             <span
@@ -85,8 +85,8 @@ export function Heatmap({
               style={{
                 background:
                   p === 0
-                    ? "var(--color-sunk)"
-                    : `color-mix(in srgb, var(--color-accent) ${p}%, var(--color-sunk))`,
+                    ? "var(--color-raised)"
+                    : `color-mix(in srgb, var(--color-module) ${p}%, var(--color-raised))`,
               }}
             />
           ))}

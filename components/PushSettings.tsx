@@ -94,7 +94,6 @@ export function PushSettings({
   return (
     <Card>
       <CardTitle
-        emoji="🔔"
         action={
           subscribed ? <Chip tone="good">actif</Chip> : <Chip>inactif</Chip>
         }
@@ -103,8 +102,8 @@ export function PushSettings({
       </CardTitle>
 
       {!support.ok && support.reason === "ios-not-installed" && (
-        <div className="rounded-[var(--radius-control)] bg-accent-soft px-3 py-2.5 text-sm font-semibold text-accent-ink">
-          <p className="font-black">Sur iPhone, installe d'abord Trackz 📲</p>
+        <div className="rounded-[var(--radius-control)] border border-hairline bg-raised px-3.5 py-3 text-[14px] font-medium text-ink-2">
+          <p className="font-extrabold">Sur iPhone, installe d'abord Trackz 📲</p>
           <p className="mt-1">
             Safari → bouton Partager → <strong>Sur l'ecran d'accueil</strong>. Rouvre Trackz
             depuis l'icone, puis reviens ici : iOS n'autorise les notifications que pour les
@@ -114,14 +113,14 @@ export function PushSettings({
       )}
 
       {!support.ok && support.reason === "no-vapid" && (
-        <p className="rounded-[var(--radius-control)] bg-warn-soft px-3 py-2.5 text-sm font-bold text-warn-ink">
+        <p className="rounded-[var(--radius-control)] bg-warn-dim px-3 py-2.5 text-sm font-bold text-warn">
           Cle publique VAPID absente. Renseigne `NEXT_PUBLIC_VAPID_PUBLIC_KEY` puis relance
           l'app.
         </p>
       )}
 
       {!support.ok && support.reason === "unsupported" && (
-        <p className="rounded-[var(--radius-control)] bg-sunk px-3 py-2.5 text-sm font-bold text-muted">
+        <p className="rounded-[var(--radius-control)] bg-raised px-3 py-2.5 text-sm font-bold text-ink-2">
           Ce navigateur ne gere pas les notifications push. Essaie Chrome, Firefox ou Safari a
           jour.
         </p>
@@ -129,14 +128,14 @@ export function PushSettings({
 
       {support.ok && (
         <>
-          <p className="text-sm font-semibold text-muted">
+          <p className="text-sm font-semibold text-ink-2">
             Une notification sur ton telephone s'il reste des cases a cocher. Rien a signaler,
             rien qui sonne — et jamais plus d'une par jour.
           </p>
 
           <div className="mt-3 flex flex-wrap items-end gap-3">
             <label className="flex-1">
-              <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-muted">
+              <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-ink-2">
                 Heure du rappel
               </span>
               <Select value={hour} onChange={(e) => changeHour(Number(e.target.value))}>
@@ -154,13 +153,13 @@ export function PushSettings({
               variant={subscribed ? "ghost" : "primary"}
               size="lg"
             >
-              {busy ? "..." : subscribed ? "Desactiver" : "🔔 Activer"}
+              {busy ? "..." : subscribed ? "Desactiver" : "Activer"}
             </Button>
           </div>
 
           {subscribed && (
             <Button
-              variant="soft"
+              variant="secondary"
               size="sm"
               className="mt-2 w-full"
               onClick={sendTest}
@@ -173,12 +172,12 @@ export function PushSettings({
       )}
 
       {message && (
-        <p className="mt-2 rounded-xl bg-good-soft px-3 py-2 text-sm font-bold text-good-ink">
+        <p className="mt-2 rounded-xl bg-good-dim px-3 py-2 text-sm font-bold text-good">
           {message}
         </p>
       )}
       {error && (
-        <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-sm font-bold text-danger-ink">
+        <p className="mt-2 rounded-xl bg-danger-dim px-3 py-2 text-sm font-bold text-danger">
           {error}
         </p>
       )}

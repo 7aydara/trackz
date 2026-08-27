@@ -96,7 +96,7 @@ export function ClientsClient({
   return (
     <div className="space-y-4">
       <Card>
-        <CardTitle emoji="🤝" action={<Button size="sm" onClick={startCreate}>+ Client</Button>}>
+        <CardTitle action={<Button size="sm" onClick={startCreate}>+ Client</Button>}>
           Mes clients
         </CardTitle>
 
@@ -117,20 +117,20 @@ export function ClientsClient({
                 <li
                   key={c.id}
                   className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
-                    c.status === "actif" ? "border-hair bg-card" : "border-hair bg-sunk opacity-70"
+                    c.status === "actif" ? "border-hairline bg-surface" : "border-hairline bg-raised opacity-70"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <span
                       aria-hidden
-                      className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-base font-black text-accent-ink"
+                      className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-base font-extrabold text-accent"
                     >
                       {c.name.slice(0, 2).toUpperCase()}
                     </span>
 
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-black">{c.name}</p>
-                      <p className="truncate text-[11px] font-semibold text-muted">
+                      <p className="truncate font-extrabold">{c.name}</p>
+                      <p className="truncate text-[11px] font-semibold text-ink-2">
                         {[c.company, c.email, c.phone].filter(Boolean).join(" · ") || "—"}
                       </p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -140,7 +140,7 @@ export function ClientsClient({
                         <Chip tone={c.status === "actif" ? "accent" : "neutral"}>{c.status}</Chip>
                       </div>
                       {c.notes && (
-                        <p className="mt-1.5 whitespace-pre-line text-xs font-semibold text-muted">
+                        <p className="mt-1.5 whitespace-pre-line text-xs font-semibold text-ink-2">
                           {c.notes}
                         </p>
                       )}

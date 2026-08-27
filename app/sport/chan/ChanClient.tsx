@@ -75,20 +75,20 @@ export function ChanClient({
 
   return (
     <div className="space-y-4">
-      <Card className="bg-card text-center">
+      <Card className="bg-surface text-center">
         <p className="text-3xl" aria-hidden>
           ☯️
         </p>
-        <p className="mt-2 text-lg font-black leading-snug tracking-tight">
+        <p className="mt-2 text-lg font-extrabold leading-snug tracking-tight">
           « {quoteOfTheDay.content} »
         </p>
-        <p className="mt-1 text-xs font-bold uppercase tracking-wide text-muted">
+        <p className="mt-1 text-xs font-bold uppercase tracking-wide text-ink-2">
           {quoteOfTheDay.author}
         </p>
       </Card>
 
       <Card>
-        <CardTitle emoji="✍️">Ajouter une note</CardTitle>
+        <CardTitle>Ajouter une note</CardTitle>
         <form onSubmit={add} className="space-y-3">
           <Field label="Note ou citation">
             <Textarea
@@ -111,20 +111,20 @@ export function ChanClient({
       </Card>
 
       <Card>
-        <CardTitle emoji="📜">Citations a piocher</CardTitle>
+        <CardTitle>Citations a piocher</CardTitle>
         <ul className="space-y-2">
           {CHAN_QUOTES.map((q) => (
             <li
               key={q.content}
-              className="flex items-start gap-2 rounded-[var(--radius-control)] border border-hair bg-card px-3 py-2"
+              className="flex items-start gap-2 rounded-[var(--radius-control)] border border-hairline bg-surface px-3 py-2"
             >
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold italic">« {q.content} »</p>
-                <p className="text-[11px] font-bold uppercase tracking-wide text-muted">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-ink-2">
                   {q.author}
                 </p>
               </div>
-              <Button variant="soft" size="sm" onClick={() => addQuote(q)}>
+              <Button variant="secondary" size="sm" onClick={() => addQuote(q)}>
                 +
               </Button>
             </li>
@@ -133,7 +133,7 @@ export function ChanClient({
       </Card>
 
       <Card>
-        <CardTitle emoji="📔">Mon carnet</CardTitle>
+        <CardTitle>Mon carnet</CardTitle>
 
         {notes.length === 0 ? (
           <EmptyState emoji="🧘" title="Carnet vide">
@@ -145,12 +145,12 @@ export function ChanClient({
               <li
                 key={n.id}
                 className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
-                  n.pinned ? "border-transparent bg-accent-soft" : "border-hair bg-card"
+                  n.pinned ? "border-hairline bg-raised" : "border-hairline bg-surface"
                 }`}
               >
                 <p className="whitespace-pre-line text-sm font-semibold">{n.content}</p>
                 <div className="mt-1.5 flex items-center gap-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wide text-muted">
+                  <span className="text-[11px] font-bold uppercase tracking-wide text-ink-2">
                     {n.author ? `${n.author} · ` : ""}
                     {formatShort(n.note_date)}
                   </span>
@@ -159,7 +159,7 @@ export function ChanClient({
                     type="button"
                     onClick={() => togglePin(n)}
                     aria-label={n.pinned ? "Detacher" : "Epingler"}
-                    className="text-sm transition hover:scale-110"
+                    className="tap text-base"
                   >
                     {n.pinned ? "📌" : "📍"}
                   </button>
@@ -167,7 +167,7 @@ export function ChanClient({
                     type="button"
                     onClick={() => remove(n)}
                     aria-label="Supprimer la note"
-                    className="text-xs font-bold text-muted/60 transition hover:text-danger"
+                    className="tap text-ink-3 transition hover:text-danger"
                   >
                     ✕
                   </button>

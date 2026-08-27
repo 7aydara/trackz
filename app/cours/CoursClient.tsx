@@ -154,33 +154,33 @@ export function CoursClient({
     <div className="space-y-4">
       {/* Deux tuiles de tete : l'avancee du jour, et la serie avec ses badges. */}
       <div className="grid grid-cols-2 gap-3">
-        <Card tinted className="flex flex-col items-center justify-center gap-2 !p-4">
+        <Card className="flex flex-col items-center justify-center gap-2 !p-4">
           <ProgressRing value={ratio} size={116} stroke={13}>
-            <div className="text-xl font-black tabular-nums text-accent-ink">
+            <div className="text-xl font-extrabold tabular-nums text-accent">
               {doneToday}/{subjects.length}
             </div>
           </ProgressRing>
-          <p className="text-center text-xs font-bold text-accent-ink">Matieres revisees</p>
+          <p className="text-center text-xs font-bold text-accent">Matieres revisees</p>
         </Card>
 
         <Card className="flex flex-col justify-center gap-3 !p-4">
           <div>
-            <p className="text-xs font-bold text-muted">Serie globale</p>
+            <p className="text-xs font-bold text-ink-2">Serie globale</p>
             <p className="mt-1 flex items-baseline gap-1.5">
               <span aria-hidden className="text-xl">
                 🔥
               </span>
-              <span className="text-3xl font-black tabular-nums text-accent-ink">
+              <span className="text-3xl font-extrabold tabular-nums text-accent">
                 {globalStreak}
               </span>
-              <span className="text-sm font-bold text-muted">
+              <span className="text-sm font-bold text-ink-2">
                 jour{globalStreak > 1 ? "s" : ""}
               </span>
             </p>
           </div>
 
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-muted">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-ink-2">
               Badges recents
             </p>
             <ul className="mt-1.5 flex gap-1.5">
@@ -191,7 +191,7 @@ export function CoursClient({
                     key={m}
                     title={MILESTONE_BADGES[m].label}
                     className={`grid size-8 place-items-center rounded-full text-base ${
-                      unlocked ? "bg-accent-soft" : "bg-sunk opacity-40 grayscale"
+                      unlocked ? "bg-accent-dim" : "bg-raised opacity-40 grayscale"
                     }`}
                   >
                     <span aria-hidden>{unlocked ? MILESTONE_BADGES[m].emoji : "🔒"}</span>
@@ -202,7 +202,7 @@ export function CoursClient({
           </div>
 
           {nextBadge && (
-            <p className="text-[11px] font-bold text-muted">
+            <p className="text-[11px] font-bold text-ink-2">
               {MILESTONE_BADGES[nextBadge].label} dans {nextBadge - globalStreak} j
             </p>
           )}
@@ -211,7 +211,6 @@ export function CoursClient({
 
       <Card>
         <CardTitle
-          emoji="✅"
           action={
             <Button size="sm" onClick={() => setOpen(true)}>
               + Matiere
@@ -233,12 +232,12 @@ export function CoursClient({
                 <li
                   key={subject.id}
                   className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 transition ${
-                    done ? "border-transparent bg-accent-soft" : "border-hair bg-card"
+                    done ? "border-hairline bg-raised" : "border-hairline bg-surface"
                   }`}
                 >
                   <span
                     aria-hidden
-                    className="grid size-9 shrink-0 place-items-center rounded-xl bg-card/70 text-lg"
+                    className="grid size-9 shrink-0 place-items-center rounded-xl bg-surface/70 text-lg"
                   >
                     {subject.emoji}
                   </span>
@@ -247,7 +246,7 @@ export function CoursClient({
                     <Link href={`/cours/${subject.id}`} className="truncate font-bold hover:underline">
                       {subject.name}
                     </Link>
-                    <p className="text-[11px] font-bold text-muted">
+                    <p className="text-[11px] font-bold text-ink-2">
                       🔥 {current} j{subject.teacher ? ` · ${subject.teacher}` : ""}
                     </p>
                   </div>
@@ -256,7 +255,7 @@ export function CoursClient({
                     type="button"
                     onClick={() => archive(subject)}
                     aria-label={`Archiver ${subject.name}`}
-                    className="rounded-full px-1.5 py-1 text-xs font-bold text-muted/60 transition hover:text-danger"
+                    className="tap text-ink-3 transition hover:text-danger"
                   >
                     ✕
                   </button>
@@ -276,7 +275,7 @@ export function CoursClient({
       {subjects.length > 0 && (
         <>
           <Card>
-            <CardTitle emoji="🗓️" action={<Chip tone="accent">7 derniers jours</Chip>}>
+            <CardTitle action={<Chip tone="accent">7 derniers jours</Chip>}>
               Ma semaine
             </CardTitle>
 
@@ -284,12 +283,12 @@ export function CoursClient({
               <table className="w-full border-separate border-spacing-x-1 border-spacing-y-1">
                 <thead>
                   <tr>
-                    <th className="w-[34%]" />
+                    <th className="w-[30%]" />
                     {week.map((d) => (
                       <th
                         key={d}
-                        className={`pb-1 text-[10px] font-black uppercase ${
-                          d === today ? "text-accent-ink" : "text-muted"
+                        className={`pb-1 text-[10px] font-extrabold uppercase ${
+                          d === today ? "text-accent" : "text-ink-2"
                         }`}
                       >
                         {dayLabel(d)}
@@ -315,10 +314,10 @@ export function CoursClient({
                               aria-label={`${s.name} le ${d}`}
                               aria-pressed={done}
                               onClick={() => toggle(s, d, !done)}
-                              className={`size-7 w-full rounded-[10px] border-2 text-xs font-black transition ${
+                              className={`h-11 w-full rounded-[10px] border text-xs font-bold transition ${
                                 done
                                   ? "border-transparent bg-accent text-on-accent"
-                                  : "border-dashed border-hair bg-card text-transparent hover:border-accent"
+                                  : "border-dashed border-hairline bg-surface text-transparent hover:border-accent"
                               }`}
                             >
                               ✓
@@ -331,7 +330,7 @@ export function CoursClient({
                 </tbody>
               </table>
             </div>
-            <p className="mt-2 text-[11px] font-semibold text-muted">
+            <p className="mt-2 text-[11px] font-semibold text-ink-2">
               Astuce : tu peux rattraper un jour oublie en cochant directement dans la grille.
             </p>
           </Card>

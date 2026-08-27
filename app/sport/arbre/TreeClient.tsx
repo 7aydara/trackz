@@ -82,7 +82,7 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
           niveaux, du blanc au rouge.
         </EmptyState>
         <Button size="lg" className="mt-3 w-full" onClick={seed} disabled={busy}>
-          {busy ? "..." : "🌱 Initialiser l'arbre Shaolin"}
+          {busy ? "..." : "Initialiser l'arbre Shaolin"}
         </Button>
       </Card>
     );
@@ -90,18 +90,18 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 bg-card">
+      <Card className="flex items-center gap-4 bg-surface">
         <ProgressRing value={score}>
           <div>
-            <div className="text-2xl font-black leading-none tabular-nums">
+            <div className="text-2xl font-extrabold leading-none tabular-nums">
               {Math.round(score * 100)}%
             </div>
-            <div className="text-[10px] font-bold uppercase text-muted">maitrise</div>
+            <div className="text-[10px] font-bold uppercase text-ink-2">maitrise</div>
           </div>
         </ProgressRing>
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-black tracking-tight">Arbre de progression</p>
-          <p className="mt-0.5 text-sm font-bold text-muted">
+          <p className="text-lg font-extrabold tracking-tight">Arbre de progression</p>
+          <p className="mt-0.5 text-sm font-bold text-ink-2">
             {mastered} technique{mastered > 1 ? "s" : ""} maitrisee{mastered > 1 ? "s" : ""} sur{" "}
             {items.length}
           </p>
@@ -132,19 +132,19 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
 
         return (
           <Card key={level} className={unlocked ? "" : "opacity-70"}>
-            <CardTitle emoji={meta.emoji}>
+            <CardTitle>
               {meta.belt} · {meta.label}
             </CardTitle>
 
-            <p className="-mt-1 mb-2 text-xs font-semibold text-muted">{meta.hint}</p>
+            <p className="-mt-1 mb-2 text-xs font-semibold text-ink-2">{meta.hint}</p>
 
             {!unlocked && (
-              <p className="mb-2 rounded-xl bg-sunk px-3 py-2 text-xs font-bold text-muted">
+              <p className="mb-2 rounded-xl bg-raised px-3 py-2 text-xs font-bold text-ink-2">
                 🔒 Debloque en maitrisant au moins 3 elements du niveau precedent.
               </p>
             )}
 
-            <div className="mb-3 h-2.5 overflow-hidden rounded-full bg-sunk">
+            <div className="mb-3 h-2.5 overflow-hidden rounded-full bg-raised">
               <div
                 className="h-full rounded-full bg-accent transition-[width] duration-500"
                 style={{ width: `${Math.round(levelScore * 100)}%` }}
@@ -159,8 +159,8 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
                     key={item.id}
                     className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 transition ${
                       item.status === "maitrise"
-                        ? "border-transparent bg-accent-soft"
-                        : "border-hair bg-card"
+                        ? "border-hairline bg-raised"
+                        : "border-hairline bg-surface"
                     }`}
                   >
                     <button
@@ -171,8 +171,8 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
                         item.status === "maitrise"
                           ? "animate-pop border-transparent bg-accent text-on-accent"
                           : item.status === "en_cours"
-                            ? "border-accent bg-card"
-                            : "border-dashed border-hair bg-card"
+                            ? "border-accent bg-surface"
+                            : "border-dashed border-hairline bg-surface"
                       }`}
                     >
                       {status.emoji}
@@ -180,7 +180,7 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
 
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-bold">{item.name}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-muted">
+                      <p className="text-[11px] font-bold uppercase tracking-wide text-ink-2">
                         {item.category} · {status.label}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
                       type="button"
                       onClick={() => remove(item)}
                       aria-label={`Retirer ${item.name}`}
-                      className="px-1 text-xs font-bold text-muted/50 transition hover:text-danger"
+                      className="tap text-ink-3 transition hover:text-danger"
                     >
                       ✕
                     </button>
@@ -202,8 +202,8 @@ export function TreeClient({ userId, items }: { userId: string; items: TaoluProg
       })}
 
       <Card>
-        <CardTitle emoji="ℹ️">Comment ca marche</CardTitle>
-        <p className="text-sm font-semibold text-muted">
+        <CardTitle>Comment ca marche</CardTitle>
+        <p className="text-sm font-semibold text-ink-2">
           Touche la pastille pour faire tourner le statut :{" "}
           {TAOLU_STATUSES.map((s) => `${TAOLU_STATUS_META[s].emoji} ${TAOLU_STATUS_META[s].label}`).join(
             " → ",

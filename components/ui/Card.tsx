@@ -1,22 +1,26 @@
 import type { ReactNode } from "react";
 
-/** Tuile de base : 20px de rayon, 1px de filet, ombre tres diffuse. */
+/**
+ * Surface elevee. En sombre, la profondeur vient de la clarte du fond et
+ * d'un filet fin, pas d'une ombre portee : une ombre noire sur un fond
+ * noir ne se voit pas.
+ */
 export function Card({
   children,
   className = "",
   as: Tag = "div",
-  tinted = false,
+  flush = false,
 }: {
   children: ReactNode;
   className?: string;
   as?: "div" | "section" | "li" | "article";
-  /** Fond dans l'accent doux plutot que blanc. */
-  tinted?: boolean;
+  /** Sans marge interieure — pour les listes qui vont bord a bord. */
+  flush?: boolean;
 }) {
   return (
     <Tag
-      className={`relative rounded-[var(--radius-card)] border border-hair p-5 shadow-[0_4px_12px_rgba(29,27,46,0.05)] ${
-        tinted ? "bg-accent-soft" : "bg-card"
+      className={`relative rounded-[var(--radius-card)] border border-hairlineline bg-surface ${
+        flush ? "" : "p-5"
       } ${className}`}
     >
       {children}
@@ -26,31 +30,31 @@ export function Card({
 
 export function CardTitle({
   children,
-  emoji,
   action,
 }: {
   children: ReactNode;
-  emoji?: string;
   action?: ReactNode;
 }) {
   return (
     <div className="mb-4 flex items-center justify-between gap-3">
-      <h2 className="flex items-center gap-2 text-xl font-extrabold leading-tight tracking-tight">
-        {emoji && (
-          <span aria-hidden className="text-lg">
-            {emoji}
-          </span>
-        )}
-        {children}
-      </h2>
+      <h2 className="text-[17px] font-bold tracking-[-0.01em]">{children}</h2>
       {action}
     </div>
   );
 }
 
-/** Libelle de section, hors carte. */
-export function SectionLabel({ children }: { children: ReactNode }) {
+/** Titre de section, hors carte. */
+export function SectionLabel({
+  children,
+  action,
+}: {
+  children: ReactNode;
+  action?: ReactNode;
+}) {
   return (
-    <h2 className="mb-3 px-1 text-xl font-extrabold tracking-tight">{children}</h2>
+    <div className="mb-3 flex items-end justify-between gap-3 px-1">
+      <h2 className="text-[22px] font-extrabold tracking-[-0.02em]">{children}</h2>
+      {action}
+    </div>
   );
 }

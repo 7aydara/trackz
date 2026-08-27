@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Icon } from "@/components/Icon";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignOutButton() {
@@ -12,15 +13,16 @@ export function SignOutButton() {
     <button
       type="button"
       disabled={busy}
+      aria-label="Se deconnecter"
       onClick={async () => {
         setBusy(true);
         await createClient().auth.signOut();
         router.replace("/login");
         router.refresh();
       }}
-      className="shrink-0 rounded-full px-3 py-2 text-sm font-bold text-accent-ink transition hover:bg-sunk disabled:opacity-50"
+      className="tap text-ink-3 transition hover:text-ink disabled:opacity-40"
     >
-      Quitter
+      <Icon name="exit" size={20} />
     </button>
   );
 }

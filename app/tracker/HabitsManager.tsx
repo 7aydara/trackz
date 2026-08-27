@@ -54,7 +54,6 @@ export function HabitsManager({ userId, habits }: { userId: string; habits: Habi
   return (
     <Card>
       <CardTitle
-        emoji="✨"
         action={
           <Button size="sm" onClick={() => setOpen(true)}>
             + Habitude
@@ -73,14 +72,14 @@ export function HabitsManager({ userId, habits }: { userId: string; habits: Habi
           {habits.map((h) => (
             <li
               key={h.id}
-              className="flex items-center gap-3 rounded-[var(--radius-control)] border border-hair bg-card px-3 py-2"
+              className="flex items-center gap-3 rounded-[var(--radius-control)] border border-hairline bg-surface px-3 py-2"
             >
-              <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">
+              <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-module/15 text-lg">
                 {h.emoji}
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold">{h.name}</p>
-                <p className="text-[11px] font-semibold text-muted">
+                <p className="text-[11px] font-semibold text-ink-2">
                   {h.frequency === "daily" ? "tous les jours" : `${h.target_per_week}x / semaine`}
                 </p>
               </div>
@@ -89,7 +88,7 @@ export function HabitsManager({ userId, habits }: { userId: string; habits: Habi
                 type="button"
                 onClick={() => archive(h)}
                 aria-label={`Archiver ${h.name}`}
-                className="rounded-full px-2 py-1 text-sm font-bold text-muted transition hover:text-danger"
+                className="rounded-full px-2 py-1 text-sm font-bold text-ink-2 transition hover:text-danger"
               >
                 ✕
               </button>

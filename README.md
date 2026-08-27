@@ -14,40 +14,40 @@ La page `/` est le hub : elle liste les 5 apps avec un resume live de chacune.
 
 ## Design
 
-Le systeme visuel vient d'une maquette Google Stitch, adaptee et rendue
-coherente sur les 5 apps. Il tient en trois idees :
+Interface **sombre uniquement**, dans l'esprit d'Apple et de Netflix :
+fonds profonds, typographie qui porte la hierarchie, et une seule couleur.
 
-**Profondeur tactile.** Pas d'ombres flottantes : les boutons ont une ombre
-pleine de 4px dessous qui se comprime a 2px quand on appuie, comme une
-touche mecanique. Les cartes sont des tuiles a 20px de rayon avec un filet
-de 1px ; tout ce qui est actionnable est a 16px.
+**Un accent, pas cinq.** Le rouge du sceau (`#e5323f`) est reserve a ce
+qu'on touche : boutons d'action, cases cochees, onglet actif. Tout le reste
+vit en gris. Les cinq modules ne se distinguent plus par des aplats mais par
+une teinte tres sourde (`--color-module`) posee sur leur pastille d'icone,
+leur anneau de progression et le trait de l'onglet actif — un reperage sans
+carnaval.
 
-**Deux themes, un seul jeu de tokens.** « Trackz » en clair, « Obsidian Zen »
-en sombre, suivant le reglage du systeme. Aucun composant ne contient de
-couleur en dur : tout passe par des variables `--color-*` redefinies dans
-`app/globals.css`.
+**Trois niveaux de fond.** `ground` (#0a0a0c) pour la page, `surface` pour
+les cartes, `raised` pour les champs et les creux. En sombre la profondeur
+vient de la clarte du fond et d'un filet fin, jamais d'une ombre portee :
+une ombre noire sur fond noir ne se voit pas.
 
-**Cinq accents tenus.** Chaque module a sa couleur, mais toutes sont
-calibrees dans la meme bande de clarte et de saturation (OKLCH, L 0.52-0.58,
-C 0.11-0.20) : elles se distinguent par la teinte, pas par le volume. Le
-violet reste le plus chromatique parce qu'il porte la marque.
+**Typographie** Manrope, 400 a 800, chiffres tabulaires partout ou des
+valeurs s'alignent.
 
-> Piege a connaitre : les classes `.theme-*` redefinissent directement les
-> variables `--color-accent*`. Ne pas reintroduire d'indirection du type
-> `--color-accent: var(--accent)` declaree sur `:root` — une custom property
-> est resolue la ou elle est declaree, les descendants heriteraient de la
-> valeur deja calculee et tous les modules seraient violets.
+**Ergonomie tactile.** Toute cible fait au moins 44px dans les deux
+dimensions — y compris les petites croix de suppression, dont la zone
+touchable deborde du glyphe via la classe utilitaire `.tap`. L'acces a
+l'assistant est dans l'en-tete et non en bouton flottant : flottant, il se
+posait par-dessus la case a cocher de la derniere ligne des listes.
 
 Les icones d'interface sont des SVG inline (`components/Icon.tsx`) et non une
 police d'icones : une police qui ne charge pas affiche le nom du glyphe en
-toutes lettres. Les emojis, eux, servent a identifier un contenu (une
-matiere, un domaine), jamais un controle.
+toutes lettres. Les emojis servent a identifier un contenu (une matiere, un
+domaine), jamais un controle ni un titre de section.
 
 ## Stack
 
 - **Next.js 15** (App Router, TypeScript) — un dossier par app sous `app/`
 - **Supabase** — auth (email/mot de passe + lien magique), Postgres, RLS
-- **Tailwind CSS v4** — deux themes et cinq accents par variables CSS
+- **Tailwind CSS v4** — theme sombre unique, un accent, variables CSS
 - Zero dependance UI : confettis, heatmap, courbes et anneaux sont faits maison
 
 ## Mise en route
@@ -152,8 +152,9 @@ verifier les deadlines, trier les dossiers, preparer les documents.
 
 **Ce qu'il peut faire** — lire et creer des dossiers d'ecole, cocher ou
 ajouter des documents, deposer un brouillon dans les notes d'un dossier,
-lire les matieres et ce qu'il reste a cocher aujourd'hui. Il a aussi la
-recherche web cote Anthropic, indispensable pour les dates limites.
+**creer des matieres et des habitudes**, et **cocher a ta place** ce que tu
+lui dis avoir fait. Il a aussi la recherche Google integree, indispensable
+pour les dates limites.
 
 **Ce qu'il ne peut pas faire** — sortir de tes donnees. L'Edge Function
 `assistant` parle a Supabase avec **ton JWT**, pas avec la cle service

@@ -163,13 +163,13 @@ export function AssistantClient({
   return (
     <div className="flex min-h-[calc(100dvh-11rem)] flex-col pb-44">
       {/* ------------------------------------------------------ en-tete */}
-      <div className="mb-4 flex items-center gap-3 rounded-[var(--radius-card)] border border-hair bg-card p-4">
-        <Logo size={44} />
+      <div className="mb-5 flex items-start gap-3.5">
+        <Logo size={40} />
         <div className="min-w-0 flex-1">
-          <p className="font-extrabold tracking-tight">Ton assistant</p>
-          <p className="text-xs font-semibold text-muted">
-            Il voit tes dossiers, tes matieres et ta journee. Il peut chercher des ecoles
-            sur le web et remplir tes checklists.
+          <p className="text-[20px] font-extrabold tracking-[-0.02em]">Ton assistant</p>
+          <p className="mt-1 text-[13px] font-medium leading-relaxed text-ink-3">
+            Il voit tes dossiers, tes matieres et ta journee. Il cherche des ecoles sur le
+            web, remplit tes checklists et coche a ta place.
           </p>
         </div>
         {messages.length > 0 && (
@@ -183,7 +183,7 @@ export function AssistantClient({
       <div className="flex-1 space-y-3">
         {messages.length === 0 && (
           <div className="space-y-3">
-            <p className="px-1 text-sm font-semibold text-muted">
+            <p className="px-1 text-sm font-semibold text-ink-2">
               Par quoi on commence ?
             </p>
             <ul className="grid gap-2">
@@ -192,7 +192,7 @@ export function AssistantClient({
                   <button
                     type="button"
                     onClick={() => send(s)}
-                    className="w-full rounded-[var(--radius-control)] border border-hair bg-card px-4 py-3 text-left text-sm font-bold transition hover:border-accent"
+                    className="w-full rounded-[var(--radius-control)] border border-hairline bg-surface px-4 py-3 text-left text-sm font-bold transition hover:border-accent"
                   >
                     {s}
                   </button>
@@ -205,14 +205,14 @@ export function AssistantClient({
         {messages.map((m) =>
           m.role === "user" ? (
             <div key={m.id} className="flex justify-end">
-              <div className="max-w-[85%] rounded-[var(--radius-card)] rounded-br-md bg-accent px-4 py-2.5 text-[15px] font-semibold text-on-accent">
+              <div className="max-w-[85%] rounded-[var(--radius-card)] rounded-br-md bg-raised px-4 py-3 text-[15px] font-medium leading-relaxed text-ink">
                 {m.text}
               </div>
             </div>
           ) : (
             <div key={m.id} className="flex gap-2.5">
               <Logo size={30} className="mt-0.5" />
-              <div className="min-w-0 max-w-[85%] rounded-[var(--radius-card)] rounded-bl-md border border-hair bg-card px-4 py-3 text-[15px] font-medium">
+              <div className="min-w-0 max-w-[85%] rounded-[var(--radius-card)] rounded-bl-md border border-hairline bg-surface px-4 py-3.5 text-[15px] font-medium leading-relaxed">
                 <RichText text={m.text} />
               </div>
             </div>
@@ -222,7 +222,7 @@ export function AssistantClient({
         {busy && (
           <div className="flex items-center gap-2.5">
             <Logo size={30} />
-            <div className="flex items-center gap-1.5 rounded-[var(--radius-card)] rounded-bl-md border border-hair bg-card px-4 py-3">
+            <div className="flex items-center gap-1.5 rounded-[var(--radius-card)] rounded-bl-md border border-hairline bg-surface px-4 py-3">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
@@ -230,13 +230,13 @@ export function AssistantClient({
                   style={{ animationDelay: `${i * 160}ms` }}
                 />
               ))}
-              <span className="ml-1 text-xs font-bold text-muted">je cherche…</span>
+              <span className="ml-1 text-xs font-bold text-ink-2">je cherche…</span>
             </div>
           </div>
         )}
 
         {error && (
-          <p className="rounded-[var(--radius-control)] bg-danger-soft px-3 py-2 text-sm font-bold text-danger-ink">
+          <p className="rounded-[var(--radius-control)] bg-danger-dim px-3 py-2 text-sm font-bold text-danger">
             {error}
           </p>
         )}
@@ -251,7 +251,7 @@ export function AssistantClient({
             e.preventDefault();
             send(draft);
           }}
-          className="flex items-end gap-2 rounded-[var(--radius-card)] border border-hair bg-card p-2 shadow-[0_4px_12px_rgba(29,27,46,0.08)]"
+          className="flex items-end gap-2 rounded-[var(--radius-card)] border border-hairline bg-surface p-2 "
         >
           <textarea
             value={draft}
@@ -264,7 +264,7 @@ export function AssistantClient({
             }}
             rows={1}
             placeholder={listening ? "Je t'ecoute…" : "Pose ta question…"}
-            className="max-h-32 min-h-11 flex-1 resize-none bg-transparent px-2 py-2.5 text-[15px] font-semibold outline-none placeholder:font-medium placeholder:text-muted/70"
+            className="max-h-32 min-h-11 flex-1 resize-none bg-transparent px-2 py-2.5 text-[15px] font-semibold outline-none placeholder:font-medium placeholder:text-ink-3"
           />
 
           {speechAvailable && (
@@ -275,8 +275,8 @@ export function AssistantClient({
               aria-pressed={listening}
               className={`grid size-11 shrink-0 place-items-center rounded-full transition ${
                 listening
-                  ? "bg-danger text-on-danger"
-                  : "bg-sunk text-muted hover:text-accent-ink"
+                  ? "bg-danger text-on-accent"
+                  : "bg-raised text-ink-2 hover:text-accent"
               }`}
             >
               <Icon name="mic" size={20} />
@@ -287,26 +287,36 @@ export function AssistantClient({
             type="submit"
             disabled={busy || !draft.trim()}
             aria-label="Envoyer"
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent shadow-[0_3px_0_var(--color-accent-deep)] transition active:translate-y-[2px] active:shadow-none disabled:opacity-40"
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent  transition active:translate-y-[2px]  disabled:opacity-40"
           >
             <Icon name="send" size={20} />
           </button>
         </form>
 
-        <label className="mt-2 flex items-center justify-center gap-2 text-xs font-bold text-muted">
-          <input
-            type="checkbox"
-            checked={speakReplies}
-            onChange={(e) => {
-              setSpeakReplies(e.target.checked);
-              if (!e.target.checked && window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-              }
-            }}
-            className="size-4 accent-[var(--color-accent)]"
-          />
-          Lire les reponses a voix haute
-        </label>
+        <button
+          type="button"
+          aria-pressed={speakReplies}
+          onClick={() => {
+            const next = !speakReplies;
+            setSpeakReplies(next);
+            if (!next && window.speechSynthesis) window.speechSynthesis.cancel();
+          }}
+          className="mx-auto mt-2 flex min-h-11 items-center gap-2 rounded-full px-3 text-[13px] font-medium text-ink-3 transition hover:text-ink-2"
+        >
+          <span
+            aria-hidden
+            className={`h-4 w-7 rounded-full p-0.5 transition ${
+              speakReplies ? "bg-accent" : "bg-hairline"
+            }`}
+          >
+            <span
+              className={`block size-3 rounded-full bg-ink transition ${
+                speakReplies ? "translate-x-3" : ""
+              }`}
+            />
+          </span>
+          Lire a voix haute
+        </button>
       </div>
     </div>
   );

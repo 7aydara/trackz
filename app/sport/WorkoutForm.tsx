@@ -153,7 +153,7 @@ export function WorkoutForm({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Enregistrer une seance" emoji="🥋">
+    <Modal open={open} onClose={onClose} title="Enregistrer une seance">
       <form onSubmit={save} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <Field label="Date">
@@ -186,10 +186,10 @@ export function WorkoutForm({
                 type="button"
                 onClick={() => setIntensity(n)}
                 aria-label={`Intensite ${n}`}
-                className={`h-11 flex-1 rounded-[var(--radius-control)] border-2 text-lg font-black transition ${
+                className={`h-11 flex-1 rounded-[var(--radius-control)] border-2 text-lg font-extrabold transition ${
                   intensity >= n
                     ? "border-transparent bg-accent text-on-accent"
-                    : "border-hair bg-card text-muted"
+                    : "border-hairline bg-surface text-ink-2"
                 }`}
               >
                 {n}
@@ -200,7 +200,7 @@ export function WorkoutForm({
 
         {/* ------------------------------------------------------ stances */}
         <div>
-          <p className="mb-1.5 text-xs font-black uppercase tracking-wide text-muted">
+          <p className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-ink-2">
             Stances tenues
           </p>
           <ul className="space-y-2">
@@ -223,12 +223,12 @@ export function WorkoutForm({
                   }
                   className="!py-2 text-sm"
                 />
-                <span className="text-xs font-bold text-muted">s</span>
+                <span className="text-xs font-bold text-ink-2">s</span>
                 <button
                   type="button"
                   onClick={() => setStances((prev) => prev.filter((_, idx) => idx !== i))}
                   aria-label="Retirer la stance"
-                  className="px-1 text-sm font-bold text-muted transition hover:text-danger"
+                  className="tap text-ink-2 transition hover:text-danger"
                 >
                   ✕
                 </button>
@@ -251,25 +251,25 @@ export function WorkoutForm({
 
         {/* --------------------------------------------------- exercices */}
         <div>
-          <p className="mb-1.5 text-xs font-black uppercase tracking-wide text-muted">
+          <p className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-ink-2">
             Conditionnement
           </p>
           <ul className="space-y-2">
             {exercises.map((ex, i) => (
-              <li key={`${ex.name}-${i}`} className="rounded-[var(--radius-control)] border border-hair bg-card p-2">
+              <li key={`${ex.name}-${i}`} className="rounded-[var(--radius-control)] border border-hairline bg-surface p-2">
                 <div className="flex items-center gap-2">
                   <span className="flex-1 truncate text-sm font-bold">{ex.name}</span>
                   <button
                     type="button"
                     onClick={() => setExercises((prev) => prev.filter((_, idx) => idx !== i))}
                     aria-label="Retirer l'exercice"
-                    className="px-1 text-sm font-bold text-muted transition hover:text-danger"
+                    className="tap text-ink-2 transition hover:text-danger"
                   >
                     ✕
                   </button>
                 </div>
                 <div className="mt-1.5 grid grid-cols-3 gap-2">
-                  <label className="text-[10px] font-bold uppercase text-muted">
+                  <label className="text-[10px] font-bold uppercase text-ink-2">
                     Series
                     <Input
                       type="number"
@@ -285,7 +285,7 @@ export function WorkoutForm({
                       className="!py-1.5 text-sm"
                     />
                   </label>
-                  <label className="text-[10px] font-bold uppercase text-muted">
+                  <label className="text-[10px] font-bold uppercase text-ink-2">
                     Reps
                     <Input
                       type="number"
@@ -301,7 +301,7 @@ export function WorkoutForm({
                       className="!py-1.5 text-sm"
                     />
                   </label>
-                  <label className="text-[10px] font-bold uppercase text-muted">
+                  <label className="text-[10px] font-bold uppercase text-ink-2">
                     Duree (s)
                     <Input
                       type="number"
@@ -344,7 +344,7 @@ export function WorkoutForm({
         </Field>
 
         <Button ref={submitRef} type="submit" size="lg" disabled={busy} className="w-full">
-          {busy ? "..." : "Enregistrer la seance 🥋"}
+          {busy ? "..." : "Enregistrer la seance"}
         </Button>
       </form>
     </Modal>

@@ -92,7 +92,7 @@ export function ProgressClient({
     <div className="space-y-4">
       {/* ------------------------------------------------------- stances */}
       <Card>
-        <CardTitle emoji="🧍">Tenue des stances</CardTitle>
+        <CardTitle>Tenue des stances</CardTitle>
 
         <div className="-mx-1 mb-3 flex gap-1.5 overflow-x-auto px-1 pb-1">
           {STANCES.map((s) => (
@@ -103,7 +103,7 @@ export function ProgressClient({
               className={`shrink-0 rounded-[var(--radius-control)] border px-3 py-2 text-xs font-bold transition ${
                 selectedStance === s.key
                   ? "border-transparent bg-accent text-on-accent"
-                  : "border-hair bg-card text-muted"
+                  : "border-hairline bg-surface text-ink-2"
               }`}
             >
               {s.emoji} {s.pinyin}
@@ -111,12 +111,12 @@ export function ProgressClient({
           ))}
         </div>
 
-        <div className="rounded-[var(--radius-control)] bg-accent-soft px-3 py-2.5">
-          <p className="font-black text-accent-ink">
+        <div className="rounded-[var(--radius-control)] border border-hairline bg-raised px-3.5 py-3">
+          <p className="font-extrabold text-accent">
             {stance.emoji} {stance.name}
           </p>
-          <p className="text-xs font-semibold text-accent-ink/80">{stance.tip}</p>
-          <p className="mt-1 text-xs font-bold text-accent-ink/70">
+          <p className="text-xs font-semibold text-accent/80">{stance.tip}</p>
+          <p className="mt-1 text-xs font-bold text-accent/70">
             Objectif debutant : {formatSeconds(stance.goal)}
           </p>
         </div>
@@ -138,7 +138,7 @@ export function ProgressClient({
         </div>
 
         <div className="mt-3">
-          <p className="mb-1 text-xs font-black uppercase tracking-wide text-muted">
+          <p className="mb-1 text-xs font-extrabold uppercase tracking-wide text-ink-2">
             Evolution (meilleure tenue du jour)
           </p>
           <LineChart points={stanceSeries} unit="s" />
@@ -151,7 +151,7 @@ export function ProgressClient({
 
       {/* ------------------------------------------------ conditionnement */}
       <Card>
-        <CardTitle emoji="💪" action={<Chip tone="accent">charge par seance</Chip>}>
+        <CardTitle action={<Chip tone="accent">charge par seance</Chip>}>
           Conditionnement
         </CardTitle>
 
@@ -163,10 +163,10 @@ export function ProgressClient({
         ) : (
           <ul className="space-y-4">
             {exerciseGroups.map((g) => (
-              <li key={g.name} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
+              <li key={g.name} className="rounded-[var(--radius-control)] border border-hairline bg-surface p-3">
                 <div className="mb-1 flex items-baseline justify-between gap-2">
-                  <p className="font-black">{g.name}</p>
-                  <p className="text-xs font-bold text-muted">
+                  <p className="font-extrabold">{g.name}</p>
+                  <p className="text-xs font-bold text-ink-2">
                     record {g.best} {g.mode === "duration" ? "s" : "reps"}
                   </p>
                 </div>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { Icon } from "@/components/Icon";
 
-/** Feuille modale : centree sur desktop, remontee du bas sur mobile. */
+/** Feuille remontee du bas sur mobile, centree au-dela. */
 export function Modal({
   open,
   onClose,
   title,
-  emoji,
   children,
 }: {
   open: boolean;
@@ -35,25 +35,24 @@ export function Modal({
         type="button"
         aria-label="Fermer"
         onClick={onClose}
-        className="absolute inset-0 bg-black/45 backdrop-blur-[3px]"
+        className="absolute inset-0 bg-black/70 backdrop-blur-md"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="animate-rise relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[28px] border border-hair bg-card p-5 shadow-2xl sm:max-w-lg sm:rounded-[28px]"
+        className="animate-rise relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[24px] border border-hairline bg-surface px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-5 sm:max-w-lg sm:rounded-[24px] sm:pb-6"
       >
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
-            {emoji && <span aria-hidden>{emoji}</span>}
-            {title}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="grid size-9 place-items-center rounded-full bg-sunk text-lg font-bold text-muted transition hover:bg-hair"
-          >
-            ✕
+        {/* Poignee : indique que la feuille se tire vers le bas. */}
+        <div
+          aria-hidden
+          className="mx-auto mb-4 h-1 w-9 rounded-full bg-hairline sm:hidden"
+        />
+
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <h2 className="text-[20px] font-extrabold tracking-[-0.02em]">{title}</h2>
+          <button type="button" onClick={onClose} aria-label="Fermer" className="tap -mr-2 text-ink-2">
+            <Icon name="close" size={20} />
           </button>
         </div>
         {children}

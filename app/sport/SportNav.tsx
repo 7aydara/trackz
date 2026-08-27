@@ -21,10 +21,10 @@ export function SportNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`shrink-0 rounded-full px-4 py-2.5 text-sm font-extrabold transition ${
+            className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-[14px] font-semibold transition ${
               active
-                ? "bg-accent text-on-accent shadow-[0_3px_0_var(--color-accent-deep)]"
-                : "border border-hair bg-card text-muted"
+                ? "bg-accent text-on-accent "
+                : "border border-hairline bg-surface text-ink-2"
             }`}
           >
             <span aria-hidden className="mr-1">

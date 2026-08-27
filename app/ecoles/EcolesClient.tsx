@@ -102,14 +102,14 @@ export function EcolesClient({
   return (
     <div className="space-y-4">
       {alerts.length > 0 && (
-        <div className="animate-rise rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-4 py-3">
-          <p className="flex items-center gap-2 font-black text-danger-ink">
+        <div className="animate-rise rounded-[var(--radius-card)] border border-danger/30 bg-danger-dim px-4 py-3">
+          <p className="flex items-center gap-2 font-extrabold text-danger">
             <span aria-hidden className="text-xl">
               🚨
             </span>
             {alerts.length} dossier{alerts.length > 1 ? "s" : ""} en zone rouge
           </p>
-          <ul className="mt-1 space-y-0.5 text-sm font-bold text-danger-ink">
+          <ul className="mt-1 space-y-0.5 text-sm font-bold text-danger">
             {alerts.map((s) => (
               <li key={s.id}>
                 {s.name} — {insights.get(s.id)!.message}
@@ -133,7 +133,6 @@ export function EcolesClient({
 
       <Card>
         <CardTitle
-          emoji="🎓"
           action={
             <Button size="sm" onClick={() => setOpen(true)}>
               + Ecole
@@ -163,7 +162,7 @@ export function EcolesClient({
       </Card>
 
       <Card>
-        <CardTitle emoji="🗺️">Legende</CardTitle>
+        <CardTitle>Legende</CardTitle>
         <ul className="flex flex-wrap gap-2 text-xs font-bold">
           {(
             [

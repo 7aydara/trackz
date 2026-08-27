@@ -140,8 +140,71 @@ const FUNCTION_DECLARATIONS = [
   },
   {
     name: "list_subjects",
-    description: "Liste les matieres suivies par l'utilisateur.",
+    description: "Liste les matieres suivies par l'utilisateur, avec leur identifiant.",
     parameters: { type: "OBJECT", properties: {} },
+  },
+  {
+    name: "list_habits",
+    description:
+      "Liste les habitudes personnelles suivies par l'utilisateur (hors matieres et domaines).",
+    parameters: { type: "OBJECT", properties: {} },
+  },
+  {
+    name: "add_habit",
+    description:
+      "Cree une habitude personnelle a suivre chaque jour ou X fois par semaine. Choisis un emoji parlant.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        name: { type: "STRING", description: "Ex : Boire 2 L d'eau" },
+        emoji: { type: "STRING", description: "Un seul emoji" },
+        frequency: {
+          type: "STRING",
+          enum: ["daily", "weekly"],
+          description: "daily = tous les jours, weekly = X fois par semaine",
+        },
+        target_per_week: {
+          type: "INTEGER",
+          description: "Nombre de fois par semaine si frequency vaut weekly (1 a 7)",
+        },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "add_subject",
+    description:
+      "Ajoute une matiere au suivi quotidien des cours. Choisis un emoji qui evoque la matiere.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        name: { type: "STRING", description: "Ex : Algorithmique" },
+        emoji: { type: "STRING", description: "Un seul emoji" },
+        teacher: { type: "STRING", description: "Nom de l'enseignant, si connu" },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "check_off",
+    description:
+      "Coche quelque chose pour une date donnee (aujourd'hui par defaut) : une matiere revisee, une habitude tenue, une seance de Kung Fu, ou un check-in business / ecoles. Pour une matiere ou une habitude, donne son identifiant obtenu via list_subjects ou list_habits.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        kind: {
+          type: "STRING",
+          enum: ["subject", "habit", "workout", "business", "schools"],
+        },
+        id: { type: "STRING", description: "Identifiant de la matiere ou de l'habitude" },
+        date: { type: "STRING", description: "Date au format YYYY-MM-DD, defaut aujourd'hui" },
+        duration_min: {
+          type: "INTEGER",
+          description: "Duree en minutes, uniquement pour une seance de Kung Fu",
+        },
+      },
+      required: ["kind"],
+    },
   },
 ];
 
@@ -310,6 +373,117 @@ async function runTool(
       return { subjects: data ?? [] };
     }
 
+    case "list_habits": {
+      const { data, error } = await db
+        .from("habits")
+        .select("id, name, emoji, frequency, target_per_week")
+        .eq("archived", false)
+        .order("sort_order");
+      if (error) throw error;
+      return { habits: data ?? [] };
+    }
+
+    case "add_habit": {
+      const frequency = input.frequency === "weekly" ? "weekly" : "daily";
+      const { data, error } = await db
+        .from("habits")
+        .insert({
+          user_id: userId,
+          name: input.name,
+          emoji: (input.emoji as string) || "\u2728",
+          frequency,
+          target_per_week:
+            frequency === "daily"
+              ? 7
+              : Math.min(7, Math.max(1, Number(input.target_per_week ?? 3))),
+        })
+        .select("id, name, emoji, frequency, target_per_week")
+        .single();
+      if (error) throw error;
+      return { created: data };
+    }
+
+    case "add_subject": {
+      const { data, error } = await db
+        .from("subjects")
+        .insert({
+          user_id: userId,
+          name: input.name,
+          emoji: (input.emoji as string) || "\ud83d\udcd8",
+          teacher: (input.teacher as string) || null,
+        })
+        .select("id, name, emoji, teacher")
+        .single();
+      if (error) throw error;
+      return { created: data };
+    }
+
+    case "check_off": {
+      const date = (input.date as string) || today;
+      const kind = input.kind as string;
+
+      if (kind === "subject") {
+        if (!input.id) throw new Error("Identifiant de matiere manquant.");
+        const { error } = await db
+          .from("subject_logs")
+          .upsert(
+            { user_id: userId, subject_id: input.id, log_date: date, done: true },
+            { onConflict: "subject_id,log_date" },
+          );
+        if (error) throw error;
+        return { checked: "subject", id: input.id, date };
+      }
+
+      if (kind === "habit") {
+        if (!input.id) throw new Error("Identifiant d'habitude manquant.");
+        const { error } = await db
+          .from("habit_logs")
+          .upsert(
+            { user_id: userId, habit_id: input.id, log_date: date, done: true },
+            { onConflict: "habit_id,log_date" },
+          );
+        if (error) throw error;
+        return { checked: "habit", id: input.id, date };
+      }
+
+      if (kind === "workout") {
+        const { data: existing } = await db
+          .from("workouts")
+          .select("id")
+          .eq("session_date", date)
+          .limit(1)
+          .maybeSingle();
+        if (existing) return { already: "workout", date };
+
+        const { data, error } = await db
+          .from("workouts")
+          .insert({
+            user_id: userId,
+            session_date: date,
+            duration_min: Number(input.duration_min ?? 30),
+            focus: "Seance enregistree par l'assistant",
+            intensity: 3,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        return { checked: "workout", id: data.id, date };
+      }
+
+      if (kind === "business" || kind === "schools") {
+        const { error } = await db
+          .from("domain_checkins")
+          .upsert(
+            { user_id: userId, domain: kind, log_date: date, done: true },
+            { onConflict: "user_id,domain,log_date" },
+          );
+        if (error) throw error;
+        return { checked: kind, date };
+      }
+
+      throw new Error(`Type inconnu : ${kind}`);
+    }
+
     default:
       throw new Error(`Outil inconnu : ${name}`);
   }
@@ -330,9 +504,11 @@ ${displayName} est en 6e semestre et mene quatre choses de front :
 Nous sommes le ${today}.
 
 TON ROLE
-Tu l'aides surtout sur les ecoles : trouver des formations qui correspondent,
-les comparer, les trier par deadline, et preparer les documents demandes.
-Tu peux aussi consulter et mettre a jour son suivi quotidien.
+Tu l'aides sur deux fronts.
+1. Les ecoles : trouver des formations qui correspondent, les comparer, les
+   trier par deadline, et preparer les documents demandes.
+2. Son suivi quotidien : tu peux creer des matieres et des habitudes, et
+   cocher a sa place ce qu'il te dit avoir fait.
 
 REGLES
 - Reponds en francais, sur un ton direct et concret. L'app est lue sur un
@@ -349,6 +525,11 @@ REGLES
 - Quand tu rediges un document (lettre de motivation, CV), ecris-le dans la
   conversation. Ne le deposes dans les notes du dossier que s'il te le
   demande.
+- Pour cocher ou modifier une matiere ou une habitude, recupere d'abord son
+  identifiant avec list_subjects ou list_habits. N'invente jamais un
+  identifiant.
+- Quand il dit avoir fait quelque chose ("j'ai revise les maths", "seance
+  faite"), coche-le sans lui redemander confirmation.
 - Tu ne sais rien de sa vie en dehors de ce que contient l'app : ne suppose
   ni ses notes, ni son budget, ni son parcours. Demande.`;
 }

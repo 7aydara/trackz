@@ -22,7 +22,7 @@ export function ProgressRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--color-sunk)"
+          stroke="var(--color-hairline)"
           strokeWidth={stroke}
         />
         <circle
@@ -30,7 +30,7 @@ export function ProgressRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--color-accent)"
+          stroke="var(--color-module)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}

@@ -1,6 +1,7 @@
 "use client";
 
-const COLORS = ["#f43f5e", "#f59e0b", "#10b981", "#0ea5e9", "#7c3aed", "#ec4899"];
+// Palette sourde : sur fond noir, du fluo ferait tache.
+const COLORS = ["#e5323f", "#c9a04a", "#5aa86e", "#6b8fb8", "#b6975c", "#f5f5f7"];
 
 /**
  * Petite explosion de confettis autour d'un element, sans dependance :
@@ -20,7 +21,7 @@ export function burstConfetti(anchor: HTMLElement | null, pieces = 16) {
   for (let i = 0; i < pieces; i++) {
     const piece = document.createElement("div");
     const angle = (Math.PI * 2 * i) / pieces + Math.random() * 0.5;
-    const distance = 40 + Math.random() * 70;
+    const distance = 30 + Math.random() * 55;
     piece.className = "confetti-piece";
     piece.style.background = COLORS[i % COLORS.length];
     piece.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);

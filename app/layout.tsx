@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito_Sans } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { TimezoneSync } from "@/components/TimezoneSync";
 import "./globals.css";
 
-// Nunito Sans : terminaisons arrondies, et des graisses lourdes (800/900)
-// disponibles pour les titres, qui portent la personnalite de l'interface.
-const nunito = Nunito_Sans({
+// Manrope : geometrique, un peu serree, des chiffres qui s'alignent.
+// Assez neutre pour disparaitre, assez dessinee pour ne pas faire generique.
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
-  variable: "--font-nunito",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "Trackz",
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
   },
   icons: {
     icon: [
@@ -37,10 +37,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   // La barre du navigateur suit le theme : violet clair d'un cote,
   // obsidienne de l'autre.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf7fd" },
-    { media: "(prefers-color-scheme: dark)", color: "#131217" },
-  ],
+  themeColor: "#0a0a0c",
   viewportFit: "cover",
   width: "device-width",
   initialScale: 1,
@@ -49,7 +46,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={nunito.variable}>
+    <html lang="fr" className={manrope.variable}>
       <body className="font-sans antialiased">
         <TimezoneSync />
         {children}

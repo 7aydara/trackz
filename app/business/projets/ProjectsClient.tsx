@@ -104,7 +104,7 @@ export function ProjectsClient({
   return (
     <div className="space-y-4">
       <Card>
-        <CardTitle emoji="🚧" action={<Button size="sm" onClick={startCreate}>+ Projet</Button>}>
+        <CardTitle action={<Button size="sm" onClick={startCreate}>+ Projet</Button>}>
           Mes projets
         </CardTitle>
 
@@ -114,10 +114,10 @@ export function ProjectsClient({
               key={key}
               type="button"
               onClick={() => setFilter(key)}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+              className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-[13px] font-semibold transition ${
                 filter === key
                   ? "border-transparent bg-accent text-on-accent"
-                  : "border-hair bg-card text-muted"
+                  : "border-hairline bg-surface text-ink-2"
               }`}
             >
               {key === "tous"
@@ -153,16 +153,16 @@ export function ProjectsClient({
                 <li
                   key={p.id}
                   className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
-                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
+                    late ? "border-danger/30 bg-danger-dim" : "border-hairline bg-surface"
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-lg">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-lg">
                       {meta.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-black">{p.title}</p>
-                      <p className="truncate text-[11px] font-semibold text-muted">
+                      <p className="truncate font-extrabold">{p.title}</p>
+                      <p className="truncate text-[11px] font-semibold text-ink-2">
                         {p.client_id ? clientName.get(p.client_id) ?? "Client supprime" : "Sans client"}
                       </p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -176,7 +176,7 @@ export function ProjectsClient({
                         {p.amount != null && <Chip tone="good">{formatMoney(Number(p.amount))}</Chip>}
                       </div>
                       {p.description && (
-                        <p className="mt-1.5 whitespace-pre-line text-xs font-semibold text-muted">
+                        <p className="mt-1.5 whitespace-pre-line text-xs font-semibold text-ink-2">
                           {p.description}
                         </p>
                       )}
@@ -189,10 +189,10 @@ export function ProjectsClient({
                         key={s}
                         type="button"
                         onClick={() => setStatus(p, s)}
-                        className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                        className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-3 text-[15px] transition ${
                           p.status === s
                             ? "border-transparent bg-accent text-on-accent"
-                            : "border-hair bg-card text-muted hover:border-accent"
+                            : "border-hairline bg-surface text-ink-2 hover:border-accent"
                         }`}
                       >
                         {PROJECT_STATUS_META[s].emoji}

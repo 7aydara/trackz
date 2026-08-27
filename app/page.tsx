@@ -93,19 +93,19 @@ export default async function HubPage() {
   return (
     <AppShell subtitle={formatLong(today)}>
       <div className="mb-5 px-1">
-        <h1 className="text-3xl font-black tracking-tight">
+        <h1 className="text-3xl font-extrabold tracking-tight">
           Salut {firstName} <span aria-hidden>👋</span>
         </h1>
-        <p className="mt-1 font-semibold text-muted">Voila ou tu en es aujourd'hui.</p>
+        <p className="mt-1 font-semibold text-ink-2">Voila ou tu en es aujourd'hui.</p>
       </div>
 
       <Card className="mb-6 flex flex-col items-center gap-4">
-        <ProgressRing value={ratio} size={168} stroke={16}>
+        <ProgressRing value={ratio} size={152} stroke={8}>
           <div>
-            <div className="text-4xl font-black leading-none tabular-nums text-accent-ink">
+            <div className="text-4xl font-extrabold leading-none tabular-nums tracking-[-0.03em]">
               {Math.round(ratio * 100)}%
             </div>
-            <div className="mt-1 text-xs font-bold text-muted">de ta journee</div>
+            <div className="mt-1 text-xs font-bold text-ink-2">de ta journee</div>
           </div>
         </ProgressRing>
 
@@ -118,7 +118,7 @@ export default async function HubPage() {
 
         <Link
           href="/tracker"
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-5 py-3.5 text-base font-extrabold text-on-accent shadow-[0_4px_0_var(--color-accent-deep)] transition active:translate-y-[2px] active:shadow-[0_2px_0_var(--color-accent-deep)]"
+          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-5 py-3.5 text-base font-extrabold text-on-accent  transition active:translate-y-[2px] active:"
         >
           Ouvrir ma journee
           <Icon name="back" size={20} className="rotate-180" />
@@ -132,30 +132,30 @@ export default async function HubPage() {
           <li key={m.key} className={m.theme}>
             <Link
               href={m.href}
-              className="animate-rise block rounded-[var(--radius-card)] border border-hair bg-card p-4 shadow-[0_4px_12px_rgba(29,27,46,0.05)] transition hover:-translate-y-0.5 hover:border-accent/40"
+              className="animate-rise block rounded-[var(--radius-card)] border border-hairline bg-surface p-4  transition hover:-translate-y-0.5 hover:border-accent/40"
               style={{ animationDelay: `${i * 45}ms` }}
             >
               <div className="flex items-center gap-3">
                 <span
                   aria-hidden
-                  className="grid size-12 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-2xl"
+                  className="grid size-12 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-2xl"
                 >
                   {m.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-lg font-extrabold tracking-tight">{m.label}</p>
-                  <p className="truncate text-sm font-semibold text-muted">{m.tagline}</p>
+                  <p className="truncate text-sm font-semibold text-ink-2">{m.tagline}</p>
                 </div>
-                <Icon name="chevron" size={20} className="-rotate-90 shrink-0 text-muted" />
+                <Icon name="chevron" size={20} className="-rotate-90 shrink-0 text-ink-2" />
               </div>
 
               <p
                 className={`mt-3 truncate rounded-[var(--radius-control)] px-3 py-2 text-sm font-bold ${
                   summaries[m.key].tone === "danger"
-                    ? "bg-danger-soft text-danger-ink"
+                    ? "bg-danger-dim text-danger"
                     : summaries[m.key].tone === "accent"
-                      ? "bg-accent-soft text-accent-ink"
-                      : "bg-sunk text-muted"
+                      ? "bg-accent-dim text-accent"
+                      : "bg-raised text-ink-2"
                 }`}
               >
                 {summaries[m.key].text}

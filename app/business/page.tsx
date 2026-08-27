@@ -49,15 +49,15 @@ export default async function BusinessOverviewPage() {
   return (
     <div className="space-y-4">
       {overdue.length > 0 && (
-        <div className="animate-rise rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-4 py-3">
-          <p className="flex items-center gap-2 font-black text-danger-ink">
+        <div className="animate-rise rounded-[var(--radius-card)] border border-danger/30 bg-danger-dim px-4 py-3">
+          <p className="flex items-center gap-2 font-extrabold text-danger">
             <span aria-hidden className="text-xl">
               💸
             </span>
             {overdue.length} facture{overdue.length > 1 ? "s" : ""} en retard —{" "}
             {formatMoney(overdueTotal)}
           </p>
-          <ul className="mt-1 space-y-0.5 text-sm font-bold text-danger-ink">
+          <ul className="mt-1 space-y-0.5 text-sm font-bold text-danger">
             {overdue.map((i) => (
               <li key={i.id}>
                 {i.number} · {formatMoney(Number(i.amount), i.currency)} ·{" "}
@@ -68,7 +68,7 @@ export default async function BusinessOverviewPage() {
           </ul>
           <Link
             href="/business/factures"
-            className="mt-2 inline-flex rounded-full bg-danger px-3 py-1.5 text-xs font-bold text-on-danger"
+            className="mt-2 inline-flex rounded-full bg-danger px-3 py-1.5 text-xs font-bold text-on-accent"
           >
             Relancer →
           </Link>
@@ -94,9 +94,8 @@ export default async function BusinessOverviewPage() {
 
       <Card>
         <CardTitle
-          emoji="🚧"
           action={
-            <Link href="/business/projets" className="text-xs font-bold text-accent-ink underline">
+            <Link href="/business/projets" className="text-xs font-bold text-accent underline">
               tout voir
             </Link>
           }
@@ -117,21 +116,21 @@ export default async function BusinessOverviewPage() {
                 <li
                   key={p.id}
                   className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 ${
-                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
+                    late ? "border-danger/30 bg-danger-dim" : "border-hairline bg-surface"
                   }`}
                 >
-                  <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">
+                  <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-module/15 text-lg">
                     {meta.emoji}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold">{p.title}</p>
-                    <p className="truncate text-[11px] font-semibold text-muted">
+                    <p className="truncate text-[11px] font-semibold text-ink-2">
                       {p.client_id ? clientName.get(p.client_id) ?? "Client supprime" : "Sans client"}
                       {p.deadline ? ` · ${formatShort(p.deadline)} (${relativeDays(p.deadline, today)})` : ""}
                     </p>
                   </div>
                   {p.amount != null && (
-                    <span className="shrink-0 text-sm font-black tabular-nums">
+                    <span className="shrink-0 text-sm font-extrabold tabular-nums">
                       {formatMoney(Number(p.amount))}
                     </span>
                   )}
@@ -145,9 +144,8 @@ export default async function BusinessOverviewPage() {
 
       <Card>
         <CardTitle
-          emoji="🧾"
           action={
-            <Link href="/business/factures" className="text-xs font-bold text-accent-ink underline">
+            <Link href="/business/factures" className="text-xs font-bold text-accent underline">
               tout voir
             </Link>
           }
@@ -167,20 +165,20 @@ export default async function BusinessOverviewPage() {
                 <li
                   key={i.id}
                   className={`flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2.5 ${
-                    late ? "border-danger/30 bg-danger-soft" : "border-hair bg-card"
+                    late ? "border-danger/30 bg-danger-dim" : "border-hairline bg-surface"
                   }`}
                 >
-                  <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-accent-soft text-lg">
+                  <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-module/15 text-lg">
                     {late ? "🚨" : "📤"}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold">{i.number}</p>
-                    <p className="truncate text-[11px] font-semibold text-muted">
+                    <p className="truncate text-[11px] font-semibold text-ink-2">
                       {i.client_id ? clientName.get(i.client_id) ?? "—" : "—"}
                       {i.due_on ? ` · echeance ${formatShort(i.due_on)}` : ""}
                     </p>
                   </div>
-                  <span className="shrink-0 font-black tabular-nums">
+                  <span className="shrink-0 font-extrabold tabular-nums">
                     {formatMoney(Number(i.amount), i.currency)}
                   </span>
                 </li>

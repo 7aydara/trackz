@@ -132,11 +132,11 @@ export function TrackerClient({
     <div className="space-y-4">
       {/* ------------------------------------------- rappel de fin de journee */}
       {lateReminder && remaining.length > 0 && (
-        <div className="animate-rise flex items-start gap-3 rounded-[var(--radius-card)] border border-warn/30 bg-warn-soft px-4 py-3">
-          <span className="mt-0.5 shrink-0 text-warn-ink">
+        <div className="animate-rise flex items-start gap-3 rounded-[var(--radius-card)] border border-warn/30 bg-warn-dim px-4 py-3">
+          <span className="mt-0.5 shrink-0 text-warn">
             <Icon name="alert" size={20} />
           </span>
-          <p className="text-sm font-bold text-warn-ink">
+          <p className="text-sm font-bold text-warn">
             Il te reste {remaining.length} truc{remaining.length > 1 ? "s" : ""} a cocher —{" "}
             {remaining
               .slice(0, 3)
@@ -149,43 +149,39 @@ export function TrackerClient({
 
       {/* --------------------------------------------------- serie et badges */}
       <Card className="flex flex-col items-center gap-4">
-        <ProgressRing value={milestoneRatio} size={188} stroke={18}>
+        <ProgressRing value={milestoneRatio} size={156} stroke={8}>
           <div>
-            <div className="text-5xl font-black leading-none tabular-nums text-accent-ink">
+            <div className="text-[52px] font-extrabold leading-none tabular-nums tracking-[-0.03em]">
               {streak}
             </div>
-            <div className="mt-1 text-sm font-bold text-muted">
+            <div className="mt-1 text-sm font-bold text-ink-2">
               jour{streak > 1 ? "s" : ""} de suite
-            </div>
-            <div aria-hidden className="mt-1 text-xl">
-              🔥
             </div>
           </div>
         </ProgressRing>
 
         <div className="flex flex-wrap justify-center gap-2">
-          <Chip tone="accent">
+          <Chip>
             {done}/{total} aujourd'hui
           </Chip>
           <Chip tone="neutral">{Math.round(data.weekRatio * 100)}% cette semaine</Chip>
         </div>
 
         {next && (
-          <p className="text-center text-xs font-bold text-muted">
-            Prochain palier {MILESTONE_BADGES[next].emoji} {MILESTONE_BADGES[next].label} — plus
-            que {next - streak} j
+          <p className="text-center text-xs font-bold text-ink-2">
+            Prochain palier : {MILESTONE_BADGES[next].label}, dans {next - streak} j
           </p>
         )}
 
-        <ul className="flex w-full justify-center gap-1.5 overflow-x-auto rounded-full bg-sunk px-3 py-2.5">
+        <ul className="flex w-full justify-center gap-1.5 overflow-x-auto rounded-full bg-raised px-3 py-2.5">
           {MILESTONES.map((m) => {
             const unlocked = streak >= m;
             return (
               <li
                 key={m}
                 title={`${MILESTONE_BADGES[m].label}${unlocked ? "" : " — a debloquer"}`}
-                className={`grid size-8 shrink-0 place-items-center rounded-full text-base transition ${
-                  unlocked ? "bg-card shadow-sm" : "opacity-30 grayscale"
+                className={`grid size-8 shrink-0 place-items-center rounded-full text-[15px] transition ${
+                  unlocked ? "bg-surface" : "opacity-20 grayscale"
                 }`}
               >
                 <span aria-hidden>{MILESTONE_BADGES[m].emoji}</span>
@@ -206,7 +202,7 @@ export function TrackerClient({
           </EmptyState>
         ) : (
           <Card className="!p-0">
-            <ul className="divide-y divide-hair">
+            <ul className="divide-y divide-hairline">
               {items.map((item) => {
                 const mod = MODULE_BY_KEY[item.module];
                 const lockedWorkout = item.kind === "workout" && item.done;
@@ -217,7 +213,7 @@ export function TrackerClient({
                   >
                     <span
                       aria-hidden
-                      className="grid size-11 shrink-0 place-items-center rounded-full bg-accent-soft text-xl"
+                      className="grid size-11 shrink-0 place-items-center rounded-full bg-module/15 text-xl"
                     >
                       {item.emoji}
                     </span>
@@ -229,7 +225,7 @@ export function TrackerClient({
                       >
                         {item.label}
                       </Link>
-                      <p className="text-xs font-bold text-muted">{mod.short}</p>
+                      <p className="text-xs font-bold text-ink-2">{mod.short}</p>
                     </div>
 
                     {lockedWorkout ? (
@@ -269,26 +265,26 @@ export function TrackerClient({
 
       {/* ---------------------------------------------------- series par domaine */}
       <Card>
-        <CardTitle emoji="🏆">Series par domaine</CardTitle>
+        <CardTitle>Series par domaine</CardTitle>
         <ul className="grid gap-2 sm:grid-cols-2">
           {data.domainStreaks.map((s) => {
             const mod = MODULE_BY_KEY[s.module];
             return (
               <li
                 key={s.module}
-                className={`${mod.theme} flex items-center gap-3 rounded-[var(--radius-control)] bg-sunk px-3 py-2.5`}
+                className={`${mod.theme} flex items-center gap-3 rounded-[var(--radius-control)] bg-raised px-3 py-2.5`}
               >
                 <span
                   aria-hidden
-                  className="grid size-9 place-items-center rounded-full bg-accent-soft text-lg"
+                  className="grid size-9 place-items-center rounded-full bg-module/15 text-lg"
                 >
                   {s.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-extrabold">{s.label}</p>
-                  <p className="text-[11px] font-bold text-muted">record {s.longest} j</p>
+                  <p className="text-[11px] font-bold text-ink-2">record {s.longest} j</p>
                 </div>
-                <span className="text-lg font-black tabular-nums text-accent-ink">
+                <span className="text-lg font-extrabold tabular-nums text-accent">
                   {s.current}
                 </span>
               </li>
@@ -299,7 +295,7 @@ export function TrackerClient({
 
       {/* ------------------------------------------------------------ heatmap */}
       <Card>
-        <CardTitle emoji="🗓️">Calendrier d'intensite</CardTitle>
+        <CardTitle>Calendrier d'intensite</CardTitle>
         <Heatmap values={data.heatmap} weeks={22} endDate={data.date} />
       </Card>
 

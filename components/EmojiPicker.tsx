@@ -23,10 +23,10 @@ export function EmojiPicker({
             key={e}
             type="button"
             onClick={() => onChange(e)}
-            className={`grid size-10 place-items-center rounded-xl border text-xl transition ${
+            className={`grid size-11 place-items-center rounded-[10px] border text-xl transition ${
               value === e
-                ? "border-accent bg-accent-soft"
-                : "border-hair bg-card hover:border-accent"
+                ? "border-accent bg-accent-dim"
+                : "border-hairline bg-surface hover:border-accent"
             }`}
           >
             {e}
@@ -37,7 +37,7 @@ export function EmojiPicker({
         value={value}
         onChange={(e) => onChange(e.target.value.slice(0, 4))}
         aria-label="Emoji personnalise"
-        className="mt-2 w-20 rounded-xl border border-hair bg-card px-3 py-2 text-center text-xl outline-none focus:border-accent"
+        className="mt-2 w-20 rounded-xl border border-hairline bg-surface px-3 py-2 text-center text-xl outline-none focus:border-accent"
       />
     </div>
   );

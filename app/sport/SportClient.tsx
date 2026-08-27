@@ -83,15 +83,15 @@ export function SportClient({
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 bg-card">
-        <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-3xl bg-accent-soft text-4xl">
+      <Card className="flex items-center gap-4 bg-surface">
+        <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-3xl bg-module/15 text-4xl">
           🥋
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-xl font-black tracking-tight">
+          <p className="text-xl font-extrabold tracking-tight">
             {streak > 0 ? `${streak} jour${streak > 1 ? "s" : ""} d'affilee 🔥` : "Prets a demarrer ?"}
           </p>
-          <p className="mt-0.5 text-sm font-bold text-muted">
+          <p className="mt-0.5 text-sm font-bold text-ink-2">
             {thisWeek.length} seance{thisWeek.length > 1 ? "s" : ""} cette semaine · record {longest} j
           </p>
           {badges.length > 0 && (
@@ -117,30 +117,30 @@ export function SportClient({
       </div>
 
       <Card>
-        <CardTitle emoji="🗓️">Assiduite</CardTitle>
+        <CardTitle>Assiduite</CardTitle>
         <Heatmap values={heatmap} weeks={22} endDate={today} />
       </Card>
 
       <Card>
-        <CardTitle emoji="💡" action={<Chip tone="accent">sans materiel</Chip>}>
+        <CardTitle action={<Chip tone="accent">sans materiel</Chip>}>
           Seances types pour demarrer
         </CardTitle>
         <ul className="space-y-2">
           {SESSION_TEMPLATES.map((t) => (
-            <li key={t.key} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
+            <li key={t.key} className="rounded-[var(--radius-control)] border border-hairline bg-surface p-3">
               <div className="flex items-start gap-3">
-                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-xl">
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-xl">
                   {t.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-black">{t.name}</p>
-                  <p className="text-[11px] font-bold text-muted">
+                  <p className="font-extrabold">{t.name}</p>
+                  <p className="text-[11px] font-bold text-ink-2">
                     {t.duration} min · {t.focus} · {t.level}
                   </p>
-                  <ul className="mt-2 space-y-0.5 text-xs font-semibold text-muted">
+                  <ul className="mt-2 space-y-0.5 text-xs font-semibold text-ink-2">
                     {t.blocks.map((b, i) => (
                       <li key={i} className="flex gap-1.5">
-                        <span aria-hidden className="text-accent-ink">
+                        <span aria-hidden className="text-accent">
                           •
                         </span>
                         {b}
@@ -150,7 +150,7 @@ export function SportClient({
                 </div>
               </div>
               <Button
-                variant="soft"
+                variant="secondary"
                 size="sm"
                 className="mt-2 w-full"
                 onClick={() => openWithTemplate(t)}
@@ -163,7 +163,7 @@ export function SportClient({
       </Card>
 
       <Card>
-        <CardTitle emoji="📓">Journal des seances</CardTitle>
+        <CardTitle>Journal des seances</CardTitle>
 
         {workouts.length === 0 ? (
           <EmptyState emoji="🥋" title="Aucune seance enregistree">
@@ -175,14 +175,14 @@ export function SportClient({
               const ex = exercisesByWorkout.get(w.id) ?? [];
               const st = stancesByWorkout.get(w.id) ?? [];
               return (
-                <li key={w.id} className="rounded-[var(--radius-control)] border border-hair bg-card p-3">
+                <li key={w.id} className="rounded-[var(--radius-control)] border border-hairline bg-surface p-3">
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-lg">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-lg">
                       🥋
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="font-black capitalize">{formatLong(w.session_date)}</p>
-                      <p className="text-[11px] font-bold text-muted">
+                      <p className="font-extrabold capitalize">{formatLong(w.session_date)}</p>
+                      <p className="text-[11px] font-bold text-ink-2">
                         {w.duration_min} min · intensite {"🔴".repeat(w.intensity)}
                         {w.focus ? ` · ${w.focus}` : ""}
                       </p>
@@ -200,7 +200,7 @@ export function SportClient({
                       )}
 
                       {ex.length > 0 && (
-                        <ul className="mt-1.5 space-y-0.5 text-xs font-semibold text-muted">
+                        <ul className="mt-1.5 space-y-0.5 text-xs font-semibold text-ink-2">
                           {ex.map((e) => (
                             <li key={e.id}>
                               {EXERCISE_CATEGORY_META[e.category].emoji} {e.name}
@@ -213,7 +213,7 @@ export function SportClient({
                       )}
 
                       {w.notes && (
-                        <p className="mt-1.5 whitespace-pre-line rounded-xl bg-sunk px-2.5 py-1.5 text-xs font-semibold text-muted">
+                        <p className="mt-1.5 whitespace-pre-line rounded-xl bg-raised px-2.5 py-1.5 text-xs font-semibold text-ink-2">
                           {w.notes}
                         </p>
                       )}
@@ -223,7 +223,7 @@ export function SportClient({
                       type="button"
                       onClick={() => removeWorkout(w)}
                       aria-label="Supprimer la seance"
-                      className="px-1 text-xs font-bold text-muted/60 transition hover:text-danger"
+                      className="tap text-ink-3 transition hover:text-danger"
                     >
                       ✕
                     </button>

@@ -150,7 +150,7 @@ export function InvoicesClient({
       </div>
 
       <Card>
-        <CardTitle emoji="🧾" action={<Button size="sm" onClick={startCreate}>+ Facture</Button>}>
+        <CardTitle action={<Button size="sm" onClick={startCreate}>+ Facture</Button>}>
           Mes factures
         </CardTitle>
 
@@ -167,10 +167,10 @@ export function InvoicesClient({
               key={key}
               type="button"
               onClick={() => setFilter(key)}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+              className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-[13px] font-semibold transition ${
                 filter === key
                   ? "border-transparent bg-accent text-on-accent"
-                  : "border-hair bg-card text-muted"
+                  : "border-hairline bg-surface text-ink-2"
               }`}
             >
               {label}
@@ -192,24 +192,24 @@ export function InvoicesClient({
                   key={i.id}
                   className={`rounded-[var(--radius-control)] border px-3 py-2.5 ${
                     late
-                      ? "border-danger/30 bg-danger-soft"
+                      ? "border-danger/30 bg-danger-dim"
                       : i.status === "payee"
-                        ? "border-good/30 bg-good-soft"
-                        : "border-hair bg-card"
+                        ? "border-good/30 bg-good-dim"
+                        : "border-hairline bg-surface"
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-card text-lg shadow-sm">
+                    <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-control)] bg-surface text-lg shadow-sm">
                       {late ? "🚨" : meta.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="flex items-baseline justify-between gap-2">
-                        <span className="truncate font-black">{i.number}</span>
-                        <span className="shrink-0 font-black tabular-nums">
+                        <span className="truncate font-extrabold">{i.number}</span>
+                        <span className="shrink-0 font-extrabold tabular-nums">
                           {formatMoney(Number(i.amount), i.currency)}
                         </span>
                       </p>
-                      <p className="truncate text-[11px] font-semibold text-muted">
+                      <p className="truncate text-[11px] font-semibold text-ink-2">
                         {i.client_id ? clientName.get(i.client_id) ?? "—" : "—"}
                         {i.project_id ? ` · ${projectTitle.get(i.project_id) ?? "—"}` : ""}
                       </p>
@@ -221,7 +221,7 @@ export function InvoicesClient({
                         {i.paid_on && <Chip tone="good">payee le {formatShort(i.paid_on)}</Chip>}
                       </div>
                       {i.notes && (
-                        <p className="mt-1.5 text-xs font-semibold text-muted">{i.notes}</p>
+                        <p className="mt-1.5 text-xs font-semibold text-ink-2">{i.notes}</p>
                       )}
                     </div>
                   </div>
@@ -229,7 +229,7 @@ export function InvoicesClient({
                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
                     {i.status !== "payee" ? (
                       <Button size="sm" onClick={(e) => markPaid(i, e)}>
-                        💰 Marquer payee
+                        Marquer payee
                       </Button>
                     ) : (
                       <Button variant="ghost" size="sm" onClick={() => setStatus(i, "envoyee")}>
@@ -237,8 +237,8 @@ export function InvoicesClient({
                       </Button>
                     )}
                     {i.status === "brouillon" && (
-                      <Button variant="soft" size="sm" onClick={() => setStatus(i, "envoyee")}>
-                        📤 Envoyer
+                      <Button variant="secondary" size="sm" onClick={() => setStatus(i, "envoyee")}>
+                        Envoyer
                       </Button>
                     )}
                     <span className="flex-1" />

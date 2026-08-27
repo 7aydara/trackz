@@ -15,14 +15,14 @@ export default async function LoginPage({
       <div className="w-full max-w-sm">
         <div className="mb-7 text-center">
           <Logo size={84} className="mx-auto" />
-          <h1 className="mt-5 text-4xl font-black tracking-tight text-accent-ink">Trackz</h1>
-          <p className="mt-2 font-semibold text-muted">
+          <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-accent">Trackz</h1>
+          <p className="mt-2 font-semibold text-ink-2">
             Un compte, cinq apps : habitudes, cours, ecoles, business, Kung Fu.
           </p>
         </div>
 
         {error && (
-          <p className="mb-4 rounded-[var(--radius-control)] border border-danger/30 bg-danger-soft px-4 py-3 text-sm font-bold text-danger-ink">
+          <p className="mb-4 rounded-[var(--radius-control)] border border-danger/30 bg-danger-dim px-4 py-3 text-sm font-bold text-danger">
             Lien invalide ou expire. Reessaie une connexion.
           </p>
         )}

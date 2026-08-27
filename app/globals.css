@@ -1,232 +1,66 @@
 @import "tailwindcss";
 
 /* ==================================================================== */
-/* Tokens                                                               */
-/* --------------------------------------------------------------------*/
-/* Deux themes : "Trackz" (clair, tactile) et "Obsidian Zen" (sombre,   */
-/* nocturne). Tout passe par des variables : aucun composant ne connait */
-/* de couleur en dur, sinon le mode sombre ne suivrait pas.             */
+/* Trackz — systeme sombre                                              */
+/* -------------------------------------------------------------------- */
+/* Un seul accent (le rouge du sceau), des gris qui portent tout le      */
+/* reste. Les modules ne se distinguent plus par des aplats colores mais */
+/* par une teinte a peine perceptible sur leur pastille d'icone : on     */
+/* garde le reperage sans le carnaval.                                   */
 /* ==================================================================== */
 
 @theme {
-  --font-sans: var(--font-nunito), ui-rounded, "SF Pro Rounded", system-ui,
-    -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
 
-  /* Accent contextuel : redefini par chaque module via .theme-* */
+  /* Fonds : trois niveaux, du plus profond au plus eleve */
+  --color-ground: #0a0a0c;
+  --color-surface: #141417;
+  --color-raised: #1d1d21;
+  --color-hairline: #2a2a2f;
 
-  /* Surfaces et encres */
+  /* Encres */
+  --color-ink: #f5f5f7;
+  --color-ink-2: #9d9da6;
+  --color-ink-3: #6b6b74;
 
-  /* Couleurs semantiques, independantes des accents */
-
-  /* Valeurs par defaut : theme clair, accent du tracker. Les classes
-     .theme-* et le bloc sombre ne font que les redefinir. */
-  --color-accent: oklch(0.52 0.2 292);
-  --color-accent-soft: oklch(0.94 0.035 292);
-  --color-accent-ink: oklch(0.42 0.17 292);
-  --color-accent-deep: oklch(0.4 0.17 292);
+  /* Accent unique — le rouge du caractere 恒 */
+  --color-accent: #e5323f;
+  --color-accent-press: #c22834;
+  --color-accent-dim: #3a1418;
   --color-on-accent: #ffffff;
-  --color-on-danger: #ffffff;
 
-  --color-canvas: #faf7fd;
-  --color-card: #ffffff;
-  --color-sunk: #f3eff8;
-  --color-ink: #1d1a24;
-  --color-muted: #605a6d;
-  --color-hair: #e7e1ee;
+  /* Etats, volontairement desatures : rien ne doit vibrer */
+  --color-good: #5aa86e;
+  --color-good-dim: #16261b;
+  --color-warn: #c9a04a;
+  --color-warn-dim: #2a2213;
+  --color-danger: #d9544f;
+  --color-danger-dim: #2c1516;
 
-  --color-danger: oklch(0.55 0.19 22);
-  --color-danger-soft: oklch(0.94 0.035 22);
-  --color-danger-ink: oklch(0.44 0.17 22);
-  --color-warn: oklch(0.66 0.14 62);
-  --color-warn-soft: oklch(0.95 0.045 70);
-  --color-warn-ink: oklch(0.46 0.11 62);
-  --color-good: oklch(0.6 0.12 158);
-  --color-good-soft: oklch(0.94 0.04 158);
-  --color-good-ink: oklch(0.44 0.1 158);
+  /* Teinte de module : un chuchotement, jamais un aplat */
+  --color-module: #8a8a94;
 
-  /* Formes : 20px pour les cartes, 16px pour tout ce qui est actionnable */
-  --radius-card: 20px;
-  --radius-control: 16px;
+  --radius-card: 18px;
+  --radius-control: 12px;
 
-  --animate-pop: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  --animate-rise: rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-fall: fall 1100ms cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+  --animate-rise: rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fall: fall 900ms cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+  --animate-settle: settle 260ms cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-/* -------------------------------------------------------------------- */
-/* Theme clair — "Trackz"                                                */
-/* -------------------------------------------------------------------- */
-/* Les cinq accents sont volontairement tenus dans la meme bande de      */
-/* clarte (L 0.52-0.58) et de chroma (C 0.11-0.20) : ils se distinguent  */
-/* par la teinte, pas par le volume sonore. Le violet reste le plus      */
-/* chromatique parce qu'il porte la marque.                              */
 :root {
-  color-scheme: light;
-}
-
-:root,
-.theme-tracker {
-  --color-accent: oklch(0.52 0.2 292);
-  --color-accent-soft: oklch(0.94 0.035 292);
-  --color-accent-ink: oklch(0.42 0.17 292);
-  --color-accent-deep: oklch(0.4 0.17 292);
-}
-
-.theme-cours {
-  --color-accent: oklch(0.55 0.13 245);
-  --color-accent-soft: oklch(0.94 0.03 245);
-  --color-accent-ink: oklch(0.43 0.11 245);
-  --color-accent-deep: oklch(0.42 0.11 245);
-}
-
-.theme-ecoles {
-  --color-accent: oklch(0.58 0.12 68);
-  --color-accent-soft: oklch(0.94 0.04 72);
-  --color-accent-ink: oklch(0.44 0.1 68);
-  --color-accent-deep: oklch(0.45 0.1 68);
-}
-
-.theme-business {
-  --color-accent: oklch(0.55 0.11 165);
-  --color-accent-soft: oklch(0.94 0.035 165);
-  --color-accent-ink: oklch(0.42 0.09 165);
-  --color-accent-deep: oklch(0.42 0.09 165);
-}
-
-.theme-sport {
-  --color-accent: oklch(0.53 0.16 12);
-  --color-accent-soft: oklch(0.94 0.035 12);
-  --color-accent-ink: oklch(0.43 0.14 12);
-  --color-accent-deep: oklch(0.41 0.14 12);
-}
-
-/* -------------------------------------------------------------------- */
-/* Theme sombre — "Obsidian Zen"                                         */
-/* -------------------------------------------------------------------- */
-/* Surfaces obsidienne legerement biaisees violet pour rester dans la    */
-/* meme famille que le clair. Les accents remontent en clarte et         */
-/* baissent en chroma : sur fond sombre, une couleur saturee vibre.      */
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-canvas: #131217;
-    --color-card: #1c1a21;
-    --color-sunk: #24222b;
-    --color-ink: #e6e3ea;
-    --color-muted: #a09aad;
-    --color-hair: #322f3b;
-    --color-on-accent: #17141d;
-    --color-on-danger: #1d1214;
-
-    --color-danger: oklch(0.7 0.15 22);
-    --color-danger-soft: oklch(0.3 0.07 22);
-    --color-danger-ink: oklch(0.82 0.11 22);
-    --color-warn: oklch(0.79 0.12 72);
-    --color-warn-soft: oklch(0.31 0.06 72);
-    --color-warn-ink: oklch(0.87 0.09 72);
-    --color-good: oklch(0.75 0.11 160);
-    --color-good-soft: oklch(0.29 0.05 160);
-    --color-good-ink: oklch(0.85 0.09 160);
-
-    color-scheme: dark;
-  }
-
-  :root:not([data-theme="light"]),
-  :root:not([data-theme="light"]) .theme-tracker {
-    --color-accent: oklch(0.78 0.12 292);
-    --color-accent-soft: oklch(0.3 0.07 292);
-    --color-accent-ink: oklch(0.86 0.08 292);
-    --color-accent-deep: oklch(0.6 0.13 292);
-  }
-
-  :root:not([data-theme="light"]) .theme-cours {
-    --color-accent: oklch(0.78 0.09 240);
-    --color-accent-soft: oklch(0.29 0.05 240);
-    --color-accent-ink: oklch(0.86 0.07 240);
-    --color-accent-deep: oklch(0.6 0.1 240);
-  }
-
-  :root:not([data-theme="light"]) .theme-ecoles {
-    --color-accent: oklch(0.8 0.1 75);
-    --color-accent-soft: oklch(0.3 0.05 75);
-    --color-accent-ink: oklch(0.88 0.08 75);
-    --color-accent-deep: oklch(0.62 0.11 75);
-  }
-
-  :root:not([data-theme="light"]) .theme-business {
-    --color-accent: oklch(0.78 0.09 165);
-    --color-accent-soft: oklch(0.29 0.05 165);
-    --color-accent-ink: oklch(0.86 0.07 165);
-    --color-accent-deep: oklch(0.6 0.1 165);
-  }
-
-  :root:not([data-theme="light"]) .theme-sport {
-    --color-accent: oklch(0.75 0.11 15);
-    --color-accent-soft: oklch(0.3 0.06 15);
-    --color-accent-ink: oklch(0.85 0.09 15);
-    --color-accent-deep: oklch(0.58 0.13 15);
-  }
-}
-
-/* Choix explicite du sombre : memes valeurs, priorite sur l'OS. */
-:root[data-theme="dark"] {
-  --color-canvas: #131217;
-  --color-card: #1c1a21;
-  --color-sunk: #24222b;
-  --color-ink: #e6e3ea;
-  --color-muted: #a09aad;
-  --color-hair: #322f3b;
-  --color-on-accent: #17141d;
-  --color-on-danger: #1d1214;
-
-  --color-danger: oklch(0.7 0.15 22);
-  --color-danger-soft: oklch(0.3 0.07 22);
-  --color-danger-ink: oklch(0.82 0.11 22);
-  --color-warn: oklch(0.79 0.12 72);
-  --color-warn-soft: oklch(0.31 0.06 72);
-  --color-warn-ink: oklch(0.87 0.09 72);
-  --color-good: oklch(0.75 0.11 160);
-  --color-good-soft: oklch(0.29 0.05 160);
-  --color-good-ink: oklch(0.85 0.09 160);
-
   color-scheme: dark;
 }
 
-:root[data-theme="dark"],
-:root[data-theme="dark"] .theme-tracker {
-  --color-accent: oklch(0.78 0.12 292);
-  --color-accent-soft: oklch(0.3 0.07 292);
-  --color-accent-ink: oklch(0.86 0.08 292);
-  --color-accent-deep: oklch(0.6 0.13 292);
-}
-
-:root[data-theme="dark"] .theme-cours {
-  --color-accent: oklch(0.78 0.09 240);
-  --color-accent-soft: oklch(0.29 0.05 240);
-  --color-accent-ink: oklch(0.86 0.07 240);
-  --color-accent-deep: oklch(0.6 0.1 240);
-}
-
-:root[data-theme="dark"] .theme-ecoles {
-  --color-accent: oklch(0.8 0.1 75);
-  --color-accent-soft: oklch(0.3 0.05 75);
-  --color-accent-ink: oklch(0.88 0.08 75);
-  --color-accent-deep: oklch(0.62 0.11 75);
-}
-
-:root[data-theme="dark"] .theme-business {
-  --color-accent: oklch(0.78 0.09 165);
-  --color-accent-soft: oklch(0.29 0.05 165);
-  --color-accent-ink: oklch(0.86 0.07 165);
-  --color-accent-deep: oklch(0.6 0.1 165);
-}
-
-:root[data-theme="dark"] .theme-sport {
-  --color-accent: oklch(0.75 0.11 15);
-  --color-accent-soft: oklch(0.3 0.06 15);
-  --color-accent-ink: oklch(0.85 0.09 15);
-  --color-accent-deep: oklch(0.58 0.13 15);
-}
+/* -------------------------------------------------------------------- */
+/* Teintes de module                                                     */
+/* -------------------------------------------------------------------- */
+.theme-tracker  { --color-module: #c4606a; }
+.theme-cours    { --color-module: #6b8fb8; }
+.theme-ecoles   { --color-module: #b6975c; }
+.theme-business { --color-module: #6d9c83; }
+.theme-sport    { --color-module: #b96a72; }
 
 /* ==================================================================== */
 /* Base                                                                  */
@@ -234,36 +68,41 @@
 
 html {
   -webkit-tap-highlight-color: transparent;
+  background: var(--color-ground);
 }
 
 body {
-  background: var(--color-canvas);
+  background: var(--color-ground);
   color: var(--color-ink);
   min-height: 100dvh;
+  font-feature-settings: "cv02", "cv03";
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Halo diffus dans l'accent du module courant, en tete de page. */
+/* Voile sombre en haut de page : donne de la profondeur sans couleur. */
 .shell::before {
   content: "";
   position: fixed;
   inset: 0 0 auto 0;
-  height: 340px;
+  height: 420px;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(760px 300px at 15% -12%, color-mix(in srgb, var(--color-accent) 11%, transparent), transparent),
-    radial-gradient(620px 260px at 92% -6%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent);
-}
-
-@keyframes pop {
-  0% { transform: scale(1); }
-  45% { transform: scale(1.16) rotate(-5deg); }
-  100% { transform: scale(1); }
+  background: radial-gradient(
+    120% 100% at 50% -40%,
+    color-mix(in srgb, var(--color-module) 12%, transparent),
+    transparent 70%
+  );
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes settle {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 @keyframes fall {
@@ -273,16 +112,47 @@ body {
 
 .confetti-piece {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
   animation: var(--animate-fall);
 }
 
-/* Focus clavier visible partout, sans cercle sur les clics souris. */
+/* ==================================================================== */
+/* Ergonomie tactile                                                     */
+/* ==================================================================== */
+/* Tout ce qui se touche fait au moins 44px de haut ET de large — y      */
+/* compris les petites croix, dont la cible s'etend au-dela du glyphe.   */
+
+.tap {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+}
+
+/* Cible etendue pour un controle visuellement plus petit que 44px. */
+.tap-xl::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+}
+
 :focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+/* Barres de defilement discretes, façon desktop Apple. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -5,12 +5,14 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 
+// 48px de haut : confortable au pouce, et assez grand pour que iOS ne
+// zoome pas au focus (il le fait sous 16px de texte).
 const BASE =
-  "w-full rounded-[var(--radius-control)] border border-hair bg-card px-3.5 py-2.5 text-base font-semibold text-ink outline-none transition placeholder:font-medium placeholder:text-muted/70 focus:border-accent focus:ring-4 focus:ring-accent-soft";
+  "w-full min-h-12 rounded-[var(--radius-control)] border border-hairline bg-raised px-3.5 py-3 text-[16px] font-medium text-ink outline-none transition duration-150 placeholder:text-ink-3 focus:border-accent";
 
 export function Label({ children }: { children: ReactNode }) {
   return (
-    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-muted">
+    <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.06em] text-ink-3">
       {children}
     </span>
   );
@@ -38,7 +40,7 @@ export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
 }
 
 export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={`${BASE} min-h-24 ${props.className ?? ""}`} />;
+  return <textarea {...props} className={`${BASE} min-h-28 ${props.className ?? ""}`} />;
 }
 
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {

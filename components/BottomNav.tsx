@@ -6,16 +6,16 @@ import { Icon } from "@/components/Icon";
 import { MODULES } from "@/lib/modules";
 
 /**
- * Navigation principale, dans la zone du pouce. L'onglet actif prend
- * l'accent de son module et son icone se pose sur une pastille pleine :
- * on sait ou on est sans lire.
+ * Barre d'onglets. Chaque cible fait 44px de haut au minimum, et le
+ * module actif se signale par un trait fin dans sa teinte — le seul
+ * endroit ou la couleur de module apparait dans la navigation.
  */
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-hair bg-card/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
-      <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2 py-1.5">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-ground/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
+      <ul className="mx-auto flex max-w-3xl items-stretch">
         {MODULES.map((m) => {
           const active = pathname === m.href || pathname.startsWith(`${m.href}/`);
           return (
@@ -23,18 +23,20 @@ export function BottomNav() {
               <Link
                 href={m.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex flex-col items-center gap-1 rounded-[var(--radius-control)] px-1 py-1.5 text-[11px] font-bold transition ${
-                  active ? "text-accent-ink" : "text-muted"
+                className={`relative flex min-h-[54px] flex-col items-center justify-center gap-1 transition duration-150 ${
+                  active ? "text-ink" : "text-ink-3"
                 }`}
               >
-                <span
-                  className={`grid size-10 place-items-center rounded-full transition ${
-                    active ? "-translate-y-0.5 bg-accent text-on-accent" : ""
-                  }`}
-                >
-                  <Icon name={m.icon} size={22} />
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute top-0 h-[2px] w-7 rounded-full bg-module"
+                  />
+                )}
+                <Icon name={m.icon} size={22} strokeWidth={active ? 2.2 : 1.8} />
+                <span className="text-[10px] font-semibold tracking-[0.01em]">
+                  {m.short}
                 </span>
-                {m.short}
               </Link>
             </li>
           );

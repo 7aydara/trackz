@@ -51,7 +51,7 @@ export function SubjectHistory({
 
   return (
     <Card>
-      <CardTitle emoji="🔁">Rattraper un jour</CardTitle>
+      <CardTitle>Rattraper un jour</CardTitle>
       <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-10">
         {days.map((d) => {
           const done = isDone(d);
@@ -62,10 +62,10 @@ export function SubjectHistory({
               onClick={() => toggle(d)}
               aria-pressed={done}
               aria-label={`${subjectName} le ${d}`}
-              className={`rounded-xl border-2 px-1 py-2 text-[10px] font-black transition ${
+              className={`rounded-xl border-2 px-1 py-2 text-[10px] font-extrabold transition ${
                 done
                   ? "border-transparent bg-accent text-on-accent"
-                  : "border-dashed border-hair bg-card text-muted hover:border-accent"
+                  : "border-dashed border-hairline bg-surface text-ink-2 hover:border-accent"
               } ${d === today ? "ring-2 ring-accent ring-offset-1" : ""}`}
             >
               {formatShort(d).replace(".", "")}

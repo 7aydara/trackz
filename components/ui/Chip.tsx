@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** Pastille d'etat : toujours pleinement arrondie, 12px/700. */
+/** Etiquette d'etat. Fond tres sourd, texte colore : jamais un aplat vif. */
 export function Chip({
   children,
   tone = "neutral",
@@ -11,16 +11,16 @@ export function Chip({
   className?: string;
 }) {
   const tones = {
-    neutral: "bg-sunk text-muted",
-    accent: "bg-accent-soft text-accent-ink",
-    good: "bg-good-soft text-good-ink",
-    warn: "bg-warn-soft text-warn-ink",
-    danger: "bg-danger-soft text-danger-ink",
+    neutral: "bg-raised text-ink-2",
+    accent: "bg-accent-dim text-accent",
+    good: "bg-good-dim text-good",
+    warn: "bg-warn-dim text-warn",
+    danger: "bg-danger-dim text-danger",
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold leading-none ${tones[tone]} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold leading-tight ${tones[tone]} ${className}`}
     >
       {children}
     </span>

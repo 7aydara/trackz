@@ -84,51 +84,51 @@ export function SchoolCard({
         aria-expanded={expanded}
         className="flex w-full items-start gap-3 text-left"
       >
-        <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-control)] bg-card text-2xl shadow-sm">
+        <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-control)] bg-surface text-2xl shadow-sm">
           {status.emoji}
         </span>
 
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-2 font-black tracking-tight">
+          <p className="flex items-center gap-2 font-extrabold tracking-tight">
             <span className="truncate">{school.name}</span>
             <span className="shrink-0 text-xs" title={priority.label}>
               {priority.emoji}
             </span>
           </p>
-          <p className="truncate text-xs font-semibold text-muted">
+          <p className="truncate text-xs font-semibold text-ink-2">
             {[school.program, school.city].filter(Boolean).join(" · ") || "—"}
           </p>
 
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${style.chip}`}>
+            <span className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold ${style.chip}`}>
               {school.deadline
                 ? `${formatShort(school.deadline)} — ${relativeDays(school.deadline, today)}`
                 : "sans deadline"}
             </span>
-            <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-black text-muted">
+            <span className="rounded-full bg-surface px-2.5 py-1 text-[11px] font-extrabold text-ink-2">
               {insight.docsDone}/{insight.docsTotal} docs
             </span>
           </div>
 
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface">
             <div
               className="h-full rounded-full bg-accent transition-[width] duration-500"
               style={{ width: `${Math.round(ratio * 100)}%` }}
             />
           </div>
 
-          <p className="mt-1.5 text-[11px] font-bold text-muted">{insight.message}</p>
+          <p className="mt-1.5 text-[11px] font-bold text-ink-2">{insight.message}</p>
         </div>
 
-        <span aria-hidden className="pt-2 text-sm font-black text-muted">
+        <span aria-hidden className="pt-2 text-sm font-extrabold text-ink-2">
           {expanded ? "▲" : "▼"}
         </span>
       </button>
 
       {expanded && (
-        <div className="animate-rise mt-3 space-y-3 border-t border-hair pt-3">
+        <div className="animate-rise mt-3 space-y-3 border-t border-hairline pt-3">
           <div>
-            <p className="mb-1.5 text-xs font-black uppercase tracking-wide text-muted">
+            <p className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-ink-2">
               Statut du dossier
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -137,10 +137,10 @@ export function SchoolCard({
                   key={key}
                   type="button"
                   onClick={() => changeStatus(key)}
-                  className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                  className={`inline-flex min-h-11 items-center rounded-full border px-4 text-[13px] font-semibold transition ${
                     school.status === key
                       ? "border-transparent bg-accent text-on-accent"
-                      : "border-hair bg-card text-muted hover:border-accent"
+                      : "border-hairline bg-surface text-ink-2 hover:border-accent"
                   }`}
                 >
                   {meta.emoji} {meta.label}
@@ -150,7 +150,7 @@ export function SchoolCard({
           </div>
 
           <div>
-            <p className="mb-1.5 text-xs font-black uppercase tracking-wide text-muted">
+            <p className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-ink-2">
               Documents a fournir
             </p>
             <ul className="space-y-1.5">
@@ -158,7 +158,7 @@ export function SchoolCard({
                 <li
                   key={doc.id}
                   className={`flex items-center gap-2 rounded-[var(--radius-control)] border px-2.5 py-1.5 ${
-                    doc.done ? "border-transparent bg-accent-soft" : "border-hair bg-card"
+                    doc.done ? "border-hairline bg-raised" : "border-hairline bg-surface"
                   }`}
                 >
                   <CheckButton
@@ -174,7 +174,7 @@ export function SchoolCard({
                     type="button"
                     onClick={() => removeDoc(doc)}
                     aria-label={`Supprimer ${doc.label}`}
-                    className="px-1 text-xs font-bold text-muted/60 transition hover:text-danger"
+                    className="tap text-ink-3 transition hover:text-danger"
                   >
                     ✕
                   </button>
@@ -189,14 +189,14 @@ export function SchoolCard({
                 placeholder="Ajouter un document…"
                 className="!py-2 text-sm"
               />
-              <Button type="submit" variant="soft" size="sm">
+              <Button type="submit" variant="secondary" size="sm">
                 +
               </Button>
             </form>
           </div>
 
           {school.notes && (
-            <p className="whitespace-pre-line rounded-[var(--radius-control)] bg-card px-3 py-2 text-sm font-semibold text-muted">
+            <p className="whitespace-pre-line rounded-[var(--radius-control)] bg-surface px-3 py-2 text-sm font-semibold text-ink-2">
               {school.notes}
             </p>
           )}
@@ -207,7 +207,7 @@ export function SchoolCard({
                 href={school.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-bold text-accent-ink underline"
+                className="text-xs font-bold text-accent underline"
               >
                 Ouvrir le dossier ↗
               </a>

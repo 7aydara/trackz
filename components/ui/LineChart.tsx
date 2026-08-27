@@ -18,7 +18,7 @@ export function LineChart({
 }) {
   if (points.length === 0) {
     return (
-      <p className="py-6 text-center text-sm font-semibold text-muted">
+      <p className="py-6 text-center text-sm font-semibold text-ink-2">
         Pas encore assez de donnees pour tracer une courbe.
       </p>
     );
@@ -71,7 +71,7 @@ export function LineChart({
         ))}
       </svg>
 
-      <div className="mt-1 flex items-center justify-between text-[11px] font-bold text-muted">
+      <div className="mt-1 flex items-center justify-between text-[11px] font-bold text-ink-2">
         <span>
           {first.label} · {first.value} {unit}
         </span>

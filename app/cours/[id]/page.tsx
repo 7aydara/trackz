@@ -53,16 +53,16 @@ export default async function SubjectPage({
 
   return (
     <div className="space-y-4">
-      <Card className="flex items-center gap-4 bg-card">
-        <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-[var(--radius-control)] bg-accent-soft text-3xl">
+      <Card className="flex items-center gap-4 bg-surface">
+        <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-[var(--radius-control)] bg-module/15 text-3xl">
           {subject.emoji}
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-xl font-black tracking-tight">{subject.name}</h2>
+          <h2 className="truncate text-xl font-extrabold tracking-tight">{subject.name}</h2>
           {subject.teacher && (
-            <p className="text-sm font-semibold text-muted">{subject.teacher}</p>
+            <p className="text-sm font-semibold text-ink-2">{subject.teacher}</p>
           )}
-          <p className="mt-1 text-sm font-bold text-muted">
+          <p className="mt-1 text-sm font-bold text-ink-2">
             🔥 {current} j de serie · record {longest} j
           </p>
           {badges.length > 0 && (
@@ -85,7 +85,7 @@ export default async function SubjectPage({
       </div>
 
       <Card>
-        <CardTitle emoji="🗓️">Historique</CardTitle>
+        <CardTitle>Historique</CardTitle>
         <Heatmap values={heatmap} weeks={30} endDate={today} />
       </Card>
 
@@ -99,7 +99,7 @@ export default async function SubjectPage({
 
       <Link
         href="/cours"
-        className="block rounded-[var(--radius-control)] border border-hair bg-card px-4 py-3 text-center text-sm font-bold text-muted transition hover:text-ink"
+        className="block rounded-[var(--radius-control)] border border-hairline bg-surface px-4 py-3 text-center text-sm font-bold text-ink-2 transition hover:text-ink"
       >
         ← Toutes mes matieres
       </Link>
