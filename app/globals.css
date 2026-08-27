@@ -118,6 +118,72 @@ body {
   animation: var(--animate-fall);
 }
 
+
+/* ==================================================================== */
+/* Mercure — argent liquide                                             */
+/* -------------------------------------------------------------------- */
+/* Le chrome ne se lit pas a la couleur mais a l'alternance brutale de   */
+/* bandes claires et sombres : un degrade gris doux donne du plastique.  */
+/* D'ou les onze arrets ci-dessous, qui passent du blanc pur au gris     */
+/* profond sur des transitions courtes.                                  */
+/*                                                                       */
+/* Le metal complete le rouge, il ne le remplace pas : il habille les    */
+/* surfaces, les anneaux et les chiffres, jamais un bouton ni une case a */
+/* cocher — c'est le rouge qui dit ou l'on appuie.                       */
+/* ==================================================================== */
+
+@theme {
+  --mercury: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #c3c7cf 9%,
+    #6c7078 20%,
+    #eceef2 31%,
+    #ffffff 39%,
+    #9ba1ab 50%,
+    #494d55 61%,
+    #d4d8df 73%,
+    #ffffff 84%,
+    #7f858e 94%,
+    #b8bcc4 100%
+  );
+}
+
+/* Texte en argent liquide. Le reflet coule lentement d'un bord a l'autre. */
+.mercury-text {
+  background: var(--mercury);
+  background-size: 300% 300%;
+  animation: mercury-flow 9s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Une ombre tres courte redonne du relief au glyphe evide. */
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+/* Arete metallique d'une carte : le filet gris devient un degrade.
+   Volontairement non anime — une page peut porter huit cartes, et huit
+   degrades qui coulent en continu coutent de la batterie pour rien. */
+.mercury-edge {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    var(--mercury) border-box;
+}
+
+/* Trait de l'onglet actif. */
+.mercury-bar {
+  background: var(--mercury);
+  background-size: 300% 300%;
+  animation: mercury-flow 9s ease-in-out infinite;
+}
+
+@keyframes mercury-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ==================================================================== */
 /* Ergonomie tactile                                                     */
 /* ==================================================================== */

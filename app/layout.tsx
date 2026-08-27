@@ -48,6 +48,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={manrope.variable}>
       <body className="font-sans antialiased">
+        {/* Degrade du mercure, defini une fois : les anneaux de progression
+            le referencent par `url(#mercury-stroke)`. Un seul <defs> evite
+            de dupliquer un identifiant a chaque instance. */}
+        <svg aria-hidden width="0" height="0" className="absolute">
+          <defs>
+            <linearGradient id="mercury-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="12%" stopColor="#c3c7cf" />
+              <stop offset="24%" stopColor="#6c7078" />
+              <stop offset="36%" stopColor="#eceef2" />
+              <stop offset="46%" stopColor="#ffffff" />
+              <stop offset="58%" stopColor="#9ba1ab" />
+              <stop offset="70%" stopColor="#494d55" />
+              <stop offset="82%" stopColor="#d4d8df" />
+              <stop offset="94%" stopColor="#ffffff" />
+              <stop offset="100%" stopColor="#7f858e" />
+            </linearGradient>
+          </defs>
+        </svg>
         <TimezoneSync />
         {children}
       </body>

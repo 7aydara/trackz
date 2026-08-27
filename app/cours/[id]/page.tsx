@@ -58,7 +58,7 @@ export default async function SubjectPage({
           {subject.emoji}
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-xl font-extrabold tracking-tight">{subject.name}</h2>
+          <h2 className="mercury-text truncate text-xl font-extrabold tracking-tight">{subject.name}</h2>
           {subject.teacher && (
             <p className="text-sm font-semibold text-ink-2">{subject.teacher}</p>
           )}

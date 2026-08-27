@@ -30,7 +30,7 @@ export function BottomNav() {
                 {active && (
                   <span
                     aria-hidden
-                    className="absolute top-0 h-[2px] w-7 rounded-full bg-module"
+                    className="mercury-bar absolute top-0 h-[2px] w-7 rounded-full"
                   />
                 )}
                 <Icon name={m.icon} size={22} strokeWidth={active ? 2.2 : 1.8} />

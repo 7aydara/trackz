@@ -23,7 +23,7 @@ export function StatTile({
   }[tone];
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-hairlineline bg-surface px-4 py-3.5">
+    <div className="rounded-[var(--radius-card)] border border-hairline bg-surface px-4 py-3.5">
       <div className="flex items-center gap-1.5 text-ink-3">
         {icon && <Icon name={icon} size={15} strokeWidth={2} />}
         <span className="text-[12px] font-semibold uppercase tracking-[0.06em]">

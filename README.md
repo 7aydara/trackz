@@ -29,6 +29,22 @@ les cartes, `raised` pour les champs et les creux. En sombre la profondeur
 vient de la clarte du fond et d'un filet fin, jamais d'une ombre portee :
 une ombre noire sur fond noir ne se voit pas.
 
+**Le mercure.** Un materiau d'argent liquide habille les anneaux de
+progression, les grands chiffres, les titres de section, l'arete des cartes
+et le trait de l'onglet actif. Il **complete** le rouge, il ne le remplace
+pas : aucun bouton ni aucune case a cocher n'est en metal, parce que c'est
+le rouge qui dit ou l'on appuie.
+
+Le chrome ne se lit pas a la couleur mais a l'alternance brutale de bandes
+claires et sombres — un degrade gris doux donne du plastique. D'ou les onze
+arrets de `--mercury`, qui passent du blanc pur au gris profond sur des
+transitions courtes.
+
+Deux precautions : l'arete des cartes n'est **pas** animee (une page porte
+jusqu'a huit cartes, et huit degrades qui coulent en continu coutent de la
+batterie pour rien), et le degrade de l'anneau est declare une seule fois
+dans `app/layout.tsx` plutot que duplique a chaque instance.
+
 **Typographie** Manrope, 400 a 800, chiffres tabulaires partout ou des
 valeurs s'alignent.
 

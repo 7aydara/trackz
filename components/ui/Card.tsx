@@ -19,7 +19,7 @@ export function Card({
 }) {
   return (
     <Tag
-      className={`relative rounded-[var(--radius-card)] border border-hairlineline bg-surface ${
+      className={`mercury-edge relative rounded-[var(--radius-card)] bg-surface ${
         flush ? "" : "p-5"
       } ${className}`}
     >
@@ -53,7 +53,7 @@ export function SectionLabel({
 }) {
   return (
     <div className="mb-3 flex items-end justify-between gap-3 px-1">
-      <h2 className="text-[22px] font-extrabold tracking-[-0.02em]">{children}</h2>
+      <h2 className="mercury-text text-[22px] font-extrabold tracking-[-0.02em]">{children}</h2>
       {action}
     </div>
   );

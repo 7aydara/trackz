@@ -156,7 +156,7 @@ export function CoursClient({
       <div className="grid grid-cols-2 gap-3">
         <Card className="flex flex-col items-center justify-center gap-2 !p-4">
           <ProgressRing value={ratio} size={116} stroke={13}>
-            <div className="text-xl font-extrabold tabular-nums text-accent">
+            <div className="mercury-text text-xl font-extrabold tabular-nums">
               {doneToday}/{subjects.length}
             </div>
           </ProgressRing>
@@ -170,7 +170,7 @@ export function CoursClient({
               <span aria-hidden className="text-xl">
                 🔥
               </span>
-              <span className="text-3xl font-extrabold tabular-nums text-accent">
+              <span className="mercury-text text-3xl font-extrabold tabular-nums">
                 {globalStreak}
               </span>
               <span className="text-sm font-bold text-ink-2">

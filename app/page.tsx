@@ -102,7 +102,7 @@ export default async function HubPage() {
       <Card className="mb-6 flex flex-col items-center gap-4">
         <ProgressRing value={ratio} size={152} stroke={8}>
           <div>
-            <div className="text-4xl font-extrabold leading-none tabular-nums tracking-[-0.03em]">
+            <div className="mercury-text text-4xl font-extrabold leading-none tabular-nums tracking-[-0.03em]">
               {Math.round(ratio * 100)}%
             </div>
             <div className="mt-1 text-xs font-bold text-ink-2">de ta journee</div>

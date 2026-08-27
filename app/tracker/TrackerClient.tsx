@@ -151,7 +151,7 @@ export function TrackerClient({
       <Card className="flex flex-col items-center gap-4">
         <ProgressRing value={milestoneRatio} size={156} stroke={8}>
           <div>
-            <div className="text-[52px] font-extrabold leading-none tabular-nums tracking-[-0.03em]">
+            <div className="mercury-text text-[52px] font-extrabold leading-none tabular-nums tracking-[-0.03em]">
               {streak}
             </div>
             <div className="mt-1 text-sm font-bold text-ink-2">
@@ -284,7 +284,7 @@ export function TrackerClient({
                   <p className="truncate text-sm font-extrabold">{s.label}</p>
                   <p className="text-[11px] font-bold text-ink-2">record {s.longest} j</p>
                 </div>
-                <span className="text-lg font-extrabold tabular-nums text-accent">
+                <span className="text-lg font-extrabold tabular-nums">
                   {s.current}
                 </span>
               </li>

@@ -30,7 +30,7 @@ export function ProgressRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--color-module)"
+          stroke="url(#mercury-stroke)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
