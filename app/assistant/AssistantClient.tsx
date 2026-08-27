@@ -119,36 +119,40 @@ export function AssistantClient({
       { id: `local-${Date.now()}`, role: "user", text },
     ]);
 
-    const { data, error: fnError } = await supabase.functions.invoke("assistant", {
-      body: {
-        message: text,
-        thread_id: threadId,
-        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    });
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("assistant", {
+        body: {
+          message: text,
+          thread_id: threadId,
+          tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      });
 
-    setBusy(false);
+      if (fnError) throw fnError;
 
-    if (fnError) {
+      const payload = data as { thread_id?: string; reply?: string; error?: string };
+      if (payload?.error) {
+        setError(payload.error);
+        return;
+      }
+
+      if (payload?.thread_id) setThreadId(payload.thread_id);
+      const reply = payload?.reply ?? "";
+      setMessages((prev) => [
+        ...prev,
+        { id: `local-${Date.now()}-a`, role: "assistant", text: reply },
+      ]);
+      speak(reply);
+    } catch {
+      // `invoke` leve aussi sur coupure reseau ou worker tue. Sans ce
+      // filet, l'exception s'echappait : aucun message d'erreur, et le
+      // champ restait bloque en "occupe".
       setError(
-        "L'assistant n'a pas repondu. Verifie que la cle GEMINI_API_KEY est bien configuree cote Supabase.",
+        "L'assistant n'a pas repondu — la demande a peut-etre pris trop de temps. Reessaie, ou repars sur un nouveau fil avec le bouton Nouveau.",
       );
-      return;
+    } finally {
+      setBusy(false);
     }
-
-    const payload = data as { thread_id?: string; reply?: string; error?: string };
-    if (payload?.error) {
-      setError(payload.error);
-      return;
-    }
-
-    if (payload?.thread_id) setThreadId(payload.thread_id);
-    const reply = payload?.reply ?? "";
-    setMessages((prev) => [
-      ...prev,
-      { id: `local-${Date.now()}-a`, role: "assistant", text: reply },
-    ]);
-    speak(reply);
   }
 
   async function newThread() {

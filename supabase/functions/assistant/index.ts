@@ -21,7 +21,15 @@ const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
 const CONFIGURED_MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-3-flash";
 
 const BASE = "https://generativelanguage.googleapis.com/v1beta";
-const MAX_TOOL_ROUNDS = 8;
+const MAX_TOOL_ROUNDS = 5;
+
+// La plateforme tue le worker vers 150 s. On s'arrete avant, pour rendre
+// une reponse utile plutot que de mourir en silence — un worker tue ne
+// repond rien du tout, et le client reste sans explication.
+const DEADLINE_MS = 105_000;
+
+// Aucun appel isole ne doit pouvoir manger tout le budget.
+const FETCH_TIMEOUT_MS = 40_000;
 
 const DEFAULT_DOCUMENTS = [
   "CV",
@@ -574,6 +582,7 @@ async function callGemini(
       "x-goog-api-key": GEMINI_API_KEY,
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   const data = (await res.json()) as GeminiResponse;
   return { ok: res.ok, status: res.status, data };
@@ -675,6 +684,54 @@ function groundingSources(response: GeminiResponse): string {
   return links.length ? `\n\nSources :\n${links.join("\n")}` : "";
 }
 
+/**
+ * Repare un historique laisse a moitie ecrit.
+ *
+ * Si le worker est tue au milieu d'un tour — ce que fait la plateforme au
+ * bout de 150 s — le fil garde un appel d'outil dont la reponse du modele
+ * n'est jamais arrivee. Les messages suivants s'empilent par-dessus, et
+ * l'echange casse se retrouve enterre au milieu du fil : Gemini refuse
+ * alors tout l'historique, et le fil devient definitivement inutilisable.
+ *
+ * On balaye donc l'ensemble et on retire les echanges d'outils avortes,
+ * ou qu'ils se trouvent. Le message utilisateur qui les avait declenches
+ * est conserve : la demande reste visible et l'assistant peut la reprendre.
+ */
+function repairHistory(contents: GeminiContent[]): GeminiContent[] {
+  const isToolResult = (c?: GeminiContent) =>
+    !!c && c.role === "user" && c.parts.length > 0 && c.parts.every((p) => p.functionResponse);
+  const isToolCall = (c?: GeminiContent) =>
+    !!c && c.role === "model" && c.parts.some((p) => p.functionCall);
+
+  const keep = new Array<boolean>(contents.length).fill(true);
+
+  for (let i = 0; i < contents.length; i++) {
+    if (isToolCall(contents[i])) {
+      // Un appel d'outil doit etre suivi de son resultat, lui-meme suivi
+      // d'un tour du modele. Sinon l'echange n'a jamais abouti.
+      if (!isToolResult(contents[i + 1])) {
+        keep[i] = false;
+        continue;
+      }
+      const after = contents[i + 2];
+      if (!after || after.role !== "model") {
+        keep[i] = false;
+        keep[i + 1] = false;
+      }
+    } else if (isToolResult(contents[i]) && !isToolCall(contents[i - 1])) {
+      // Resultat orphelin : son appel a disparu.
+      keep[i] = false;
+    }
+  }
+
+  const out = contents.filter((_, i) => keep[i]);
+
+  // Gemini exige que la conversation commence par l'utilisateur.
+  while (out.length > 0 && out[0].role !== "user") out.shift();
+
+  return out;
+}
+
 /* ------------------------------------------------------------------ */
 
 Deno.serve(async (req) => {
@@ -759,7 +816,7 @@ Deno.serve(async (req) => {
    * `thoughtSignature` a ses appels d'outils et attend de la retrouver
    * dans l'historique. La reecrire casserait la chaine d'outils.
    */
-  const contents: GeminiContent[] = (history ?? [])
+  const rawContents: GeminiContent[] = (history ?? [])
     .map((row) => {
       const parts = Array.isArray(row.blocks) ? (row.blocks as GeminiPart[]) : null;
       const usable =
@@ -773,6 +830,7 @@ Deno.serve(async (req) => {
     })
     .filter((c): c is GeminiContent => c !== null);
 
+  const contents = repairHistory(rawContents);
   contents.push({ role: "user", parts: [{ text: message }] });
 
   await db.from("assistant_messages").insert({
@@ -787,9 +845,15 @@ Deno.serve(async (req) => {
   let reply = "";
   let usedModel = CONFIGURED_MODEL;
   let searchEnabled = true;
+  let truncated = false;
+  const startedAt = Date.now();
 
   try {
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+      if (Date.now() - startedAt > DEADLINE_MS) {
+        truncated = true;
+        break;
+      }
       const result = await generate(usedModel, contents, systemPrompt(today, displayName));
       usedModel = result.model;
       searchEnabled = result.searchEnabled;
@@ -879,12 +943,19 @@ Deno.serve(async (req) => {
     });
   }
 
+  if (truncated) {
+    reply =
+      (reply ? reply + "\n\n" : "") +
+      "J'ai du m'arreter avant d'avoir fini — la recherche prenait trop de temps. Redemande-moi en decoupant en deux, ou precise l'ecole qui t'interesse.";
+  }
+
   return new Response(
     JSON.stringify({
       thread_id: threadId,
       reply: reply || "Je n'ai pas de reponse a afficher pour ce tour.",
       model: usedModel,
       search: searchEnabled,
+      truncated,
     }),
     { headers: { "content-type": "application/json" } },
   );
