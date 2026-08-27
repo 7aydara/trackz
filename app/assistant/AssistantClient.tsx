@@ -131,7 +131,7 @@ export function AssistantClient({
 
     if (fnError) {
       setError(
-        "L'assistant n'a pas repondu. Verifie que la cle ANTHROPIC_API_KEY est bien configuree cote Supabase.",
+        "L'assistant n'a pas repondu. Verifie que la cle GEMINI_API_KEY est bien configuree cote Supabase.",
       );
       return;
     }

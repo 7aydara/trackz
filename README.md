@@ -167,16 +167,41 @@ cherche et modifie, pas seulement de ce qu'il a dit.
 **Voix** — dictee et lecture a voix haute via l'API Web Speech du
 navigateur. Aucun service tiers, rien qui sorte de l'appareil pour ca.
 
-### Secret a renseigner
+### Le modele
+
+L'assistant tourne sur **Gemini 3 Flash**, via l'API REST de Google AI
+Studio. Ce choix tient a une seule chose : c'est le seul palier gratuit qui
+apporte a la fois l'appel d'outils et la **recherche Google integree**.
+Sans recherche web, l'assistant inventerait des dates limites — exactement
+ce que son prompt lui interdit.
+
+Deux details de l'API qui ne se devinent pas :
+
+- Gemini 3 attache une `thoughtSignature` a ses appels d'outils et attend
+  de la retrouver dans l'historique. Les `parts` sont donc stockees et
+  rejouees **telles quelles** ; les reecrire casserait la chaine d'outils.
+- Combiner la recherche integree et les outils maison dans le meme appel
+  demande `toolConfig.includeServerSideToolInvocations`.
+
+La fonction degrade proprement plutot que de tomber en panne : modele
+introuvable → elle demande a la cle la liste de ce qu'elle sait faire et
+reprend sur un Flash ; champ refuse → elle retire le drapeau, puis la
+recherche, et le repond quand meme. La reponse indique le modele
+reellement utilise et si la recherche etait active.
+
+### Secrets a renseigner
 
 | Ou | Cle | Valeur |
 | --- | --- | --- |
-| Edge Function secrets | `ANTHROPIC_API_KEY` | ta cle [console.anthropic.com](https://console.anthropic.com) |
+| Edge Function secrets | `GEMINI_API_KEY` | ta cle [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| Edge Function secrets | `GEMINI_MODEL` | *optionnel* — force un modele precis, sinon `gemini-3-flash` |
 
-Le modele est `claude-opus-5` avec la reflexion adaptative et la recherche
-web. Deux reglages a connaitre dans `supabase/functions/assistant/index.ts`
-si les reponses sont trop lentes : `MAX_TOOL_ROUNDS` (8 par defaut) et
-l'ajout eventuel de `output_config: { effort: "medium" }`.
+> **Piege** : activer la facturation sur le projet Google fait disparaitre
+> son palier gratuit, definitivement. Cree la cle dans un projet dedie a
+> Trackz, sans facturation.
+
+`MAX_TOOL_ROUNDS` (8 par defaut) borne le nombre d'allers-retours d'outils
+par question.
 
 ## Securite des donnees
 

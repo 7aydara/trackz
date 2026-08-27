@@ -1,22 +1,26 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient, type SupabaseClient } from "jsr:@supabase/supabase-js@2";
-import Anthropic from "npm:@anthropic-ai/sdk@0.121.0";
 
 /**
- * L'assistant de Trackz.
+ * L'assistant de Trackz, sur l'API Gemini.
  *
  * Deploye avec `verify_jwt: true` : Supabase valide le jeton avant nous.
  * Surtout, le client Supabase utilise le JWT de l'utilisateur et non la
  * cle service role — l'assistant passe donc par la RLS comme n'importe
  * quel appel de l'app, et ne peut toucher que les donnees de son
  * proprietaire, meme si le modele se trompe de parametre.
+ *
+ * On appelle l'API REST directement plutot qu'un SDK : la forme des
+ * requetes est stable et documentee, et cela evite d'embarquer une
+ * dependance de plus dans le runtime Deno.
  */
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
+const CONFIGURED_MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-3-flash";
 
-const MODEL = "claude-opus-5";
+const BASE = "https://generativelanguage.googleapis.com/v1beta";
 const MAX_TOOL_ROUNDS = 8;
 
 const DEFAULT_DOCUMENTS = [
@@ -41,105 +45,103 @@ function todayIn(timeZone: string): string {
 }
 
 /* ------------------------------------------------------------------ */
-/* Outils                                                              */
+/* Declarations d'outils                                               */
 /* ------------------------------------------------------------------ */
+/* Le schema Gemini attend des types en majuscules et n'accepte pas    */
+/* `additionalProperties`.                                             */
 
-const TOOLS: Anthropic.Tool[] = [
+const FUNCTION_DECLARATIONS = [
   {
     name: "list_schools",
     description:
       "Liste les dossiers d'ecole de l'utilisateur avec leur statut, leur deadline et leur checklist de documents. A appeler avant toute modification, pour connaitre les identifiants.",
-    input_schema: { type: "object", properties: {}, additionalProperties: false },
+    parameters: { type: "OBJECT", properties: {} },
   },
   {
     name: "add_school",
     description:
-      "Ajoute un dossier d'ecole. Si `documents` est omis, une checklist standard est creee. N'invente jamais une deadline : laisse le champ vide si tu ne l'as pas verifiee.",
-    input_schema: {
-      type: "object",
+      "Ajoute un dossier d'ecole. Si `documents` est omis, une checklist standard est creee. N'invente jamais une deadline : laisse le champ vide si tu ne l'as pas verifiee sur une source.",
+    parameters: {
+      type: "OBJECT",
       properties: {
-        name: { type: "string", description: "Nom de l'ecole" },
-        program: { type: "string", description: "Intitule du programme" },
-        city: { type: "string" },
-        url: { type: "string", description: "Lien vers la page de candidature" },
-        deadline: { type: "string", description: "Date limite au format YYYY-MM-DD" },
+        name: { type: "STRING", description: "Nom de l'ecole" },
+        program: { type: "STRING", description: "Intitule du programme" },
+        city: { type: "STRING" },
+        url: { type: "STRING", description: "Lien vers la page de candidature" },
+        deadline: { type: "STRING", description: "Date limite au format YYYY-MM-DD" },
         priority: {
-          type: "integer",
+          type: "INTEGER",
           description: "1 = ecole de reve, 2 = cible, 3 = securite",
         },
-        notes: { type: "string", description: "Frais, prerequis, infos utiles" },
+        notes: { type: "STRING", description: "Frais, prerequis, infos utiles" },
         documents: {
-          type: "array",
-          items: { type: "string" },
+          type: "ARRAY",
+          items: { type: "STRING" },
           description: "Documents exiges par cette ecole",
         },
       },
       required: ["name"],
-      additionalProperties: false,
     },
   },
   {
     name: "update_school",
     description: "Met a jour un dossier existant. Ne renseigne que les champs a changer.",
-    input_schema: {
-      type: "object",
+    parameters: {
+      type: "OBJECT",
       properties: {
-        school_id: { type: "string" },
-        name: { type: "string" },
-        program: { type: "string" },
-        city: { type: "string" },
-        url: { type: "string" },
-        deadline: { type: "string" },
-        priority: { type: "integer" },
-        notes: { type: "string" },
+        school_id: { type: "STRING" },
+        name: { type: "STRING" },
+        program: { type: "STRING" },
+        city: { type: "STRING" },
+        url: { type: "STRING" },
+        deadline: { type: "STRING" },
+        priority: { type: "INTEGER" },
+        notes: { type: "STRING" },
         status: {
-          type: "string",
+          type: "STRING",
           enum: ["a_preparer", "envoye", "en_attente", "accepte", "refuse"],
         },
       },
       required: ["school_id"],
-      additionalProperties: false,
     },
   },
   {
     name: "set_document",
     description:
       "Ajoute un document a la checklist d'une ecole, ou marque un document existant comme fait ou a faire.",
-    input_schema: {
-      type: "object",
+    parameters: {
+      type: "OBJECT",
       properties: {
-        school_id: { type: "string" },
-        label: { type: "string", description: "Intitule du document" },
-        done: { type: "boolean" },
+        school_id: { type: "STRING" },
+        label: { type: "STRING", description: "Intitule du document" },
+        done: { type: "BOOLEAN" },
       },
       required: ["school_id", "label"],
-      additionalProperties: false,
     },
   },
   {
     name: "append_school_note",
     description:
       "Ajoute du texte aux notes d'un dossier, sans ecraser l'existant. Utile pour y deposer un brouillon de lettre ou des points a preparer.",
-    input_schema: {
-      type: "object",
+    parameters: {
+      type: "OBJECT",
       properties: {
-        school_id: { type: "string" },
-        text: { type: "string" },
+        school_id: { type: "STRING" },
+        text: { type: "STRING" },
       },
       required: ["school_id", "text"],
-      additionalProperties: false,
     },
   },
   {
     name: "list_today",
     description:
       "Ce qu'il reste a cocher aujourd'hui : matieres, seance de Kung Fu, check-ins business et ecoles, habitudes.",
-    input_schema: { type: "object", properties: {}, additionalProperties: false },
+    parameters: { type: "OBJECT", properties: {} },
   },
   {
     name: "list_subjects",
     description: "Liste les matieres suivies par l'utilisateur.",
-    input_schema: { type: "object", properties: {}, additionalProperties: false },
+    parameters: { type: "OBJECT", properties: {} },
   },
 ];
 
@@ -181,9 +183,10 @@ async function runTool(
         .single();
       if (error) throw error;
 
-      const labels = Array.isArray(input.documents) && input.documents.length
-        ? (input.documents as string[])
-        : DEFAULT_DOCUMENTS;
+      const labels =
+        Array.isArray(input.documents) && input.documents.length
+          ? (input.documents as string[])
+          : DEFAULT_DOCUMENTS;
 
       await db.from("school_documents").insert(
         labels.map((label, i) => ({
@@ -199,7 +202,16 @@ async function runTool(
 
     case "update_school": {
       const patch: Record<string, unknown> = {};
-      for (const key of ["name", "program", "city", "url", "deadline", "priority", "notes", "status"]) {
+      for (const key of [
+        "name",
+        "program",
+        "city",
+        "url",
+        "deadline",
+        "priority",
+        "notes",
+        "status",
+      ]) {
         if (input[key] !== undefined) patch[key] = input[key];
       }
       const { data, error } = await db
@@ -258,14 +270,15 @@ async function runTool(
     }
 
     case "list_today": {
-      const [subjects, subjectLogs, habits, habitLogs, workouts, checkins] = await Promise.all([
-        db.from("subjects").select("id, name, emoji").eq("archived", false),
-        db.from("subject_logs").select("subject_id").eq("log_date", today).eq("done", true),
-        db.from("habits").select("id, name, emoji").eq("archived", false),
-        db.from("habit_logs").select("habit_id").eq("log_date", today).eq("done", true),
-        db.from("workouts").select("id").eq("session_date", today).limit(1),
-        db.from("domain_checkins").select("domain").eq("log_date", today).eq("done", true),
-      ]);
+      const [subjects, subjectLogs, habits, habitLogs, workouts, checkins] =
+        await Promise.all([
+          db.from("subjects").select("id, name, emoji").eq("archived", false),
+          db.from("subject_logs").select("subject_id").eq("log_date", today).eq("done", true),
+          db.from("habits").select("id, name, emoji").eq("archived", false),
+          db.from("habit_logs").select("habit_id").eq("log_date", today).eq("done", true),
+          db.from("workouts").select("id").eq("session_date", today).limit(1),
+          db.from("domain_checkins").select("domain").eq("log_date", today).eq("done", true),
+        ]);
 
       const doneSubjects = new Set((subjectLogs.data ?? []).map((l) => l.subject_id));
       const doneHabits = new Set((habitLogs.data ?? []).map((l) => l.habit_id));
@@ -324,9 +337,9 @@ Tu peux aussi consulter et mettre a jour son suivi quotidien.
 REGLES
 - Reponds en francais, sur un ton direct et concret. L'app est lue sur un
   telephone : va a l'essentiel, pas de listes interminables.
-- Utilise la recherche web pour tout ce qui touche aux ecoles : programmes,
-  dates limites, frais, prerequis. Ne te fie jamais a ta memoire pour une
-  date limite ou un montant.
+- Utilise la recherche Google pour tout ce qui touche aux ecoles :
+  programmes, dates limites, frais, prerequis. Ne te fie jamais a ta
+  memoire pour une date limite ou un montant.
 - N'invente jamais une deadline. Si tu ne l'as pas vue sur une source,
   laisse le champ vide et dis-le.
 - Cite tes sources quand tu proposes une ecole.
@@ -341,16 +354,157 @@ REGLES
 }
 
 /* ------------------------------------------------------------------ */
+/* Appel Gemini                                                        */
+/* ------------------------------------------------------------------ */
+
+interface GeminiPart {
+  text?: string;
+  functionCall?: { id?: string; name: string; args?: Record<string, unknown> };
+  functionResponse?: { id?: string; name: string; response: Record<string, unknown> };
+  thoughtSignature?: string;
+  [key: string]: unknown;
+}
+
+interface GeminiContent {
+  role: "user" | "model";
+  parts: GeminiPart[];
+}
+
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: GeminiContent;
+    finishReason?: string;
+    groundingMetadata?: {
+      groundingChunks?: Array<{ web?: { uri?: string; title?: string } }>;
+    };
+  }>;
+  promptFeedback?: { blockReason?: string };
+  error?: { code?: number; message?: string; status?: string };
+}
+
+async function callGemini(
+  model: string,
+  body: Record<string, unknown>,
+): Promise<{ ok: boolean; status: number; data: GeminiResponse }> {
+  const res = await fetch(`${BASE}/models/${model}:generateContent`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-goog-api-key": GEMINI_API_KEY,
+    },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json()) as GeminiResponse;
+  return { ok: res.ok, status: res.status, data };
+}
+
+/** Modeles disponibles pour cette cle, si le modele configure n'existe pas. */
+async function pickFallbackModel(): Promise<string | null> {
+  try {
+    const res = await fetch(`${BASE}/models`, {
+      headers: { "x-goog-api-key": GEMINI_API_KEY },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      models?: Array<{ name?: string; supportedGenerationMethods?: string[] }>;
+    };
+    const usable = (data.models ?? [])
+      .filter((m) => m.supportedGenerationMethods?.includes("generateContent"))
+      .map((m) => (m.name ?? "").replace(/^models\//, ""))
+      .filter(Boolean);
+
+    // On privilegie un Flash recent : c'est celui du palier gratuit.
+    return (
+      usable.find((n) => /^gemini-3.*flash/.test(n) && !n.includes("lite")) ??
+      usable.find((n) => /^gemini-3/.test(n)) ??
+      usable.find((n) => /flash/.test(n)) ??
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Envoie la requete, en degradant proprement si l'API refuse une option.
+ * L'objectif : ne jamais tomber en panne totale a cause d'un champ que
+ * cette version de l'API ne connait pas.
+ */
+async function generate(
+  model: string,
+  contents: GeminiContent[],
+  system: string,
+): Promise<{ data: GeminiResponse; model: string; searchEnabled: boolean }> {
+  const base = {
+    systemInstruction: { parts: [{ text: system }] },
+    contents,
+    generationConfig: { temperature: 0.4, maxOutputTokens: 8192 },
+  };
+
+  const withSearch = {
+    ...base,
+    tools: [{ googleSearch: {} }, { functionDeclarations: FUNCTION_DECLARATIONS }],
+    // Necessaire pour que le contexte des outils integres circule jusqu'aux
+    // outils maison dans le meme echange.
+    toolConfig: { includeServerSideToolInvocations: true },
+  };
+
+  let current = model;
+  let attempt = await callGemini(current, withSearch);
+
+  // Modele introuvable : on demande a la cle ce qu'elle sait faire.
+  if (!attempt.ok && attempt.status === 404) {
+    const fallback = await pickFallbackModel();
+    if (fallback && fallback !== current) {
+      current = fallback;
+      attempt = await callGemini(current, withSearch);
+    }
+  }
+
+  if (attempt.ok) return { data: attempt.data, model: current, searchEnabled: true };
+
+  // Champ inconnu : on retire le drapeau de circulation, puis la recherche.
+  const withoutToolConfig = { ...withSearch };
+  delete (withoutToolConfig as Record<string, unknown>).toolConfig;
+  attempt = await callGemini(current, withoutToolConfig);
+  if (attempt.ok) return { data: attempt.data, model: current, searchEnabled: true };
+
+  const withoutSearch = {
+    ...base,
+    tools: [{ functionDeclarations: FUNCTION_DECLARATIONS }],
+  };
+  attempt = await callGemini(current, withoutSearch);
+  if (attempt.ok) return { data: attempt.data, model: current, searchEnabled: false };
+
+  throw new Error(
+    attempt.data.error?.message ??
+      `Gemini a repondu ${attempt.status} sans detail exploitable.`,
+  );
+}
+
+/** Lignes de sources issues du grounding, si le modele ne cite pas lui-meme. */
+function groundingSources(response: GeminiResponse): string {
+  const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
+  const links = chunks
+    .map((c) => c.web)
+    .filter((w): w is { uri?: string; title?: string } => Boolean(w?.uri))
+    .slice(0, 5)
+    .map((w) => `- [${w.title ?? w.uri}](${w.uri})`);
+
+  return links.length ? `\n\nSources :\n${links.join("\n")}` : "";
+}
+
+/* ------------------------------------------------------------------ */
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
-  if (!ANTHROPIC_API_KEY) {
+  if (!GEMINI_API_KEY) {
     return new Response(
       JSON.stringify({
         error:
-          "ANTHROPIC_API_KEY manquante. Ajoute-la dans les secrets de l'Edge Function.",
+          "GEMINI_API_KEY manquante. Ajoute-la dans les secrets de l'Edge Function (cle obtenue sur aistudio.google.com/apikey).",
       }),
       { status: 500, headers: { "content-type": "application/json" } },
     );
@@ -419,49 +573,64 @@ Deno.serve(async (req) => {
     .order("created_at")
     .limit(120);
 
-  const messages: Anthropic.MessageParam[] = (history ?? []).map((row) => ({
-    role: row.role as "user" | "assistant",
-    content: (row.blocks as Anthropic.ContentBlockParam[] | null) ?? row.text,
-  }));
+  /**
+   * Les `parts` sont rejouees telles quelles : Gemini 3 attache une
+   * `thoughtSignature` a ses appels d'outils et attend de la retrouver
+   * dans l'historique. La reecrire casserait la chaine d'outils.
+   */
+  const contents: GeminiContent[] = (history ?? [])
+    .map((row) => {
+      const parts = Array.isArray(row.blocks) ? (row.blocks as GeminiPart[]) : null;
+      const usable =
+        parts && parts.every((p) => p && typeof p === "object" && !("type" in p))
+          ? parts
+          : row.text
+            ? [{ text: row.text }]
+            : null;
+      if (!usable) return null;
+      return { role: row.role === "assistant" ? "model" : "user", parts: usable };
+    })
+    .filter((c): c is GeminiContent => c !== null);
 
-  messages.push({ role: "user", content: message });
+  contents.push({ role: "user", parts: [{ text: message }] });
 
   await db.from("assistant_messages").insert({
     user_id: user.id,
     thread_id: threadId,
     role: "user",
     text: message,
-    blocks: [{ type: "text", text: message }],
+    blocks: [{ text: message }],
   });
 
   // ----- Boucle d'outils ----------------------------------------------
-  const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-
-  const tools = [
-    ...TOOLS,
-    // Recherche web cote Anthropic : indispensable pour les ecoles.
-    { type: "web_search_20260209", name: "web_search", max_uses: 6 },
-  ] as Anthropic.ToolUnion[];
-
   let reply = "";
+  let usedModel = CONFIGURED_MODEL;
+  let searchEnabled = true;
 
   try {
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-      const stream = anthropic.messages.stream({
-        model: MODEL,
-        max_tokens: 24000,
-        thinking: { type: "adaptive" },
-        system: systemPrompt(today, displayName),
-        tools,
-        messages,
-      });
-      const response = await stream.finalMessage();
+      const result = await generate(usedModel, contents, systemPrompt(today, displayName));
+      usedModel = result.model;
+      searchEnabled = result.searchEnabled;
 
-      messages.push({ role: "assistant", content: response.content });
+      const candidate = result.data.candidates?.[0];
+      const parts = candidate?.content?.parts ?? [];
 
-      const text = response.content
-        .filter((b): b is Anthropic.TextBlock => b.type === "text")
-        .map((b) => b.text)
+      if (parts.length === 0) {
+        const blocked =
+          result.data.promptFeedback?.blockReason ?? candidate?.finishReason ?? "";
+        reply =
+          reply ||
+          (blocked
+            ? `Je n'ai pas pu repondre (${blocked}).`
+            : "Je n'ai pas de reponse a afficher pour ce tour.");
+        break;
+      }
+
+      contents.push({ role: "model", parts });
+
+      const text = parts
+        .map((p) => p.text ?? "")
         .join("\n")
         .trim();
 
@@ -470,54 +639,54 @@ Deno.serve(async (req) => {
         thread_id: threadId,
         role: "assistant",
         text,
-        blocks: response.content,
+        blocks: parts,
         hidden: text.length === 0,
       });
 
-      if (text) reply = text;
-
-      if (response.stop_reason === "refusal") {
-        reply = reply || "Je prefere ne pas repondre a cette demande.";
-        break;
+      if (text) {
+        // On n'ajoute les sources que si le modele n'a pas deja mis de lien.
+        reply = text.includes("http") ? text : text + groundingSources(result.data);
       }
 
-      const toolUses = response.content.filter(
-        (b): b is Anthropic.ToolUseBlock => b.type === "tool_use",
-      );
-      if (toolUses.length === 0) break;
+      const calls = parts.filter((p) => p.functionCall);
+      if (calls.length === 0) break;
 
-      const results: Anthropic.ToolResultBlockParam[] = [];
-      for (const call of toolUses) {
+      const responses: GeminiPart[] = [];
+      for (const part of calls) {
+        const call = part.functionCall!;
         try {
           const output = await runTool(
             db,
             user.id,
             today,
             call.name,
-            call.input as ToolInput,
+            (call.args ?? {}) as ToolInput,
           );
-          results.push({
-            type: "tool_result",
-            tool_use_id: call.id,
-            content: JSON.stringify(output),
+          responses.push({
+            functionResponse: {
+              ...(call.id ? { id: call.id } : {}),
+              name: call.name,
+              response: { result: output },
+            },
           });
         } catch (err) {
-          results.push({
-            type: "tool_result",
-            tool_use_id: call.id,
-            is_error: true,
-            content: err instanceof Error ? err.message : String(err),
+          responses.push({
+            functionResponse: {
+              ...(call.id ? { id: call.id } : {}),
+              name: call.name,
+              response: { error: err instanceof Error ? err.message : String(err) },
+            },
           });
         }
       }
 
-      messages.push({ role: "user", content: results });
+      contents.push({ role: "user", parts: responses });
       await db.from("assistant_messages").insert({
         user_id: user.id,
         thread_id: threadId,
         role: "user",
         text: "",
-        blocks: results,
+        blocks: responses,
         hidden: true,
       });
     }
@@ -533,6 +702,8 @@ Deno.serve(async (req) => {
     JSON.stringify({
       thread_id: threadId,
       reply: reply || "Je n'ai pas de reponse a afficher pour ce tour.",
+      model: usedModel,
+      search: searchEnabled,
     }),
     { headers: { "content-type": "application/json" } },
   );
