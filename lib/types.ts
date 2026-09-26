@@ -195,3 +195,21 @@ export interface PhilosophyNote {
   note_date: string;
   pinned: boolean;
 }
+
+export interface VoiceSession {
+  id: string;
+  session_date: string;
+  exercise_key: string;
+  root_midi: number | null;
+  score: number | null;
+  duration_sec: number;
+  created_at: string;
+}
+
+export interface VoiceProfile {
+  id: string;
+  low_midi: number;
+  high_midi: number;
+  voice_type: string;
+  updated_at: string;
+}

@@ -15,7 +15,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Trackz — ma suite perso",
   description:
-    "Habit tracker central + business freelance, dossiers ecoles, suivi des cours et Kung Fu Shaolin.",
+    "Habit tracker central + business freelance, dossiers ecoles, suivi des cours, Kung Fu Shaolin et cours de chant.",
   manifest: "/manifest.webmanifest",
   applicationName: "Trackz",
   // Sur iOS, les notifications push ne fonctionnent que depuis une app
