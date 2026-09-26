@@ -1,6 +1,6 @@
 import type { IconName } from "@/components/Icon";
 
-export type ModuleKey = "tracker" | "cours" | "ecoles" | "business" | "sport";
+export type ModuleKey = "tracker" | "cours" | "ecoles" | "business" | "sport" | "chant";
 
 export interface ModuleDef {
   key: ModuleKey;
@@ -65,6 +65,16 @@ export const MODULES: ModuleDef[] = [
     tagline: "Stances, conditionnement, taolu et arbre de progression.",
     theme: "theme-sport",
     icon: "martial",
+  },
+  {
+    key: "chant",
+    href: "/chant",
+    label: "Cours de chant",
+    short: "Chant",
+    emoji: "🎤",
+    tagline: "Accordeur vocal, exercices de justesse, tessiture, echauffement.",
+    theme: "theme-chant",
+    icon: "note",
   },
 ];
 

@@ -4,9 +4,10 @@ import { Icon } from "@/components/Icon";
 import { Card, SectionLabel } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { ProgressRing } from "@/components/ui/ProgressRing";
-import { formatLong, relativeDays } from "@/lib/dates";
+import { addDays, formatLong, relativeDays } from "@/lib/dates";
 import { MODULES } from "@/lib/modules";
 import { getDashboardData } from "@/lib/queries/dashboard";
+import { currentStreak } from "@/lib/streaks";
 import { createClient } from "@/lib/supabase/server";
 import { getToday } from "@/lib/today";
 import type { Invoice, School } from "@/lib/types";
@@ -22,7 +23,7 @@ export default async function HubPage() {
     today,
   ] = await Promise.all([supabase.auth.getUser(), getToday()]);
 
-  const [dash, schoolsRes, invoicesRes, projectsRes] = await Promise.all([
+  const [dash, schoolsRes, invoicesRes, projectsRes, voiceRes] = await Promise.all([
     getDashboardData(supabase, { days: 40, date: today }),
     supabase
       .from("schools")
@@ -34,6 +35,10 @@ export default async function HubPage() {
       .limit(1),
     supabase.from("invoices").select("amount, status, due_on").neq("status", "payee"),
     supabase.from("projects").select("id").eq("status", "en_cours"),
+    supabase
+      .from("voice_sessions")
+      .select("session_date, score")
+      .gte("session_date", addDays(today, -60)),
   ]);
 
   const nextSchool = (schoolsRes.data?.[0] ?? null) as Pick<
@@ -53,6 +58,10 @@ export default async function HubPage() {
   const coursDone = coursItems.filter((i) => i.done).length;
   const sportDone = dash.items.find((i) => i.kind === "workout")?.done ?? false;
   const sportStreak = dash.domainStreaks.find((s) => s.module === "sport")?.current ?? 0;
+  const voiceSessions = voiceRes.data ?? [];
+  const voiceDays = voiceSessions.map((v) => v.session_date as string);
+  const voiceToday = voiceDays.includes(today);
+  const voiceStreak = currentStreak(voiceDays, today);
   const ratio = dash.totalToday ? dash.doneToday / dash.totalToday : 0;
 
   /** Une ligne d'etat par module, avec son niveau d'urgence. */
@@ -84,6 +93,12 @@ export default async function HubPage() {
         ? `seance faite · serie de ${sportStreak} j`
         : `pas encore aujourd'hui · serie de ${sportStreak} j`,
       tone: sportDone ? "accent" : "neutral",
+    },
+    chant: {
+      text: voiceToday
+        ? `voix travaillee · serie de ${voiceStreak} j`
+        : `pas encore chante aujourd'hui · serie de ${voiceStreak} j`,
+      tone: voiceToday ? "accent" : "neutral",
     },
   };
 
@@ -125,7 +140,7 @@ export default async function HubPage() {
         </Link>
       </Card>
 
-      <SectionLabel>Mes 5 apps</SectionLabel>
+      <SectionLabel>Mes {MODULES.length} apps</SectionLabel>
 
       <ul className="grid gap-3">
         {MODULES.map((m, i) => (

@@ -1,6 +1,6 @@
 # Trackz — ma suite perso (S6)
 
-Cinq apps, un seul compte, une seule base Supabase :
+Six apps, un seul compte, une seule base Supabase :
 
 | App | Route | Accent | Ce qu'elle fait |
 | --- | --- | --- | --- |
@@ -9,8 +9,9 @@ Cinq apps, un seul compte, une seule base Supabase :
 | 🎓 Ecoles | `/ecoles` | ambre | Deadlines, checklists de documents, alertes visuelles |
 | 💼 Business | `/business` | vert | Clients, projets, factures, revenus du mois |
 | 🥋 Kung Fu | `/sport` | rouge | Seances, stances, conditionnement, arbre de progression, Chan |
+| 🎤 Chant | `/chant` | lilas | Accordeur vocal, exercices de justesse notes, tessiture, echauffement guide |
 
-La page `/` est le hub : elle liste les 5 apps avec un resume live de chacune.
+La page `/` est le hub : elle liste les 6 apps avec un resume live de chacune.
 
 ## Design
 
@@ -19,7 +20,7 @@ fonds profonds, typographie qui porte la hierarchie, et une seule couleur.
 
 **Un accent, pas cinq.** Le rouge du sceau (`#e5323f`) est reserve a ce
 qu'on touche : boutons d'action, cases cochees, onglet actif. Tout le reste
-vit en gris. Les cinq modules ne se distinguent plus par des aplats mais par
+vit en gris. Les modules ne se distinguent plus par des aplats mais par
 une teinte tres sourde (`--color-module`) posee sur leur pastille d'icone,
 leur anneau de progression et le trait de l'onglet actif — un reperage sans
 carnaval.
@@ -93,7 +94,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### 3. Appliquer le schema
 
 Dans le **SQL Editor** de Supabase, execute les fichiers de
-`supabase/migrations/` **dans l'ordre** (0001 → 0010). Ils sont rejouables :
+`supabase/migrations/` **dans l'ordre** (0001 → 0012). Ils sont rejouables :
 tu peux les relancer sans casser l'existant.
 
 Avec la CLI Supabase :
@@ -220,6 +221,41 @@ reellement utilise et si la recherche etait active.
 `MAX_TOOL_ROUNDS` (8 par defaut) borne le nombre d'allers-retours d'outils
 par question.
 
+## Le cours de chant
+
+Tout se passe dans le navigateur, avec l'API Web Audio : aucune librairie,
+aucun service tiers, et **le son ne quitte jamais l'appareil** — seuls les
+scores sont enregistres.
+
+- **Accordeur** (`/chant`) — la note chantee, l'ecart en cents sur une
+  aiguille, et une portee defilante ou la voix laisse une trace.
+- **Exercices** (`/chant/exercices`) — neuf exercices du debutant a
+  l'avance (note tenue, tierce, quinte, cinq notes, arpege, gamme
+  mineure, octave, gamme complete, demi-tons). Le modele joue, puis on
+  rechante ; la trace devient verte quand elle est juste. On finit en
+  montant d'un demi-ton, comme en cours.
+- **Tessiture** (`/chant/tessiture`) — la note la plus grave et la plus
+  aigue *tenues* (0,5 s sans bouger) donnent le type de voix, et les
+  exercices se calent dessus.
+- **Echauffement** (`/chant/echauffement`) — posture, respiration 4-4-6
+  guidee, trilles, bouche fermee, sirene, voyelles, et les bases a
+  retenir.
+
+**La detection** (`lib/voice.ts`) suit la methode de McLeod : on compare
+le signal a lui-meme decale, et on retient la *premiere* periode qui
+ressemble presque autant que la meilleure — c'est ce qui evite l'erreur
+de l'octave en dessous. Une mediane glissante sur cinq trames absorbe les
+sauts isoles. Le micro est ouvert **sans** annulation d'echo ni controle
+de gain automatique, qui deformeraient justement ce qu'on mesure.
+
+**La note** d'un exercice est la part du temps passe a moins d'un quart
+de ton de la cible, silence compris (sinon ne rien chanter donnerait
+100 %). Chanter la bonne note a l'octave compte comme juste : une voix
+d'homme qui reprend un modele aigu n'est pas punie pour son registre.
+
+Le guide pendant qu'on chante est desactive par defaut : sans ecouteurs,
+le micro entendrait le haut-parleur et le noterait a la place de la voix.
+
 ## Securite des donnees
 
 Chaque table porte un `user_id` et la **Row Level Security** est active dessus :
@@ -247,7 +283,7 @@ donc bien sur la bonne journee, meme si le serveur tourne en UTC.
 
 ```
 app/
-  page.tsx            hub des 5 apps
+  page.tsx            hub des 6 apps
   login/              connexion, inscription, lien magique
   auth/callback/      echange du code OAuth / magic link
   tracker/            app 1
@@ -255,6 +291,7 @@ app/
   ecoles/             app 3
   business/           app 4  (+ /clients /projets /factures)
   sport/              app 5  (+ /progres /arbre /chan)
+  chant/              app 6  (+ /echauffement /exercices /tessiture)
 components/
   AppShell.tsx        cadre commun : theme, en-tete, nav basse
   ui/                 design system partage
@@ -262,7 +299,8 @@ lib/
   supabase/           clients navigateur, serveur et middleware
   queries/            agregations (dashboard)
   dates.ts streaks.ts modules.ts today.ts
-  business.ts schools.ts kungfu.ts   regles metier par domaine
+  business.ts schools.ts kungfu.ts voice.ts   regles metier par domaine
+  audio.ts            micro, detection de hauteur, synthe (Web Audio)
 supabase/
   migrations/         schema SQL, une migration par app
   functions/
